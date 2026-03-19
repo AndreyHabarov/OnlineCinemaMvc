@@ -77,21 +77,3 @@ dotnet ef database update --project .\OnlineCinema.Domain\OnlineCinema.Domain.cs
 ```powershell
 dotnet run --project .\OnlineCinema.Mvc\OnlineCinema.Mvc.csproj
 ```
-
-## Domain Entities
-
-The main domain includes:
-
-- `Movie`
-- `Genre`
-- `MovieGenre`
-- `Session`
-- `Hall`
-- `Seat`
-- `Ticket`
-- `Promotion`
-- `News`
-- `Advertising`
-- `Customer`
-- `User`
-- `Role`
