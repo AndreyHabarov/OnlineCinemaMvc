@@ -6,6 +6,7 @@ using OnlineCinema.Mvc.Services.CurrentUser;
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineCinema.Mvc.Filters;
+using Microsoft.AspNetCore.DataProtection;
 
 CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
 CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("ru-RU");
@@ -25,6 +26,15 @@ if (builder.Environment.IsDevelopment())
         .AddJsonFile("appsettings.Development.local.json", optional: true, reloadOnChange: true)
         .AddEnvironmentVariables()
         .AddCommandLine(args);
+}
+
+var keysPath = builder.Configuration["DataProtection:KeysPath"];
+if (!string.IsNullOrWhiteSpace(keysPath))
+{
+    var protection = builder.Services.AddDataProtection()
+        .PersistKeysToFileSystem(new DirectoryInfo(keysPath));
+    if (OperatingSystem.IsWindows())
+        protection.ProtectKeysWithDpapi();
 }
 
 builder.Services.AddControllersWithViews(options =>

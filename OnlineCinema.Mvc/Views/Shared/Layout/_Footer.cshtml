@@ -1,83 +1,28 @@
-﻿<footer>
-
+<footer class="text-white mt-4">
     <div class="w-100 bg-secondary" style="height: 1px;"></div>
-
-    <div class="container mt-3">
-        <div class="row">
-            <div class="col-6">
-                <a asp-controller="Home" asp-action="Index">
-                    <img src="~/images/logo/logo.png" alt="phone" class="img-fluid align-self-end logo__image__custom" />
+    <div class="container py-4">
+        <div class="row g-4">
+            <div class="col-12 col-md-5">
+                <a asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/logo/logo.png" alt="Кинотеатр MovieMax — главная" class="logo__image__custom" />
                 </a>
+                <p class="mt-3 mb-0">Демонстрационный кинотеатр. Покупка билетов проходит без списания денег.</p>
             </div>
-            <div class="col-2">
-                <div class="d-flex justify-content-center">
-                    <button type="button" class="btn btn-outline-light mx-2 btn-circle"><i class="fa-brands fa-vk"></i></button>
-                    <button type="button" class="btn btn-outline-light mx-2 btn-circle"><i class="fa-brands fa-telegram"></i></button>
-                    <button type="button" class="btn btn-outline-light mx-2 btn-circle"><i class="fa-brands fa-youtube"></i></button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container offer__text__custom mt-5 text-white">
-        <div class="row">
-            <div class="col-2">
-                <div class="d-flex flex-column justify-content-center">
-                    <h5>Для клиентов</h5>
-                    <a href="/art" class="text-decoration-none mb-2">Арт</a>
-                    <a href="/promotions" class="text-decoration-none mb-2">Акции и скидки</a>
-                    <a href="#" class="text-decoration-none mb-2">Обратная связь</a>
-                    <a asp-controller="Hall" asp-action="GetHalls" class="text-decoration-none mb-2">Типы залов и мест</a>
-                    <a asp-controller="News" asp-action="GetAll" class="text-decoration-none mb-2">Новости</a>
-                </div>
-            </div>
-            <div class="col-2">
-                <div class="d-flex flex-column justify-content-center">
-                    <h5>Информация</h5>
-                    <a href="#" class="text-decoration-none mb-2">О компании</a>
-                    <a href="#" class="text-decoration-none mb-2">Вакансии</a>
-                    <a href="#" class="text-decoration-none mb-2">Аренда в кинотеатрах</a>
-                    <a href="#" class="text-decoration-none mb-2">Франчайзинг</a>
-                </div>
-            </div>
-            <div class="col-2">
-                <div class="d-flex flex-column justify-content-center">
-                    <h5>Реклама и контакты</h5>
-                    <a href="#" class="text-decoration-none mb-2">Реклама в кинотеатрах</a>
-                    <a href="#" class="text-decoration-none mb-2">Пресс-служба</a>
-                    <a href="#" class="text-decoration-none mb-2">Реклама на сайте</a>
-                </div>
-            </div>
-            <div class="col-2 d-flex flex-column align-items-center mt-auto">
-                <img src="~/images/footer/phone.png" alt="phone" class="img-fluid align-self-end" />
-            </div>
-            <div class="col-2">
-                <div class="d-flex flex-column justify-content-center text-white">
-                    <h6>Приложение "Киномакс"</h6>
-                </div>
-                <div class="d-flex flex-column justify-content-center text-white">
-                    <p>
-                        Загружайте и покупайте
-                        билеты онлайн.
-                    </p>
-                </div>
-                <div class="row">
-                    <div class="col-6 custom-application-image">
-                        <img src="~/images/footer/googleplay.png" alt="GooglePlay" class="img-fluid align-self-end" />
+            <nav class="col-12 col-md-7" aria-label="Навигация внизу страницы">
+                <div class="row g-3">
+                    <div class="col-6 d-flex flex-column gap-2">
+                        <a asp-area="" asp-controller="Home" asp-action="Index">Все фильмы</a>
+                        <a asp-area="" asp-controller="Movies" asp-action="KidsMovies">Детям</a>
+                        <a asp-area="" asp-controller="Movies" asp-action="ArtMovies">Арт</a>
+                        <a asp-area="" asp-controller="Hall" asp-action="GetHalls">Залы и места</a>
                     </div>
-                    <div class="col-6 ">
-                        <img src="~/images/footer/appstore.png" alt="AppStore" class="img-fluid align-self-end" />
+                    <div class="col-6 d-flex flex-column gap-2">
+                        <a asp-area="" asp-controller="Promotions" asp-action="Promotions">Акции</a>
+                        <a asp-area="" asp-controller="News" asp-action="GetAll">Новости</a>
+                        <a asp-area="" asp-controller="Account" asp-action="PersonalAccount">Мои билеты</a>
                     </div>
                 </div>
-            </div>
-
+            </nav>
         </div>
     </div>
-
-    <div class="w-100 bg-secondary" style="height: 1px;"></div>
-
-    <div class="text-white text-center mt-3">
-        <p>© 2006-2025 Сеть кинотеатров «Киномакс» – все права защищены. <a class="card-footer" href="#">Политика конфиденциальности</a></p>
-    </div>
-
 </footer>
