@@ -7,6 +7,8 @@ using OnlineCinema.Mvc.Models.Dto;
 using OnlineCinema.Mvc.Models.ViewModels.Orders;
 using OnlineCinema.Mvc.Services;
 using OnlineCinema.Mvc.Services.CurrentUser;
+using OnlineCinema.Application;
+using OnlineCinema.Application.Purchases;
 
 namespace OnlineCinema.Mvc.Controllers;
 
@@ -45,7 +47,8 @@ public sealed class OrdersController(AppDbContext context, ICurrentUserService c
             || input.SeatIds.Distinct().Count() != input.SeatIds.Length)
             return BadRequest(new { message = "Выберите от 1 до 6 разных мест и укажите возраст зрителя от 0 до 120 лет." });
         if (currentUser.UserId is not int userId) return Unauthorized();
-        var result = await purchases.Purchase(userId, input);
+        var result = await purchases.Purchase(userId,
+            new PurchaseRequest(input.RequestId, input.SessionId, input.SeatIds, input.ViewerAge));
         if (result.OrderId != null) return Ok(new { orderId = result.OrderId, receiptUrl = $"/orders/tickets/{result.OrderId}", demonstration = true });
         return StatusCode(result.Conflict ? 409 : 400, new { message = result.Error });
     }

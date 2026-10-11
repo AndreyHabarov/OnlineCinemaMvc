@@ -8,6 +8,7 @@ using OnlineCinema.Mvc.Models.ViewModels.Hall;
 using OnlineCinema.Mvc.Models.ViewModels.Movies;
 using System.Globalization;
 using OnlineCinema.Mvc.Services;
+using OnlineCinema.Application;
 
 namespace OnlineCinema.Mvc.Controllers;
 

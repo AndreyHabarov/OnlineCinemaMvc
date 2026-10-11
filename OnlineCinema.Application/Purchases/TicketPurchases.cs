@@ -3,16 +3,21 @@ using Npgsql;
 using OnlineCinema.Domain;
 using OnlineCinema.Domain.Entities;
 using OnlineCinema.Domain.Enums;
-using OnlineCinema.Mvc.Models.Dto;
 
-namespace OnlineCinema.Mvc.Services;
+
+namespace OnlineCinema.Application.Purchases;
 
 public sealed record PurchaseResult(Guid? OrderId, string? Error = null, bool Conflict = false);
 
 public sealed class TicketPurchases(AppDbContext context)
 {
-    public async Task<PurchaseResult> Purchase(int userId, PurchaseTicketsDto input)
+    public async Task<PurchaseResult> Purchase(int userId, PurchaseRequest input)
     {
+        if (userId <= 0 || input.SessionId <= 0 || input.RequestId == Guid.Empty
+            || input.SeatIds is not { Length: >= 1 and <= 6 }
+            || input.SeatIds.Any(id => id <= 0) || input.SeatIds.Distinct().Count() != input.SeatIds.Length
+            || input.ViewerAge is < 0 or > 120)
+            return new(null, "Выберите от 1 до 6 разных мест и укажите возраст зрителя от 0 до 120 лет.");
         var existing = await FindExisting(userId, input.RequestId);
         if (existing != null) return Replay(existing, input);
         var session = await context.Sessions.AsNoTracking().Include(s => s.Movie).Include(s => s.Hall)
@@ -65,7 +70,7 @@ public sealed class TicketPurchases(AppDbContext context)
     private Task<PurchaseOrder?> FindExisting(int userId, Guid requestId) => context.PurchaseOrders
         .AsNoTracking().Include(o => o.Tickets).FirstOrDefaultAsync(o => o.UserId == userId && o.RequestId == requestId);
 
-    private static PurchaseResult Replay(PurchaseOrder order, PurchaseTicketsDto input) =>
+    private static PurchaseResult Replay(PurchaseOrder order, PurchaseRequest input) =>
         order.SessionId == input.SessionId && order.ViewerAge == input.ViewerAge
         && order.Tickets.Select(t => t.SeatId).Order().SequenceEqual(input.SeatIds.Order())
             ? new(order.PublicId) : new(null, "Этот запрос уже использован для другого заказа. Обновите страницу.", true);

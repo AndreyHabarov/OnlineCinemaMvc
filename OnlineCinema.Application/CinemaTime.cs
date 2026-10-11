@@ -1,4 +1,4 @@
-namespace OnlineCinema.Mvc.Services;
+namespace OnlineCinema.Application;
 
 // DateStart хранит московское время кинотеатра без смещения.
 public static class CinemaTime

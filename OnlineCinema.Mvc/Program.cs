@@ -7,6 +7,7 @@ using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineCinema.Mvc.Filters;
 using Microsoft.AspNetCore.DataProtection;
+using OnlineCinema.Application.Extensions;
 
 CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
 CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("ru-RU");
@@ -75,7 +76,7 @@ builder.Services.AddIdentity<User, Role>(opt =>
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<OnlineCinema.Mvc.Services.PromotionImages>();
-builder.Services.AddScoped<OnlineCinema.Mvc.Services.TicketPurchases>();
+builder.Services.AddOnlineCinemaApplication();
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
