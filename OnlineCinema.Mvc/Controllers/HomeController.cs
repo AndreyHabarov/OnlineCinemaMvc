@@ -19,14 +19,14 @@ public class HomeController : BaseMvcController
             Advertisings = await Context.Advertisings
                 .Select(a => a.PathToImage)
                 .ToListAsync(),
-            Posters = Context.Movies
+            Posters = await Context.Movies.AsNoTracking()
                 .Where(m => m.IsVisible == true)
-                .Select(ViewProjections.HomePoster),
-            Promotions = Context.Promotions
-                .Select(ViewProjections.HomePromotion),
-            News = Context.News
+                .Select(ViewProjections.HomePoster).ToListAsync(),
+            Promotions = await Context.Promotions.AsNoTracking()
+                .Select(ViewProjections.HomePromotion).ToListAsync(),
+            News = await Context.News.AsNoTracking()
                 .Select(ViewProjections.HomeNews)
-                .Take(3)
+                .Take(3).ToListAsync()
         };
 
         return View(homeViewModel);

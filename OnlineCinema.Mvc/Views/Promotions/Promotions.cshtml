@@ -1,6 +1,10 @@
 ﻿@model IEnumerable<PromotionViewModel>
 
 @{
+    if (!Model.Any())
+    {
+        @await Html.PartialAsync("_EmptyState", "Акций пока нет.")
+    }
     int count = 1;
     foreach (var promotion in Model)
     {
@@ -34,7 +38,6 @@
                 </div>
             </div>
         </div>
-        @(count++)
-        ;
+        count++;
     }
 }

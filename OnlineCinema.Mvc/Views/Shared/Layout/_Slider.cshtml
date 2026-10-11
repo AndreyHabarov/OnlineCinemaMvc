@@ -1,4 +1,6 @@
-﻿@model IEnumerable<string>
+@model IEnumerable<string>
+@if (Model.Any())
+{
 
 <div id="CarouselExampleDark" class="carousel carousel-dark slide carousel__slider__custom" data-bs-ride="carousel" data-bs-interval="3000">
     <div class="carousel-indicators">
@@ -11,7 +13,7 @@
         @for (int i = 0; i < Model.Count(); i++)
         {
             <div class="carousel-item @(i == 0 ? "active" : "")" data-bs-interval="3000">
-                <img src="@Model.ElementAt(i)" class="d-block custom-img" alt="Some picture" />
+                <img src="@Model.ElementAt(i)" class="d-block custom-img" alt="Афиша кинотеатра" />
                 <div class="carousel-caption d-none d-md-block">
                 </div>
             </div>
@@ -19,10 +21,11 @@
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#CarouselExampleDark" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
+        <span class="visually-hidden">Предыдущая афиша</span>
     </button>
     <button class="carousel-control-next" type="button" data-bs-target="#CarouselExampleDark" data-bs-slide="next">
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
+        <span class="visually-hidden">Следующая афиша</span>
     </button>
 </div>
+}

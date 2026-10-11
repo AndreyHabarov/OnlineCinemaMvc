@@ -2,6 +2,10 @@
 @model IEnumerable<HallViewModel>
 
 <h1 class="text-white">Типы залов и мест</h1>
+@if (!Model.Any())
+{
+    @await Html.PartialAsync("_EmptyState", "Информация о залах пока не добавлена.")
+}
 <table class="hall__seat__types">
     <thead>
         <tr>

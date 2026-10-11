@@ -1,6 +1,10 @@
 ﻿@model IEnumerable<NewsViewModel>
 
 <h1 class="text-white mb-5 mt-5">Новости</h1>
+@if (!Model.Any())
+{
+    @await Html.PartialAsync("_EmptyState", "Новостей пока нет.")
+}
 <div class="container-fluid">
     <div class="row">
         @foreach (var news in Model)

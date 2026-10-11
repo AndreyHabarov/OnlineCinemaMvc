@@ -1,6 +1,10 @@
 ﻿@model IEnumerable<HomePosterViewModel>
 
 <div class="row row-cols-1 row-cols-md-4 g-4 p-3">
+    @if (!Model.Any())
+    {
+        @await Html.PartialAsync("_EmptyState", "Фильмов в каталоге пока нет.")
+    }
     @foreach (var poster in Model)
     {
         <div class="col">

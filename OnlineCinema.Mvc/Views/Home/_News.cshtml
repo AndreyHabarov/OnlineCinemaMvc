@@ -1,6 +1,10 @@
 ﻿@model IEnumerable<HomeNewsViewModel>
 
 <div class="container-fluid">
+    @if (!Model.Any())
+    {
+        @await Html.PartialAsync("_EmptyState", "Новостей пока нет.")
+    }
     <div class="row">
         @foreach (var card in Model)
         {

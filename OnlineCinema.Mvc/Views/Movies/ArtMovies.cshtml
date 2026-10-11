@@ -1,6 +1,10 @@
 ﻿@model IEnumerable<ArtViewModel>
 
 <div class="row row-cols-1 row-cols-md-4 g-4 p-3">
+    @if (!Model.Any())
+    {
+        @await Html.PartialAsync("_EmptyState", "Фильмов в разделе «Арт» пока нет.")
+    }
     @foreach (var movie in Model)
     {
         <div class="col">

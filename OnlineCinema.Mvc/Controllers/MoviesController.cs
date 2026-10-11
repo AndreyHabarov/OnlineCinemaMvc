@@ -67,11 +67,6 @@ public class MoviesController : BaseMvcController
             .Where(m => m.IsVisible && m.AgeRating <= 12)
             .Select(ViewProjections.Kids).ToListAsync();
 
-        if (kidsViewModel == null)
-        {
-            return NotFound();
-        }
-
         return View("KidsMovies", kidsViewModel);
     }
 
@@ -84,11 +79,6 @@ public class MoviesController : BaseMvcController
             .Where(m => m.IsVisible && m.MovieGenres
             .Any(mg => mg.Genre.Name == "Драма" || mg.Genre.Name == "Криминал"))
             .Select(ViewProjections.Art).ToListAsync();
-
-        if (movieViewModels == null)
-        {
-            return NotFound();
-        }
 
         return View("ArtMovies", movieViewModels);
     }
