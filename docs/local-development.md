@@ -69,3 +69,5 @@ docker compose stop db
 
 Резервные копии могут содержать данные пользователей: храните их локально.
 На новом компьютере загрузите каталог командой `./scripts/Update-DemoCatalog.ps1`.
+
+Для расписания выполните ./scripts/Update-DemoSchedule.ps1. Правила времени и загрузки описаны в [инструкции](demo-schedule.md). При запущенном сайте проверка API: ./scripts/Test-Sessions.ps1.

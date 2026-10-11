@@ -1,13 +1,14 @@
 @using System.Globalization
+@using OnlineCinema.Mvc.Services
 @model MovieViewModel
 
 @functions {
     string GetDay(DateTime sessionDate)
     {
-        var dateNow = DateTime.Now;
+        var dateNow = CinemaTime.Now;
         var currentDate = new DateTime(dateNow.Year, dateNow.Month, dateNow.Day);
         var differenceDate = sessionDate - currentDate;
-        if (sessionDate.ToString("dd.MM.yyyy") == DateTime.Now.ToString("dd.MM.yyyy"))
+        if (sessionDate.Date == dateNow.Date)
         {
             return "сегодня";
         }
@@ -52,9 +53,10 @@
 <div class="container-fluid">
 
     <div class="d-flex align-items-center">
-        @foreach (var sessionDate in Model.SessionDates)
+        @for (var dateIndex = 0; dateIndex < Model.SessionDates.Length; dateIndex++)
         {
-            <button class="btn btn-outline movie__session__btn @(GetDay(sessionDate) == "сегодня" ? "active" : "")" data-date="@sessionDate.ToString("dd.MM.yyyy")">
+            var sessionDate = Model.SessionDates[dateIndex];
+            <button class="btn btn-outline movie__session__btn @(dateIndex == 0 ? "active" : "")" data-date="@sessionDate.ToString("dd.MM.yyyy")">
                 @sessionDate.ToString("M")
                 <div>@GetDay(sessionDate)</div>
             </button>
@@ -84,8 +86,9 @@
             <p>@Model.Duration мин</p>
         </div>
         <div class="col-md-8 text-white">
-            <div id="sessions-container" class="row">
-                <!-- Здесь будут добавлены отфильтрованные сессии -->
+            <p class="text-white-50">Время сеансов — московское (UTC+3).</p>
+            <div id="sessions-container" class="row" aria-live="polite" aria-busy="false">
+                <p>Загрузка сеансов…</p>
             </div>
         </div>
         <section id="movie-description" class="text-white mt-4">

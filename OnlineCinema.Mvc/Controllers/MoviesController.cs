@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +8,7 @@ using OnlineCinema.Mvc.Models.Dto;
 using OnlineCinema.Mvc.Models.ViewModels.Hall;
 using OnlineCinema.Mvc.Models.ViewModels.Movies;
 using System.Globalization;
+using OnlineCinema.Mvc.Services;
 
 namespace OnlineCinema.Mvc.Controllers;
 
@@ -38,19 +39,18 @@ public class MoviesController : BaseMvcController
             return NotFound();
         }
 
-        var dateNow = DateTime.Now;
-        var currentDate = new DateTime(dateNow.Year, dateNow.Month, dateNow.Day);
+        var dateNow = CinemaTime.Now;
 
         var sessions = await Context.Sessions
-             .Where(s => s.MovieId == id && s.DateStart >= currentDate)
+             .Where(s => s.MovieId == id && s.DateStart >= dateNow)
              .Select(s => s.DateStart)
              .OrderBy(s => s)
              .ToListAsync();
 
         movieViewModel.SessionDates = sessions
-            .GroupBy(s => s.ToString("dd.MM.yyyy"))
+            .Select(s => s.Date)
+            .Distinct()
             .Take(5)
-            .Select(s => DateTime.ParseExact(s.Key, "dd.MM.yyyy", CultureInfo.InvariantCulture))
             .ToArray();
 
         movieViewModel.Halls = await Context.Halls
@@ -101,15 +101,22 @@ public class MoviesController : BaseMvcController
     [HttpGet("[controller]/[action]")]
     public async Task<IActionResult> GetAllSessions([FromQuery] GetAllSessionsDto input)
     {
-        IQueryable<Session> query = Context.Sessions
-            .Include(s => s.Hall)
-            .Include(s => s.Movie);
-
-        if (DateTime.TryParseExact(input.Date, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime inputDate))
+        if (!ModelState.IsValid)
         {
-            var dateEnd = inputDate.AddDays(1).AddSeconds(-1);
-            query = query.Where(s => s.DateStart >= inputDate && s.DateStart <= dateEnd);
+            return BadRequest(new { message = "Проверьте параметры фильма и зала." });
         }
+
+        if (!DateTime.TryParseExact(input.Date, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+            DateTimeStyles.None, out var inputDate) || inputDate.Date == DateTime.MaxValue.Date)
+        {
+            return BadRequest(new { message = "Укажите дату в формате ДД.ММ.ГГГГ." });
+        }
+
+        var dateEnd = inputDate.AddDays(1);
+        var now = CinemaTime.Now;
+        var query = Context.Sessions.AsNoTracking()
+            .Where(s => s.Movie.IsVisible && s.DateStart >= now
+                && s.DateStart >= inputDate && s.DateStart < dateEnd);
 
         if (input.HallId.HasValue)
         {
@@ -121,22 +128,14 @@ public class MoviesController : BaseMvcController
             query = query.Where(s => s.MovieId == input.MovieId);
         }
 
-        var sessions = await query.ToListAsync();
-
-        var result = new List<MovieWithSessionsViewModel>();
-
-        foreach (var g in sessions.GroupBy(s => s.MovieId))
-        {
-            var movie = await Context.Movies.FindAsync(g.Key);
-
-            var viewModel = new MovieWithSessionsViewModel
+        var sessions = await query.OrderBy(s => s.DateStart).ThenBy(s => s.HallId).ThenBy(s => s.Id)
+            .Select(s => new SessionDto
             {
-                Sessions = g,
-                Movie = movie
-            };
-            result.Add(viewModel);
-        }
+                Id = s.Id, MovieId = s.MovieId, MovieName = s.Movie.Name,
+                HallId = s.HallId, HallName = s.Hall.Name,
+                DateStart = s.DateStart, Price = s.Price
+            }).ToListAsync();
 
-        return Ok(result);
+        return Ok(sessions);
     }
 }

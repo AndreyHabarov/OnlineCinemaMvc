@@ -1,106 +1,85 @@
-﻿//* Функция получения всех сеансов */
-const getAllSessions = (input) => {
-    return axios.get('/Movies/GetAllSessions', {
-        params: input
-    })
-        .then(response => response.data)
-        .catch(error => {
-            console.error('Ошибка получения сессий:', error);
-        });
-};
+let sessionsRequestNumber = 0;
 
-/* Функция для обработки результата и обновления сеансов */
-const handleSessionsUpdate = (input) => {
-    getAllSessions(input)
-        .then((movies) => {
-            if (!movies || movies.length === 0) {
-                updateSessions([]);
-                return;
-            }
-            const movie = movies[0];
-            updateSessions(movie.sessions);
-        });
-};
+async function handleSessionsUpdate(input) {
+    const requestNumber = ++sessionsRequestNumber;
+    const container = document.getElementById('sessions-container');
+    container.setAttribute('aria-busy', 'true');
+    showSessionsMessage('Загрузка сеансов…');
+    try {
+        const response = await axios.get('/Movies/GetAllSessions', { params: input });
+        if (requestNumber !== sessionsRequestNumber) return;
+        updateSessions(response.data);
+    } catch (error) {
+        if (requestNumber !== sessionsRequestNumber) return;
+        showSessionsMessage(error.response?.data?.message || 'Не удалось загрузить сеансы. Попробуйте выбрать дату ещё раз.');
+    } finally {
+        if (requestNumber === sessionsRequestNumber) container.setAttribute('aria-busy', 'false');
+    }
+}
 
-/* Начальная загрузка сеансов */
+function showSessionsMessage(message) {
+    const container = document.getElementById('sessions-container');
+    const paragraph = document.createElement('p');
+    paragraph.textContent = message;
+    container.replaceChildren(paragraph);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const movieIdElement = document.getElementById('MovieId');
-    if (movieIdElement) {
-        handleSessionsUpdate({
-            movieId: +movieIdElement.value,
-            date: dayjs().format('DD.MM.YYYY')
-        });
-    }
-
-    /* Кнопка для всех видов холлов */
-    const allHallButton = document.getElementById('btnAllHalls');
-    if (allHallButton) {
-        allHallButton.addEventListener('click', function () {
-            const hallButtons = document.querySelectorAll('.hall__other__btn');
-            hallButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-
-            handleSessionsUpdate({
-                movieId: +movieIdElement.value,
-                date: document.querySelector('.movie__session__btn.active')?.getAttribute('data-date')
-            });
-        });
-    }
-
-    /* Обработчики для кнопок залов */
+    if (!movieIdElement) return;
+    const dateButtons = document.querySelectorAll('.movie__session__btn');
     const hallButtons = document.querySelectorAll('.hall__other__btn');
-    hallButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            hallButtons.forEach(btn => btn.classList.remove('active'));
-            document.getElementById('btnAllHalls').classList.remove('active');
-            this.classList.add('active');
-
-            handleSessionsUpdate({
-                movieId: +movieIdElement.value,
-                hallId: this.getAttribute('data-hall-id'),
-                date: document.querySelector('.movie__session__btn.active')?.getAttribute('data-date')
-            });
+    const allHallsButton = document.getElementById('btnAllHalls');
+    const refresh = () => {
+        const date = document.querySelector('.movie__session__btn.active')?.dataset.date;
+        if (!date) {
+            showSessionsMessage('Для этого фильма пока нет предстоящих сеансов.');
+            return;
+        }
+        handleSessionsUpdate({
+            movieId: Number(movieIdElement.value), date,
+            hallId: document.querySelector('.hall__other__btn.active')?.dataset.hallId
         });
+    };
+    dateButtons.forEach(button => button.addEventListener('click', () => {
+        dateButtons.forEach(item => item.classList.remove('active'));
+        button.classList.add('active');
+        refresh();
+    }));
+    hallButtons.forEach(button => button.addEventListener('click', () => {
+        hallButtons.forEach(item => item.classList.remove('active'));
+        allHallsButton.classList.remove('active');
+        button.classList.add('active');
+        refresh();
+    }));
+    allHallsButton.addEventListener('click', () => {
+        hallButtons.forEach(item => item.classList.remove('active'));
+        allHallsButton.classList.add('active');
+        refresh();
     });
-
-    /* Обработчики событий для кнопок фильтрации сессий */
-    const sessionFilterButtons = document.querySelectorAll('.movie__session__btn');
-    sessionFilterButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            sessionFilterButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-
-            const hallId = document.querySelector('.hall__other__btn.active')?.getAttribute('data-hall-id');
-
-            handleSessionsUpdate({
-                movieId: +movieIdElement.value,
-                date: this.getAttribute('data-date'),
-                hallId: hallId
-            });
-        });
-    });
+    refresh();
 });
 
-/* Отрисовка сессий фильма и вида зала */
 function updateSessions(sessions) {
-    const sessionsContainer = document.getElementById('sessions-container');
-    sessionsContainer.innerHTML = '';
-
+    if (!sessions.length) {
+        showSessionsMessage('На выбранную дату в этом зале нет предстоящих сеансов.');
+        return;
+    }
+    const container = document.getElementById('sessions-container');
+    container.replaceChildren();
     sessions.forEach(session => {
-        const movieTime = dayjs(session.dateStart).format('HH:mm');
-        const movieHall = session.hall.name;
-
-        /* Отрисовка кнопок сессий и видов зала */
-        const sessionHtml = `
-            <div class="col-1 ms-2">
-                <a class="btn btn-outline-primary btn-session-time" href="#">
-                    ${movieTime}
-                </a>
-                <div class="movie-info ms-2">
-                    <p>${movieHall ? movieHall : 'Unknown Hall'}</p>
-                </div>
-            </div>
-        `;
-        sessionsContainer.insertAdjacentHTML('beforeend', sessionHtml);
+        const card = document.createElement('div');
+        card.className = 'col-auto ms-2 mb-3';
+        const time = document.createElement('p');
+        time.className = 'border border-primary rounded px-3 py-2 mb-1';
+        // Местное время кинотеатра без смещения не переводим в часовой пояс браузера.
+        time.textContent = session.dateStart.slice(11, 16);
+        const hall = document.createElement('p');
+        hall.className = 'mb-1';
+        hall.textContent = session.hallName;
+        const price = document.createElement('p');
+        price.textContent = `${session.price} ₽`;
+        card.append(time, hall, price);
+        container.append(card);
     });
 }
