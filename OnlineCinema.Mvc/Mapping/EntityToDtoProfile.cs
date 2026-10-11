@@ -6,7 +6,6 @@ using OnlineCinema.Mvc.Models.ViewModels.Hall;
 using OnlineCinema.Mvc.Models.ViewModels.Home;
 using OnlineCinema.Mvc.Models.ViewModels.Movies;
 using OnlineCinema.Mvc.Models.ViewModels.News;
-using OnlineCinema.Mvc.Models.ViewModels.Orders;
 using OnlineCinema.Mvc.Models.ViewModels.Promotions;
 
 namespace OnlineCinema.Mvc.Mapping;
@@ -27,7 +26,5 @@ public class EntityToDtoProfile : Profile
         CreateMap<Hall, HallViewModel>();
         CreateMap<Genre, GenreDto>();
         CreateMap<Promotion, PromotionDto>();
-        CreateMap<Movie, OrderMovieViewModel>();
-        CreateMap<Seat, OrderSeatViewModel>();
     }
 }

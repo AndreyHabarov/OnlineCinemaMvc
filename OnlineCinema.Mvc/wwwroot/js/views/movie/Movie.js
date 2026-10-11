@@ -70,8 +70,10 @@ function updateSessions(sessions) {
     sessions.forEach(session => {
         const card = document.createElement('div');
         card.className = 'col-auto ms-2 mb-3';
-        const time = document.createElement('p');
-        time.className = 'border border-primary rounded px-3 py-2 mb-1';
+        const time = document.createElement('a');
+        time.className = 'btn btn-outline-primary px-3 py-2 mb-1';
+        time.href = `/orders/${session.id}`;
+        time.setAttribute('aria-label', `Купить билет на ${session.dateStart.slice(11,16)}, ${session.hallName}`);
         // Местное время кинотеатра без смещения не переводим в часовой пояс браузера.
         time.textContent = session.dateStart.slice(11, 16);
         const hall = document.createElement('p');

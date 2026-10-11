@@ -1,10 +1,41 @@
-﻿@using OnlineCinema.Mvc.Models.ViewModels.Orders
-@model OrderViewModel
-
-
-<h1>@Model.Movie.Name Фильм фильм фильм</h1>
-
-
-@section Scripts {
-    <script src="~/js/views/order/Order.js"></script>
-} 
+@using OnlineCinema.Mvc.Models.ViewModels.Orders
+@model CheckoutViewModel
+<link rel="stylesheet" href="~/css/booking.css" asp-append-version="true">
+<section class="text-white mt-4" id="Checkout" data-session-id="@Model.SessionId">
+    <h1>Выбор мест</h1>
+    <h2 class="h4">@Model.MovieName · @Model.AgeRating+</h2>
+    <p>@Model.StartsAt.ToString("dd.MM.yyyy HH:mm") · @Model.HallName · время московское</p>
+    <p class="alert alert-info">Демонстрационная покупка: деньги не списываются.</p>
+    @if (!Model.Seats.Any())
+    {
+        <p>В этом зале пока не настроены места.</p>
+    }
+    else
+    {
+        <div class="seat-map mb-4">
+            <div class="cinema-screen mb-4">ЭКРАН</div>
+            @foreach (var row in Model.Seats.GroupBy(s => s.Row))
+            {
+                <div class="seat-row mb-2"><span class="seat-row-label">Ряд @row.Key</span>
+                    @foreach (var seat in row)
+                    {
+                        <button type="button" class="seat-button @(seat.Occupied ? "occupied" : "")" disabled="@seat.Occupied" aria-pressed="false"
+                            aria-label="Ряд @seat.Row, место @seat.Number, @seat.Price рублей@(seat.Occupied ? ", занято" : "")"
+                            data-seat-id="@seat.Id" data-row="@seat.Row" data-number="@seat.Number" data-price="@seat.Price">@seat.Number</button>
+                    }
+                </div>
+            }
+        </div>
+        <p>Выберите от 1 до 6 мест. Серые места уже заняты.</p>
+        <p id="SelectedSeats" aria-live="polite">Места не выбраны.</p>
+        <p>Итого: <strong id="OrderTotal">0 ₽</strong></p>
+        <form id="PurchaseForm">
+            <label for="ViewerAge" class="form-label">Возраст самого младшего зрителя в заказе</label>
+            <input id="ViewerAge" type="number" class="form-control booking-age" value="18" min="@Model.AgeRating" max="120" required>
+            <p id="PurchaseError" class="text-danger mt-2" role="alert"></p>
+            <button id="PurchaseButton" class="btn btn-primary" type="submit" disabled>Подтвердить демопокупку</button>
+            <button id="RefreshSeats" class="btn btn-outline-light" type="button">Обновить схему</button>
+        </form>
+    }
+</section>
+@section Scripts { <script src="~/js/views/order/Order.js" asp-append-version="true"></script> }

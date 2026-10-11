@@ -8,6 +8,8 @@ using OnlineCinema.Domain.Entities;
 using OnlineCinema.Mvc.Models.ViewModels.Home;
 using OnlineCinema.Mvc.Services;
 using OnlineCinema.Mvc.Services.CurrentUser;
+using OnlineCinema.Mvc.Models.ViewModels.Account;
+using OnlineCinema.Mvc.Models.ViewModels.Orders;
 
 namespace OnlineCinema.Mvc.Controllers;
 
@@ -117,6 +119,15 @@ public class AccountController : BaseMvcController
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login", new { returnUrl = "/lk" });
         }
-        return View("PersonalAccount", user);
+        var orders = await Context.PurchaseOrders.AsNoTracking().Where(o => o.UserId == user.Id)
+            .OrderByDescending(o => o.CreatedAt).ThenByDescending(o => o.Id).Take(50)
+            .Select(o => new TicketReceiptViewModel
+            {
+                PublicId = o.PublicId, MovieName = o.MovieName, HallName = o.HallName,
+                StartsAt = o.StartsAt, CreatedAt = o.CreatedAt, Total = o.Total,
+                Seats = o.Tickets.OrderBy(t => t.Seat.Row).ThenBy(t => t.Seat.Number)
+                    .Select(t => new ReceiptSeat { TicketId = t.Id, Row = t.Seat.Row, Number = t.Seat.Number, Price = t.Price }).ToList()
+            }).ToListAsync();
+        return View("PersonalAccount", new AccountDashboardViewModel { Name = user.Name, Orders = orders });
     }
 }

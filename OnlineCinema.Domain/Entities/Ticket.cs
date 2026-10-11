@@ -18,4 +18,6 @@ public class Ticket : Entity
     public Session Session { get; set; }
 
     public TicketType Status { get; set; }
+    public int? PurchaseOrderId { get; set; }
+    public PurchaseOrder? PurchaseOrder { get; set; }
 }

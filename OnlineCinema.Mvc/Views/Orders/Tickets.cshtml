@@ -1,0 +1,24 @@
+@using OnlineCinema.Mvc.Models.ViewModels.Orders
+@model TicketReceiptViewModel
+<link rel="stylesheet" href="~/css/booking.css" asp-append-version="true">
+<section class="text-white mt-4 ticket-receipt">
+    <h1>Ваши билеты</h1>
+    <p class="alert alert-info">Демонстрационная покупка завершена. Деньги не списывались.</p>
+    <h2 class="h4">@Model.MovieName</h2>
+    <p>@Model.StartsAt.ToString("dd.MM.yyyy HH:mm") · @Model.HallName · время московское</p>
+    <p>Заказ: <span id="OrderNumber">@Model.PublicId</span></p>
+    @foreach (var seat in Model.Seats)
+    {
+        <article class="ticket-card border rounded p-3 mb-3">
+            <h3 class="h5">Билет № @seat.TicketId</h3>
+            <p>Ряд <strong>@seat.Row</strong> · Место <strong>@seat.Number</strong></p>
+            <p>Стоимость: @seat.Price ₽</p>
+        </article>
+    }
+    <p>Итого: <strong>@Model.Total ₽</strong></p>
+    <div class="receipt-actions mb-4">
+        <button id="PrintTickets" type="button" class="btn btn-primary">Печать / сохранить PDF</button>
+        <a href="/lk" class="btn btn-outline-light">Мои билеты</a>
+    </div>
+</section>
+@section Scripts { <script src="~/js/views/order/Receipt.js" asp-append-version="true"></script> }

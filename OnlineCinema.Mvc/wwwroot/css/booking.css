@@ -1,0 +1,15 @@
+.seat-map { overflow-x: auto; padding: 1rem 0; }
+.cinema-screen { min-width: 34rem; text-align: center; border-top: 4px solid #8ac7ff; padding-top: .7rem; letter-spacing: .25rem; }
+.seat-row { display: flex; gap: .4rem; align-items: center; min-width: max-content; }
+.seat-row-label { width: 4rem; flex-shrink: 0; }
+.seat-button { width: 2.7rem; height: 2.7rem; border: 1px solid #87bfff; border-radius: .4rem; background: #203448; color: #fff; }
+.seat-button.selected { background: #1266d8; border: 3px solid #fff; }
+.seat-button.occupied { background: #626262; border-color: #858585; color: #eee; }
+.seat-button:focus-visible { outline: 3px solid #ffc107; outline-offset: 2px; }
+.booking-age { max-width: 8rem; }
+@media print {
+    header, footer, .receipt-actions, .modal { display: none !important; }
+    body, .ticket-receipt { background: white !important; color: black !important; }
+    .ticket-receipt .text-white { color: black !important; }
+    .ticket-card { break-inside: avoid; border: 1px solid black !important; }
+}

@@ -370,6 +370,62 @@ namespace OnlineCinema.Domain.Migrations
                     b.ToTable("Promotions");
                 });
 
+            modelBuilder.Entity("OnlineCinema.Domain.Entities.PurchaseOrder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("HallName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("MovieName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("PublicId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RequestId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("SessionId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("StartsAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("Total")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ViewerAge")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique();
+
+                    b.HasIndex("SessionId");
+
+                    b.HasIndex("UserId", "RequestId")
+                        .IsUnique();
+
+                    b.ToTable("PurchaseOrders", t =>
+                        {
+                            t.HasCheckConstraint("CK_PurchaseOrders_Total", "\"Total\" > 0");
+                        });
+                });
+
             modelBuilder.Entity("OnlineCinema.Domain.Entities.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -421,9 +477,13 @@ namespace OnlineCinema.Domain.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("HallId");
+                    b.HasIndex("HallId", "Row", "Number")
+                        .IsUnique();
 
-                    b.ToTable("Seats");
+                    b.ToTable("Seats", t =>
+                        {
+                            t.HasCheckConstraint("CK_Seats_Position", "\"Row\" > 0 AND \"Number\" > 0 AND \"Price\" >= 0");
+                        });
                 });
 
             modelBuilder.Entity("OnlineCinema.Domain.Entities.Session", b =>
@@ -472,6 +532,9 @@ namespace OnlineCinema.Domain.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("PurchaseOrderId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("SeatId")
                         .HasColumnType("integer");
 
@@ -485,9 +548,13 @@ namespace OnlineCinema.Domain.Migrations
 
                     b.HasIndex("CustomerId");
 
+                    b.HasIndex("PurchaseOrderId");
+
                     b.HasIndex("SeatId");
 
-                    b.HasIndex("SessionId");
+                    b.HasIndex("SessionId", "SeatId")
+                        .IsUnique()
+                        .HasFilter("\"Status\" IN (0, 1)");
 
                     b.ToTable("Tickets");
                 });
@@ -640,6 +707,25 @@ namespace OnlineCinema.Domain.Migrations
                     b.Navigation("Movie");
                 });
 
+            modelBuilder.Entity("OnlineCinema.Domain.Entities.PurchaseOrder", b =>
+                {
+                    b.HasOne("OnlineCinema.Domain.Entities.Session", "Session")
+                        .WithMany()
+                        .HasForeignKey("SessionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("OnlineCinema.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Session");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("OnlineCinema.Domain.Entities.Seat", b =>
                 {
                     b.HasOne("OnlineCinema.Domain.Entities.Hall", "Hall")
@@ -678,6 +764,11 @@ namespace OnlineCinema.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("OnlineCinema.Domain.Entities.PurchaseOrder", "PurchaseOrder")
+                        .WithMany("Tickets")
+                        .HasForeignKey("PurchaseOrderId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("OnlineCinema.Domain.Entities.Seat", "Seat")
                         .WithMany()
                         .HasForeignKey("SeatId")
@@ -692,6 +783,8 @@ namespace OnlineCinema.Domain.Migrations
 
                     b.Navigation("Customer");
 
+                    b.Navigation("PurchaseOrder");
+
                     b.Navigation("Seat");
 
                     b.Navigation("Session");
@@ -705,6 +798,11 @@ namespace OnlineCinema.Domain.Migrations
             modelBuilder.Entity("OnlineCinema.Domain.Entities.Movie", b =>
                 {
                     b.Navigation("MovieGenres");
+                });
+
+            modelBuilder.Entity("OnlineCinema.Domain.Entities.PurchaseOrder", b =>
+                {
+                    b.Navigation("Tickets");
                 });
 #pragma warning restore 612, 618
         }

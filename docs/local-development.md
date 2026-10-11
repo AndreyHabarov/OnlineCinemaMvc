@@ -43,6 +43,8 @@ dotnet run --project OnlineCinema.Mvc --launch-profile http
 
 ```powershell
 ./scripts/Update-DemoCatalog.ps1
+./scripts/Update-DemoSeats.ps1
+./scripts/Update-DemoSchedule.ps1
 ```
 
 Подробности и источники: [Демонстрационный каталог](demo-catalog.md).
@@ -70,4 +72,6 @@ docker compose stop db
 Резервные копии могут содержать данные пользователей: храните их локально.
 На новом компьютере загрузите каталог командой `./scripts/Update-DemoCatalog.ps1`.
 
-Для расписания выполните ./scripts/Update-DemoSchedule.ps1. Правила времени и загрузки описаны в [инструкции](demo-schedule.md). При запущенном сайте проверка API: ./scripts/Test-Sessions.ps1.
+Правила времени и загрузки расписания описаны в [инструкции](demo-schedule.md).
+Схемы залов и сценарий демонстрационной покупки описаны в [инструкции покупки](ticket-purchases.md).
+При запущенном сайте проверка API: `./scripts/Test-Sessions.ps1`.
