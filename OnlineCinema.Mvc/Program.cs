@@ -12,6 +12,13 @@ CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("ru-RU");
 
 var builder = WebApplication.CreateBuilder(args);
 
+if (!builder.Environment.IsDevelopment())
+{
+    // В .NET 8 middleware пишет исключение целиком. Обработчик ErrorController
+    // вместо этого журналирует безопасные тип ошибки и идентификатор запроса.
+    builder.Logging.AddFilter("Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware", LogLevel.None);
+}
+
 if (builder.Environment.IsDevelopment())
 {
     builder.Configuration
