@@ -361,3 +361,13 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Local development, secrets, database files and private planning
+/.idea/
+/backlog.md
+/.env
+/.env.*
+!/.env.example
+/backups/
+/docker/db/
+**/appsettings.*.local.json
