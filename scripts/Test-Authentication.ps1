@@ -7,6 +7,7 @@ Push-Location $taskRoot
 $taskSuffix = [Guid]::NewGuid().ToString('N')
 $taskEmail = "codex-auth-check-$taskSuffix@example.invalid"
 $taskDuplicateEmail = "codex-auth-duplicate-$taskSuffix@example.invalid"
+$taskRaceEmails = @("codex-auth-race-a-$taskSuffix@example.invalid", "codex-auth-race-b-$taskSuffix@example.invalid")
 $taskPassword = 'A1a' + [Guid]::NewGuid().ToString('N')
 $taskPhone = '+79' + (Get-Random -Minimum 100000000 -Maximum 999999999)
 $taskClient = [Microsoft.PowerShell.Commands.WebRequestSession]::new()
@@ -63,13 +64,49 @@ try {
     Assert-Status (Send-Account 'LogOut' @{}) 200 'Выход после телефона'
     Refresh-Token
     $taskDuplicateSql = @'
-INSERT INTO "AspNetUsers" ("Name","LastName","IsMan","UserName","NormalizedUserName","Email","NormalizedEmail","EmailConfirmed","PasswordHash","SecurityStamp","ConcurrencyStamp","PhoneNumber","PhoneNumberConfirmed","TwoFactorEnabled","LockoutEnabled","AccessFailedCount")
-SELECT "Name","LastName","IsMan",'__DUPLICATE__',upper('__DUPLICATE__'),'__DUPLICATE__',upper('__DUPLICATE__'),false,"PasswordHash","SecurityStamp","ConcurrencyStamp","PhoneNumber",false,false,true,0
-FROM "AspNetUsers" WHERE "Email"='__ORIGINAL__';
+DO $$ DECLARE collision text; BEGIN
+ BEGIN
+  INSERT INTO "AspNetUsers" ("Name","LastName","IsMan","UserName","NormalizedUserName","Email","NormalizedEmail","EmailConfirmed","PasswordHash","SecurityStamp","ConcurrencyStamp","PhoneNumber","PhoneNumberConfirmed","TwoFactorEnabled","LockoutEnabled","AccessFailedCount")
+  SELECT "Name","LastName","IsMan",'__DUPLICATE__',upper('__DUPLICATE__'),'__DUPLICATE__',upper('__DUPLICATE__'),false,"PasswordHash","SecurityStamp","ConcurrencyStamp",'8'||substring(regexp_replace("PhoneNumber", '[^0-9]', '', 'g') from 2),false,false,true,0
+  FROM "AspNetUsers" WHERE "Email"='__ORIGINAL__';
+  RAISE EXCEPTION 'Повторный нормализованный телефон ошибочно сохранён';
+ EXCEPTION WHEN unique_violation THEN
+  GET STACKED DIAGNOSTICS collision = CONSTRAINT_NAME;
+  IF collision <> 'IX_AspNetUsers_NormalizedPhoneNumber' THEN RAISE; END IF;
+ END;
+END $$;
 '@
     Run-TestSql ($taskDuplicateSql.Replace('__DUPLICATE__', $taskDuplicateEmail).Replace('__ORIGINAL__', $taskEmail))
-    Assert-Status (Send-Account 'Login' @{ phone = $taskPhone; password = $taskPassword }) 401 'Неоднозначный телефон'
-    Run-TestSql ('DELETE FROM "AspNetUsers" WHERE "Email"='''+$taskDuplicateEmail+''';')
+    $taskDuplicateRegistration = $taskRegistration.Clone()
+    $taskDuplicateRegistration.email = $taskDuplicateEmail
+    $taskDuplicateRegistration.phoneNumber = $taskPhoneInput
+    Assert-Status (Send-Account 'Register' $taskDuplicateRegistration) 400 'Повторный телефон в другом формате'
+    $taskRacePhone = '+79' + (Get-Random -Minimum 100000000 -Maximum 999999999)
+    $taskHandler = [Net.Http.HttpClientHandler]::new()
+    $taskHandler.CookieContainer = $taskClient.Cookies
+    $taskHttp = [Net.Http.HttpClient]::new($taskHandler)
+    $taskHttp.Timeout = [TimeSpan]::FromSeconds(30)
+    $taskHttp.DefaultRequestHeaders.Add('X-CSRF-TOKEN', $script:taskToken)
+    $taskContents = @()
+    $taskReplies = @()
+    try {
+        $taskPending = foreach ($taskIndex in 0..1) {
+            $taskBody = $taskRegistration.Clone()
+            $taskBody.email = $taskRaceEmails[$taskIndex]
+            $taskBody.phoneNumber = if ($taskIndex -eq 0) { $taskRacePhone } else { '8' + $taskRacePhone.Substring(2) }
+            $taskContent = [Net.Http.StringContent]::new(($taskBody | ConvertTo-Json), [Text.Encoding]::UTF8, 'application/json')
+            $taskContents += $taskContent
+            $taskHttp.PostAsync("$BaseUrl/Account/Register", $taskContent)
+        }
+        $taskReplies = @($taskPending | ForEach-Object { $_.GetAwaiter().GetResult() })
+        if ((@($taskReplies | ForEach-Object { [int]$_.StatusCode } | Sort-Object) -join ',') -ne '200,400') {
+            throw 'Параллельная регистрация одного телефона должна дать один успех и один отказ.'
+        }
+    } finally {
+        $taskReplies | ForEach-Object { $_.Dispose() }
+        $taskContents | ForEach-Object { $_.Dispose() }
+        $taskHttp.Dispose()
+    }
     $taskWrong = @{ email = $taskEmail; password = 'wrong' }
     for ($taskAttempt = 0; $taskAttempt -lt 5; $taskAttempt++) { Assert-Status (Send-Account 'Login' $taskWrong) 401 'Неверный пароль' }
     Assert-Status (Send-Account 'Login' $taskCredentials) 401 'Блокировка после пяти попыток'
@@ -85,10 +122,11 @@ FROM "AspNetUsers" WHERE "Email"='__ORIGINAL__';
     Assert-Status (Invoke-WebRequest -NoProxy -WebSession $taskClient -Headers @{Accept='application/json'} -SkipHttpErrorCheck "$BaseUrl/lk") 401 'Гость в личном кабинете'
     $taskGuest = Invoke-WebRequest -NoProxy -WebSession $taskClient -Headers @{Accept='text/html'} "$BaseUrl/lk"
     if ($taskGuest.BaseResponse.RequestMessage.RequestUri.Query -notmatch 'login=') { throw 'Гостю не открывается форма входа.' }
-    Write-Host 'Проверены регистрация, валидация, вход по email/телефону, RememberMe, выход, блокировка, CSRF и роли.'
+    Write-Host 'Проверены регистрация, уникальность телефона в БД и при параллельных запросах, валидация, вход по email/телефону, RememberMe, выход, блокировка, CSRF и роли.'
 } finally {
     if ($script:taskDbUser -and $script:taskDbName) {
-        Run-TestSql ('DELETE FROM "AspNetUsers" WHERE "Email" IN ('''+$taskEmail+''','''+$taskDuplicateEmail+''');')
+        $taskOwnEmails = @($taskEmail, $taskDuplicateEmail) + $taskRaceEmails
+        Run-TestSql ('DELETE FROM "AspNetUsers" WHERE "Email" IN (' + (($taskOwnEmails | ForEach-Object { "'$_'" }) -join ',') + ');')
     }
     Pop-Location
 }

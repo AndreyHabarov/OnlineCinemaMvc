@@ -9,6 +9,7 @@ using OnlineCinema.Mvc.Services;
 using OnlineCinema.Mvc.Services.CurrentUser;
 using OnlineCinema.Mvc.Models.ViewModels.Account;
 using OnlineCinema.Mvc.Models.ViewModels.Orders;
+using Npgsql;
 
 namespace OnlineCinema.Mvc.Controllers;
 
@@ -77,7 +78,16 @@ public class AccountController : BaseMvcController
             Email = input.Email.Trim(), UserName = input.Email.Trim(),
             PhoneNumber = phone, IsMan = input.IsMan ?? false
         };
-        var result = await _userManager.CreateAsync(user, input.Password);
+        IdentityResult result;
+        try
+        {
+            result = await _userManager.CreateAsync(user, input.Password);
+        }
+        catch (DbUpdateException exception) when (exception.InnerException is PostgresException
+            { SqlState: "23505", ConstraintName: "IX_AspNetUsers_NormalizedPhoneNumber" })
+        {
+            return BadRequest(new { message = "Пользователь с таким телефоном уже зарегистрирован." });
+        }
         if (result.Succeeded) return Ok(new { message = "Регистрация завершена. Теперь войдите в аккаунт." });
         var messages = result.Errors.Select(error => error.Code switch
         {
@@ -91,11 +101,7 @@ public class AccountController : BaseMvcController
 
     private IQueryable<User> FindByPhone(string phone)
     {
-        var digits = phone[1..];
-        var national = "8" + digits[1..];
-        return _userManager.Users.Where(user => user.PhoneNumber != null &&
-            (user.PhoneNumber.Replace("+", "").Replace(" ", "").Replace("(", "").Replace(")", "").Replace("-", "") == digits ||
-             user.PhoneNumber.Replace("+", "").Replace(" ", "").Replace("(", "").Replace(")", "").Replace("-", "") == national));
+        return _userManager.Users.Where(user => EF.Property<string?>(user, "NormalizedPhoneNumber") == phone);
     }
 
     private IActionResult InvalidCredentials() => Unauthorized(new { message = "Неверный email/телефон или пароль. Если было несколько неудачных попыток, повторите вход через 15 минут." });

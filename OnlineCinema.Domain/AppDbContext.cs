@@ -26,6 +26,19 @@ public class AppDbContext : IdentityDbContext<User, Role, int>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<User>().Property<string?>("NormalizedPhoneNumber")
+            .HasComputedColumnSql("""
+                CASE
+                    WHEN "PhoneNumber" IS NULL OR "PhoneNumber" ~ '[^0-9+ ()-]' THEN NULL
+                    WHEN length(regexp_replace("PhoneNumber", '[^0-9]', '', 'g')) = 10
+                        THEN '+7' || regexp_replace("PhoneNumber", '[^0-9]', '', 'g')
+                    WHEN length(regexp_replace("PhoneNumber", '[^0-9]', '', 'g')) = 11
+                        AND left(regexp_replace("PhoneNumber", '[^0-9]', '', 'g'), 1) IN ('7', '8')
+                        THEN '+7' || substring(regexp_replace("PhoneNumber", '[^0-9]', '', 'g') from 2)
+                    ELSE NULL
+                END
+                """.ReplaceLineEndings("\n"), stored: true);
+        modelBuilder.Entity<User>().HasIndex("NormalizedPhoneNumber").IsUnique();
         modelBuilder.Entity<Genre>().Property<string>("NormalizedName")
             .HasComputedColumnSql("lower(btrim(\"Name\"))", stored: true);
         modelBuilder.Entity<Genre>().HasIndex("NormalizedName").IsUnique();
