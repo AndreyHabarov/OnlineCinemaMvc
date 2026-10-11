@@ -6,7 +6,7 @@
         <div class="col">
             <div class="card h-100 movie__card_custom">
                 <a asp-controller="Movies" asp-action="Get" asp-route-id="@movie.Id">
-                    <img src="@movie.CardImagePath" class="movie__img__custom" alt="Some picture">
+                    <img src="~/@movie.CardImagePath.TrimStart('/')" class="movie__img__custom" alt="Постер фильма «@movie.Name»" loading="lazy">
                 </a>
                 <div class="card-body">
                     <p class="card-text">@movie.AgeRating+</p>

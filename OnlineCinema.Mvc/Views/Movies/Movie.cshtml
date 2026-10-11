@@ -1,4 +1,4 @@
-﻿@using System.Globalization
+@using System.Globalization
 @model MovieViewModel
 
 @functions {
@@ -28,6 +28,7 @@
         <div class="col-md align-self-start text-white">
             <input id="MovieId" hidden class="d-none" value="@Model.Id" />
             <h1>@Model.Name</h1>
+            <p class="text-white-50">@Model.WorldPremiere.Year · @Model.Country · @Model.AgeRating+</p>
             <div class="row">
                 <div class="col-2">
                     @foreach (var genre in Model.MovieGenres)
@@ -40,7 +41,7 @@
                 </div>
             </div>
             <div class="row">
-                <a href="#">ПОДРОБНЕЕ О ФИЛЬМЕ</a>
+                <a href="#movie-description">ПОДРОБНЕЕ О ФИЛЬМЕ</a>
             </div>
         </div>
     </div>
@@ -75,10 +76,10 @@
 <div class="container mt-3">
     <div class="row">
         <div class="col-md-2">
-            <img src="~/@Model.CardImagePath" alt="some picture" class="img-fluid rounded custom-img">
+            <img src="~/@Model.PosterPath.TrimStart('/')" alt="Постер фильма «@Model.Name»" class="img-fluid rounded custom-img">
         </div>
         <div class="col-md-2 text-white">
-            <p>@Model.AgeRating</p>
+            <p>@Model.AgeRating+</p>
             <p>@Model.Name</p>
             <p>@Model.Duration мин</p>
         </div>
@@ -87,11 +88,24 @@
                 <!-- Здесь будут добавлены отфильтрованные сессии -->
             </div>
         </div>
-        <p class="text-white mt-3">@Model.Description</p>
+        <section id="movie-description" class="text-white mt-4">
+            <h2 class="h4">О фильме</h2>
+            <p>@Model.Description</p>
+            <dl class="row">
+                <dt class="col-sm-3">Год выпуска</dt>
+                <dd class="col-sm-9">@Model.WorldPremiere.Year</dd>
+                <dt class="col-sm-3">Страна</dt>
+                <dd class="col-sm-9">@Model.Country</dd>
+                <dt class="col-sm-3">Режиссёр</dt>
+                <dd class="col-sm-9">@Model.Director</dd>
+                <dt class="col-sm-3">В ролях</dt>
+                <dd class="col-sm-9">@Model.Actor</dd>
+            </dl>
+        </section>
     </div>
 </div>
 
 
 @section Scripts {
     <script src="~/js/views/movie/Movie.js"></script>
-}               
+}

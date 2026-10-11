@@ -31,7 +31,7 @@ public class MoviesController : BaseMvcController
             .Include(m => m.MovieGenres)
             .ThenInclude(mg => mg.Genre)
             .ProjectTo<MovieViewModel>(Mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(m => m.Id == id);
+            .FirstOrDefaultAsync(m => m.Id == id && m.IsVisible);
 
         if (movieViewModel == null)
         {
@@ -65,7 +65,7 @@ public class MoviesController : BaseMvcController
     public async Task<IActionResult> KidsMovies()
     {
         var movies = await Context.Movies
-            .Where(m => m.AgeRating <= 12)
+            .Where(m => m.IsVisible && m.AgeRating <= 12)
             .ToListAsync();
 
         var kidsViewModel = Mapper.Map<IEnumerable<KidsViewModel>>(movies);
@@ -84,8 +84,8 @@ public class MoviesController : BaseMvcController
         var movies = await Context.Movies
             .Include(m => m.MovieGenres)
             .ThenInclude(mg => mg.Genre)
-            .Where(m => m.MovieGenres
-            .Any(mg => mg.GenreId == 5 || mg.GenreId == 10))
+            .Where(m => m.IsVisible && m.MovieGenres
+            .Any(mg => mg.Genre.Name == "Драма" || mg.Genre.Name == "Криминал"))
             .ToListAsync();
 
         var movieViewModels = Mapper.Map<IEnumerable<ArtViewModel>>(movies);

@@ -6,4 +6,5 @@ public class HomePosterViewModel
     public string CardImagePath { get; set; }
     public int AgeRating { get; set; }
     public string Name { get; set; }
+    public DateOnly WorldPremiere { get; set; }
 }

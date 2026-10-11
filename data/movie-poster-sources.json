@@ -1,0 +1,98 @@
+[
+  {
+    "Slug": "shawshank-redemption",
+    "PosterPath": "images/movies/1990s/shawshank-redemption.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Shawshank_Redemption",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/8/81/ShawshankRedemptionMoviePoster.jpg",
+    "RetrievedOn": "2026-10-11",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "forrest-gump",
+    "PosterPath": "images/movies/1990s/forrest-gump.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/Forrest_Gump",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/6/67/Forrest_Gump_poster.jpg",
+    "RetrievedOn": "2026-10-11",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "the-matrix",
+    "PosterPath": "images/movies/1990s/the-matrix.png",
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Matrix",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/d/db/The_Matrix.png",
+    "RetrievedOn": "2026-10-11",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "jurassic-park",
+    "PosterPath": "images/movies/1990s/jurassic-park.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/Jurassic_Park",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/e/e7/Jurassic_Park_poster.jpg",
+    "RetrievedOn": "2026-10-11",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "terminator-2",
+    "PosterPath": "images/movies/1990s/terminator-2.png",
+    "SourcePage": "https://en.wikipedia.org/wiki/Terminator_2%3A_Judgment_Day",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/5/5e/Terminator_2-Judgment_Day.png",
+    "RetrievedOn": "2026-10-11",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "the-lion-king",
+    "PosterPath": "images/movies/1990s/the-lion-king.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Lion_King",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/3/3d/The_Lion_King_poster.jpg",
+    "RetrievedOn": "2026-10-11",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "toy-story",
+    "PosterPath": "images/movies/1990s/toy-story.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/Toy_Story",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/1/13/Toy_Story.jpg",
+    "RetrievedOn": "2026-10-11",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "groundhog-day",
+    "PosterPath": "images/movies/1990s/groundhog-day.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/Groundhog_Day_(film)",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/b/b1/Groundhog_Day_%28movie_poster%29.jpg",
+    "RetrievedOn": "2026-10-11",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "the-truman-show",
+    "PosterPath": "images/movies/1990s/the-truman-show.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Truman_Show",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/c/cd/Trumanshow.jpg",
+    "RetrievedOn": "2026-10-11",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "the-green-mile",
+    "PosterPath": "images/movies/1990s/the-green-mile.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Green_Mile_(film)",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/e/e2/The_Green_Mile_%28movie_poster%29.jpg",
+    "RetrievedOn": "2026-10-11",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "home-alone",
+    "PosterPath": "images/movies/1990s/home-alone.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/Home_Alone",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/7/76/Home_alone_poster.jpg",
+    "RetrievedOn": "2026-10-11",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "titanic",
+    "PosterPath": "images/movies/1990s/titanic.png",
+    "SourcePage": "https://en.wikipedia.org/wiki/Titanic_(1997_film)",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/1/18/Titanic_%281997_film%29_poster.png",
+    "RetrievedOn": "2026-10-11",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  }
+]
