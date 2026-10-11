@@ -1,4 +1,3 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +13,7 @@ namespace OnlineCinema.Mvc.Areas.Admin.Controllers;
 
 [Authorize(Roles = StaticRoleNames.ADMIN)]
 [Area("Admin")]
-public sealed class GenresController(IMapper mapper, AppDbContext context) : BaseMvcController(mapper, context)
+public sealed class GenresController(AppDbContext context) : BaseMvcController(context)
 {
     public IActionResult Index() => View();
 

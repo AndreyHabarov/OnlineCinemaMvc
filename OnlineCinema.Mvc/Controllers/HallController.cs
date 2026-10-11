@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using OnlineCinema.Mvc.Mapping;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineCinema.Domain;
@@ -9,7 +8,7 @@ namespace OnlineCinema.Mvc.Controllers
 {
     public class HallController : BaseMvcController
     {
-        public HallController(IMapper mapper, AppDbContext context) : base(mapper, context)
+        public HallController(AppDbContext context) : base(context)
         {
         }
 
@@ -17,7 +16,7 @@ namespace OnlineCinema.Mvc.Controllers
         public async Task<IActionResult> GetHalls()
         {
             var hallViewModel = await Context.Halls
-                .ProjectTo<HallViewModel>(Mapper.ConfigurationProvider)
+                .Select(ViewProjections.Hall)
                 .ToListAsync();
 
             return View("HallType", hallViewModel);

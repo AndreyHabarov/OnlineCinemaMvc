@@ -1,4 +1,3 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,12 +9,13 @@ using OnlineCinema.Mvc.Controllers;
 using OnlineCinema.Mvc.Models.Dto.Common;
 using OnlineCinema.Mvc.Models.Dto.Promotions;
 using OnlineCinema.Mvc.Services;
+using OnlineCinema.Mvc.Mapping;
 
 namespace OnlineCinema.Mvc.Areas.Admin.Controllers;
 
 [Authorize(Roles = StaticRoleNames.ADMIN)]
 [Area("Admin")]
-public sealed class PromotionsController(IMapper mapper, AppDbContext context, PromotionImages images) : BaseMvcController(mapper, context)
+public sealed class PromotionsController(AppDbContext context, PromotionImages images) : BaseMvcController(context)
 {
     public IActionResult Index() => View();
     [HttpPost]
@@ -30,14 +30,16 @@ public sealed class PromotionsController(IMapper mapper, AppDbContext context, P
             query = query.Where(p => p.Name.ToLower().Contains(keyword) || p.DisplayName.ToLower().Contains(keyword));
         }
         var filtered = await query.LongCountAsync();
-        var items = await query.OrderBy(p => p.DisplayName).ThenBy(p => p.Id).Skip(input.SkipCount).Take(input.PageSize).ToListAsync();
-        return Ok(new PagedResultDto<PromotionDto>(total, Mapper.Map<List<PromotionDto>>(items), filtered));
+        var items = await query.OrderBy(p => p.DisplayName).ThenBy(p => p.Id).Skip(input.SkipCount).Take(input.PageSize)
+            .Select(ViewProjections.PromotionDto).ToListAsync();
+        return Ok(new PagedResultDto<PromotionDto>(total, items, filtered));
     }
     [HttpGet]
     public async Task<IActionResult> Get(int id)
     {
-        var promotion = await Context.Promotions.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
-        return promotion == null ? NotFound(new { message = "Акция не найдена." }) : Ok(Mapper.Map<PromotionDto>(promotion));
+        var promotion = await Context.Promotions.AsNoTracking().Where(p => p.Id == id)
+            .Select(ViewProjections.PromotionDto).FirstOrDefaultAsync();
+        return promotion == null ? NotFound(new { message = "Акция не найдена." }) : Ok(promotion);
     }
     [HttpPost, RequestSizeLimit(2200000)]
     public async Task<IActionResult> Create([FromForm] SavePromotionDto input) => await Save(input, false);

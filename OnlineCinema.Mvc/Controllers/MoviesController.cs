@@ -1,5 +1,4 @@
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using OnlineCinema.Mvc.Mapping;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineCinema.Domain;
@@ -15,7 +14,7 @@ namespace OnlineCinema.Mvc.Controllers;
 
 public class MoviesController : BaseMvcController
 {
-    public MoviesController(IMapper mapper, AppDbContext context) : base(mapper, context)
+    public MoviesController(AppDbContext context) : base(context)
     {
     }
 
@@ -27,11 +26,11 @@ public class MoviesController : BaseMvcController
             return NotFound();
         }
 
-        //Маппинг Movie в MovieViewModel через метод расширение ProjectTo()
+
         var movieViewModel = await Context.Movies
             .Include(m => m.MovieGenres)
             .ThenInclude(mg => mg.Genre)
-            .ProjectTo<MovieViewModel>(Mapper.ConfigurationProvider)
+            .Select(ViewProjections.MovieDetails)
             .FirstOrDefaultAsync(m => m.Id == id && m.IsVisible);
 
         if (movieViewModel == null)
@@ -54,7 +53,7 @@ public class MoviesController : BaseMvcController
             .ToArray();
 
         movieViewModel.Halls = await Context.Halls
-            .ProjectTo<HallViewModel>(Mapper.ConfigurationProvider)
+            .Select(ViewProjections.Hall)
             .ToListAsync();
 
         return View("Movie", movieViewModel);
@@ -64,11 +63,9 @@ public class MoviesController : BaseMvcController
     [Route("kids")]
     public async Task<IActionResult> KidsMovies()
     {
-        var movies = await Context.Movies
+        var kidsViewModel = await Context.Movies.AsNoTracking()
             .Where(m => m.IsVisible && m.AgeRating <= 12)
-            .ToListAsync();
-
-        var kidsViewModel = Mapper.Map<IEnumerable<KidsViewModel>>(movies);
+            .Select(ViewProjections.Kids).ToListAsync();
 
         if (kidsViewModel == null)
         {
@@ -81,14 +78,12 @@ public class MoviesController : BaseMvcController
     [Route("art")]
     public async Task<IActionResult> ArtMovies()
     {
-        var movies = await Context.Movies
+        var movieViewModels = await Context.Movies.AsNoTracking()
             .Include(m => m.MovieGenres)
             .ThenInclude(mg => mg.Genre)
             .Where(m => m.IsVisible && m.MovieGenres
             .Any(mg => mg.Genre.Name == "Драма" || mg.Genre.Name == "Криминал"))
-            .ToListAsync();
-
-        var movieViewModels = Mapper.Map<IEnumerable<ArtViewModel>>(movies);
+            .Select(ViewProjections.Art).ToListAsync();
 
         if (movieViewModels == null)
         {

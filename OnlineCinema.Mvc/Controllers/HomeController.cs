@@ -1,5 +1,4 @@
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using OnlineCinema.Mvc.Mapping;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineCinema.Domain;
@@ -9,7 +8,7 @@ namespace OnlineCinema.Mvc.Controllers;
 
 public class HomeController : BaseMvcController
 {
-    public HomeController(IMapper mapper, AppDbContext context) : base(mapper, context)
+    public HomeController(AppDbContext context) : base(context)
     {
     }
 
@@ -22,11 +21,11 @@ public class HomeController : BaseMvcController
                 .ToListAsync(),
             Posters = Context.Movies
                 .Where(m => m.IsVisible == true)
-                .ProjectTo<HomePosterViewModel>(Mapper.ConfigurationProvider),
+                .Select(ViewProjections.HomePoster),
             Promotions = Context.Promotions
-                .ProjectTo<HomePromotionViewModel>(Mapper.ConfigurationProvider),
+                .Select(ViewProjections.HomePromotion),
             News = Context.News
-                .ProjectTo<HomeNewsViewModel>(Mapper.ConfigurationProvider)
+                .Select(ViewProjections.HomeNews)
                 .Take(3)
         };
 

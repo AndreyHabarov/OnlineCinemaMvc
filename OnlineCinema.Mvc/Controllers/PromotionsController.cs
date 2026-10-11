@@ -1,5 +1,4 @@
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using OnlineCinema.Mvc.Mapping;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineCinema.Domain;
@@ -7,13 +6,13 @@ using OnlineCinema.Mvc.Models.ViewModels.Promotions;
 
 namespace OnlineCinema.Mvc.Controllers;
 
-public class PromotionsController(IMapper mapper, AppDbContext context) : BaseMvcController(mapper, context)
+public class PromotionsController(AppDbContext context) : BaseMvcController(context)
 {
     [Route("promotions")]
     public async Task<IActionResult> Promotions()
     {
         var promotions = await Context.Promotions.AsNoTracking().OrderBy(p => p.DateTime).ThenBy(p => p.Id)
-            .ProjectTo<PromotionViewModel>(Mapper.ConfigurationProvider).ToListAsync();
+            .Select(ViewProjections.PromotionDetails).ToListAsync();
         return View("Promotions", promotions);
     }
     [Route("promotions/{name}")]
@@ -22,7 +21,7 @@ public class PromotionsController(IMapper mapper, AppDbContext context) : BaseMv
         var normalized = name.Trim().ToLower();
         var promotion = await Context.Promotions.AsNoTracking()
             .Where(p => EF.Property<string>(p, "NormalizedName") == normalized)
-            .ProjectTo<PromotionViewModel>(Mapper.ConfigurationProvider).FirstOrDefaultAsync();
+            .Select(ViewProjections.PromotionDetails).FirstOrDefaultAsync();
         return promotion == null ? NotFound() : View("PromotionDetails", promotion);
     }
 }

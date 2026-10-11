@@ -1,4 +1,3 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,8 +18,8 @@ public class AccountController : BaseMvcController
     private readonly UserManager<User> _userManager;
     private readonly ICurrentUserService _currentUserService;
 
-    public AccountController(IMapper mapper, AppDbContext context, SignInManager<User> signInManager,
-        UserManager<User> userManager, ICurrentUserService currentUserService) : base(mapper, context)
+    public AccountController(AppDbContext context, SignInManager<User> signInManager,
+        UserManager<User> userManager, ICurrentUserService currentUserService) : base(context)
     {
         _signInManager = signInManager;
         _userManager = userManager;

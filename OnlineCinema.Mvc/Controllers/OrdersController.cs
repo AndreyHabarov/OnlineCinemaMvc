@@ -1,4 +1,3 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +11,8 @@ using OnlineCinema.Mvc.Services.CurrentUser;
 namespace OnlineCinema.Mvc.Controllers;
 
 [Authorize]
-public sealed class OrdersController(IMapper mapper, AppDbContext context, ICurrentUserService currentUser,
-    TicketPurchases purchases) : BaseMvcController(mapper, context)
+public sealed class OrdersController(AppDbContext context, ICurrentUserService currentUser,
+    TicketPurchases purchases) : BaseMvcController(context)
 {
     [HttpGet("orders/{id:int}")]
     public async Task<IActionResult> Index(int id)

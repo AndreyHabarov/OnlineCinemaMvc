@@ -44,8 +44,6 @@ if (string.IsNullOrWhiteSpace(connectionString))
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
-builder.Services.AddAutoMapper(typeof(Program));
-
 builder.Services.AddIdentity<User, Role>(opt =>
 {
     opt.Password.RequireDigit = true;

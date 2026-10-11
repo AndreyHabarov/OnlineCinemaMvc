@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using OnlineCinema.Mvc.Mapping;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineCinema.Domain;
@@ -9,7 +8,7 @@ namespace OnlineCinema.Mvc.Controllers;
 
 public class NewsController : BaseMvcController
 {
-    public NewsController(IMapper mapper, AppDbContext context) : base(mapper, context)
+    public NewsController(AppDbContext context) : base(context)
     {
     }
 
@@ -22,7 +21,7 @@ public class NewsController : BaseMvcController
         }
 
         var newsViewModel = await Context.News
-            .ProjectTo<NewsViewModel>(Mapper.ConfigurationProvider)
+            .Select(ViewProjections.NewsDetails)
             .FirstOrDefaultAsync(n => n.Id == id);
 
         if (newsViewModel == null)
@@ -37,7 +36,7 @@ public class NewsController : BaseMvcController
     public async Task<IActionResult> GetAll()
     {
         var newsViewModel = await Context.News
-            .ProjectTo<NewsViewModel>(Mapper.ConfigurationProvider)
+            .Select(ViewProjections.NewsDetails)
             .ToListAsync();
 
         return View("AllNews", newsViewModel);
