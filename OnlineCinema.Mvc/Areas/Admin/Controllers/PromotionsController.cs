@@ -49,7 +49,13 @@ public sealed class PromotionsController(AppDbContext context, PromotionImages i
     private async Task<IActionResult> Save(SavePromotionDto input, bool update)
     {
         if (!ModelState.IsValid) return BadRequest(new { message = "Заполните название, описание, дату и текст кнопки. Адрес акции должен содержать латинские буквы, цифры и дефисы; ссылка — HTTP/HTTPS или локальный путь." });
-        var promotion = update ? await Context.Promotions.FindAsync(input.Id) : new Promotion();
+        var promotion = update ? await Context.Promotions.FindAsync(input.Id) : new Promotion
+        {
+            Name = input.Name.Trim(), DisplayName = input.DisplayName.Trim(),
+            Description = input.Description.Trim(), ButtonText = input.ButtonText.Trim(),
+            // Новый файл проверяется и сохраняется до добавления сущности в БД.
+            ImagePath = string.Empty
+        };
         if (promotion == null) return NotFound(new { message = "Акция не найдена." });
         if (!update && input.Image == null) return BadRequest(new { message = "Для новой акции загрузите изображение." });
         var oldPath = promotion.ImagePath;

@@ -1,4 +1,4 @@
-﻿using OnlineCinema.Domain.Common;
+using OnlineCinema.Domain.Common;
 
 namespace OnlineCinema.Domain.Entities;
 
@@ -8,7 +8,8 @@ public class Seat : Entity
     public int Row { get; set; }
 
     public int HallId { get; set; }
-    public Hall Hall { get; set; }
+    // EF заполняет обязательную навигацию при загрузке; чтение требует Include/проекции.
+    public Hall Hall { get; set; } = null!;
 
     //public int SeatType { get; set; } - сделать позже
     public int Price { get; set; }

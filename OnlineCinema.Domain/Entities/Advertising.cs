@@ -1,8 +1,8 @@
-﻿using OnlineCinema.Domain.Common;
+using OnlineCinema.Domain.Common;
 
 namespace OnlineCinema.Domain.Entities;
 
 public class Advertising : Entity
 {
-    public string PathToImage { get; set; }
+    public required string PathToImage { get; set; }
 }

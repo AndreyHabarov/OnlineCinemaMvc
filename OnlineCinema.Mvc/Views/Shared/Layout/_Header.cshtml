@@ -1,8 +1,8 @@
-﻿@using OnlineCinema.Mvc.Services.CurrentUser
+@using OnlineCinema.Mvc.Services.CurrentUser
 @inject ICurrentUserService currentUserService
 
 @{
-    string account = currentUserService.IsAuthenticated ? currentUserService.Name : "Личный кабинет";
+    string account = currentUserService.IsAuthenticated ? currentUserService.Name ?? "Личный кабинет" : "Личный кабинет";
     string accountController = currentUserService.IsAuthenticated ? "Account" : "";
     string accountAction = currentUserService.IsAuthenticated ? "PersonalAccount" : "";
     string accountDataToggle = currentUserService.IsAuthenticated ? "" : "modal";

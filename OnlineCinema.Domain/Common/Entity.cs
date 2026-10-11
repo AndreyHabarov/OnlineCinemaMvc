@@ -1,6 +1,6 @@
-﻿namespace OnlineCinema.Domain.Common;
+namespace OnlineCinema.Domain.Common;
 
-public abstract class Entity<TPrimaryKey>
+public abstract class Entity<TPrimaryKey> where TPrimaryKey : struct
 {
     public TPrimaryKey Id { get; set; }
 }

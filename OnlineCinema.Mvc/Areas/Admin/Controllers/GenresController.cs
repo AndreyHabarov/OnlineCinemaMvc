@@ -50,7 +50,7 @@ public sealed class GenresController(AppDbContext context) : BaseMvcController(c
     private async Task<IActionResult> Save(GenreDto input, bool update)
     {
         if (!ModelState.IsValid) return BadRequest(new { message = "Название жанра обязательно и должно быть не длиннее 80 символов." });
-        var entity = update ? await Context.Genres.FindAsync(input.Id) : new Genre();
+        var entity = update ? await Context.Genres.FindAsync(input.Id) : new Genre { Name = input.Name.Trim() };
         if (entity == null) return NotFound(new { message = "Жанр не найден." });
         entity.Name = input.Name.Trim();
         if (!update) Context.Genres.Add(entity);

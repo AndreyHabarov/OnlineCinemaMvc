@@ -1,8 +1,8 @@
-﻿using OnlineCinema.Domain.Common;
+using OnlineCinema.Domain.Common;
 
 namespace OnlineCinema.Domain.Entities;
 
 public class Customer : Entity
 {
-    public string Email { get; set; }
+    public required string Email { get; set; }
 }
