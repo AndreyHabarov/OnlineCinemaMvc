@@ -15,7 +15,7 @@ namespace OnlineCinema.Mvc.Controllers
         [Route("halls")]
         public async Task<IActionResult> GetHalls()
         {
-            var hallViewModel = await Context.Halls
+            var hallViewModel = await Context.Halls.AsNoTracking().OrderBy(h => h.Id)
                 .Select(ViewProjections.Hall)
                 .ToListAsync();
 

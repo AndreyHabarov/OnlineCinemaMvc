@@ -2,7 +2,7 @@
 @inject ICurrentUserService currentUserService
 
 @{
-    string account = currentUserService.IsAuthenticated ? currentUserService.Name ?? "Личный кабинет" : "Личный кабинет";
+    string account = await currentUserService.GetNameAsync() ?? "Личный кабинет";
     string accountController = currentUserService.IsAuthenticated ? "Account" : "";
     string accountAction = currentUserService.IsAuthenticated ? "PersonalAccount" : "";
     string accountDataToggle = currentUserService.IsAuthenticated ? "" : "modal";

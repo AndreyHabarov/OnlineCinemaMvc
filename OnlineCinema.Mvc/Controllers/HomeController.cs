@@ -16,15 +16,15 @@ public class HomeController : BaseMvcController
     {
         var homeViewModel = new HomeViewModel
         {
-            Advertisings = await Context.Advertisings
+            Advertisings = await Context.Advertisings.AsNoTracking().OrderBy(a => a.Id)
                 .Select(a => a.PathToImage)
                 .ToListAsync(),
             Posters = await Context.Movies.AsNoTracking()
-                .Where(m => m.IsVisible == true)
+                .Where(m => m.IsVisible).OrderBy(m => m.Id)
                 .Select(ViewProjections.HomePoster).ToListAsync(),
-            Promotions = await Context.Promotions.AsNoTracking()
+            Promotions = await Context.Promotions.AsNoTracking().OrderBy(p => p.DateTime).ThenBy(p => p.Id)
                 .Select(ViewProjections.HomePromotion).ToListAsync(),
-            News = await Context.News.AsNoTracking()
+            News = await Context.News.AsNoTracking().OrderByDescending(n => n.Date).ThenByDescending(n => n.Id)
                 .Select(ViewProjections.HomeNews)
                 .Take(3).ToListAsync()
         };

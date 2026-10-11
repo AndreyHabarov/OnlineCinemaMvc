@@ -1,6 +1,7 @@
 ﻿using OnlineCinema.Domain;
 using OnlineCinema.Domain.Common;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace OnlineCinema.Mvc.Services.CurrentUser;
 
@@ -24,17 +25,15 @@ public class CurrentUserService : ICurrentUserService
         }
     }
 
-    public string? Name
+    private Task<string?>? _name;
+
+    public Task<string?> GetNameAsync()
     {
-        get
-        {
-            if (UserId == null)
-            {
-                return null;
-            }
-            var name = _context.Users.Where(u => u.Id == UserId.Value).Select(u => u.Name).FirstOrDefault();
-            return name ?? "Личный кабинет";
-        }
+        var userId = UserId;
+        return _name ??= !IsAuthenticated || userId == null
+            ? Task.FromResult<string?>(null)
+            : _context.Users.AsNoTracking().Where(u => u.Id == userId.Value)
+                .Select(u => (string?)u.Name).FirstOrDefaultAsync();
     }
 
     public bool IsAuthenticated => _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;

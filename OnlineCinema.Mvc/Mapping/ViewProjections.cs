@@ -23,12 +23,12 @@ public static class ViewProjections
     };
     public static readonly Expression<Func<Movie, ArtViewModel>> Art = m => new()
     {
-        Id = m.Id, Name = m.Name, CardImagePath = m.CardImagePath, AgeRating = m.AgeRating,
-        Genres = m.MovieGenres
+        Id = m.Id, Name = m.Name, CardImagePath = m.CardImagePath, AgeRating = m.AgeRating
     };
     public static readonly Expression<Func<Movie, MovieViewModel>> MovieDetails = m => new()
     {
-        Id = m.Id, Name = m.Name, OriginalName = m.OriginalName, MovieGenres = m.MovieGenres,
+        Id = m.Id, Name = m.Name, OriginalName = m.OriginalName,
+        Genres = m.MovieGenres.OrderBy(mg => mg.Genre.Name).Select(mg => mg.Genre.Name).ToList(),
         Duration = m.Duration, AgeRating = m.AgeRating, Description = m.Description,
         Director = m.Director, Actor = m.Actor, Country = m.Country,
         PremiereDate = m.PremiereDate, WorldPremiere = m.WorldPremiere,

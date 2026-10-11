@@ -20,7 +20,7 @@ public class NewsController : BaseMvcController
             return NotFound();
         }
 
-        var newsViewModel = await Context.News
+        var newsViewModel = await Context.News.AsNoTracking().OrderByDescending(n => n.Date).ThenByDescending(n => n.Id)
             .Select(ViewProjections.NewsDetails)
             .FirstOrDefaultAsync(n => n.Id == id);
 
@@ -35,7 +35,7 @@ public class NewsController : BaseMvcController
     [Route("news")]
     public async Task<IActionResult> GetAll()
     {
-        var newsViewModel = await Context.News
+        var newsViewModel = await Context.News.AsNoTracking().OrderByDescending(n => n.Date).ThenByDescending(n => n.Id)
             .Select(ViewProjections.NewsDetails)
             .ToListAsync();
 

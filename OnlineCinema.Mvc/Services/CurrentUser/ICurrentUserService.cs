@@ -3,7 +3,7 @@
 public interface ICurrentUserService
 {
     int? UserId { get; }
-    string? Name { get; }
+    Task<string?> GetNameAsync();
     bool IsAuthenticated { get; } 
     bool IsAdmin { get; } 
     IReadOnlyList<string> Roles { get; }

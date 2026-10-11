@@ -27,9 +27,7 @@ public class MoviesController : BaseMvcController
         }
 
 
-        var movieViewModel = await Context.Movies
-            .Include(m => m.MovieGenres)
-            .ThenInclude(mg => mg.Genre)
+        var movieViewModel = await Context.Movies.AsNoTracking()
             .Select(ViewProjections.MovieDetails)
             .FirstOrDefaultAsync(m => m.Id == id && m.IsVisible);
 
@@ -40,19 +38,15 @@ public class MoviesController : BaseMvcController
 
         var dateNow = CinemaTime.Now;
 
-        var sessions = await Context.Sessions
+        movieViewModel.SessionDates = await Context.Sessions.AsNoTracking()
              .Where(s => s.MovieId == id && s.DateStart >= dateNow)
-             .Select(s => s.DateStart)
+             .Select(s => s.DateStart.Date)
+             .Distinct()
              .OrderBy(s => s)
-             .ToListAsync();
+             .Take(7)
+             .ToArrayAsync();
 
-        movieViewModel.SessionDates = sessions
-            .Select(s => s.Date)
-            .Distinct()
-            .Take(5)
-            .ToArray();
-
-        movieViewModel.Halls = await Context.Halls
+        movieViewModel.Halls = await Context.Halls.AsNoTracking().OrderBy(h => h.Id)
             .Select(ViewProjections.Hall)
             .ToListAsync();
 
@@ -65,6 +59,7 @@ public class MoviesController : BaseMvcController
     {
         var kidsViewModel = await Context.Movies.AsNoTracking()
             .Where(m => m.IsVisible && m.AgeRating <= 12)
+            .OrderBy(m => m.Id)
             .Select(ViewProjections.Kids).ToListAsync();
 
         return View("KidsMovies", kidsViewModel);
@@ -74,10 +69,9 @@ public class MoviesController : BaseMvcController
     public async Task<IActionResult> ArtMovies()
     {
         var movieViewModels = await Context.Movies.AsNoTracking()
-            .Include(m => m.MovieGenres)
-            .ThenInclude(mg => mg.Genre)
             .Where(m => m.IsVisible && m.MovieGenres
             .Any(mg => mg.Genre.Name == "Драма" || mg.Genre.Name == "Криминал"))
+            .OrderBy(m => m.Id)
             .Select(ViewProjections.Art).ToListAsync();
 
         return View("ArtMovies", movieViewModels);
