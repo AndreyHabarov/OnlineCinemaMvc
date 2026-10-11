@@ -9,7 +9,7 @@ using OnlineCinema.Mvc.Models.Dto.Genres;
 
 namespace OnlineCinema.Mvc.Areas.Admin.Controllers;
 
-[Authorize(Roles = "admin")]
+[Authorize(Roles = OnlineCinema.Domain.Common.StaticRoleNames.ADMIN)]
 [Area("Admin")]
 public sealed class GenresController : BaseMvcController
 {

@@ -54,7 +54,7 @@
                                 </div>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text"><i class="fa-solid fa-unlock-keyhole"></i></span>
-                                    <input id="Password" type="text" class="form-control" placeholder="Пароль">
+                                    <input id="Password" type="password" autocomplete="current-password" class="form-control" placeholder="Пароль">
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class=" form-check remember__me__btn">
@@ -63,6 +63,7 @@
                                     </div>
                                     <a class="forget__password__text" href="#">Забыли пароль?</a>
                                 </div>
+                                <p id="LoginError" class="text-danger" role="alert"></p>
                                 <button type="button" class="btn btn-primary enter__btn__custom w-100 mt-3 mb-3 " id="LoginButton">Войти</button>
                             </div>
 
@@ -91,7 +92,7 @@
                                     <div id="EnterPasswordValidation" class="invalid-feedback">
                                     </div>
                                 </div>
-                                <p style="font-size: 12px;">Пароль должен содержать цифры, заглавные и строчные буквы. Длина пароля не менее 6 символов.</p>
+                                <p style="font-size: 12px;">Пароль должен содержать цифры, заглавные и строчные буквы. Длина — от 8 до 128 символов.</p>
                             </div>
 
                             <div class="col-6">
@@ -119,6 +120,7 @@
                                 </div>
                             </div>
                         </div>
+                        <p id="RegistrationError" class="text-danger" role="alert"></p>
                         <div class="d-flex justify-content-center">
                             <button type="button" class="btn btn-primary registration__btn_custom w-50 mb-3 mt-3" id="RegistrationButton">Зарегистрироваться</button>
                         </div>

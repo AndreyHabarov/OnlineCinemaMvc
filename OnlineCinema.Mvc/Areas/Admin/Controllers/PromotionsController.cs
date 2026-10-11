@@ -10,7 +10,7 @@ using OnlineCinema.Mvc.Models.Dto.Promotions;
 
 namespace OnlineCinema.Mvc.Areas.Admin.Controllers;
 
-[Authorize(Roles = "admin")]
+[Authorize(Roles = StaticRoleNames.ADMIN)]
 [Area("Admin")]
 public sealed class PromotionsController : BaseMvcController
 {

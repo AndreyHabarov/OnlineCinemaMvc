@@ -1,4 +1,4 @@
-﻿@model HomeViewModel
+@model HomeViewModel
 
 @await Html.PartialAsync("_Posters.cshtml", Model.Posters)
 @await Html.PartialAsync("_Promotion.cshtml", Model.Promotions)
@@ -10,8 +10,4 @@
 
 @section Banner {
     @await Html.PartialAsync("_Slider.cshtml", Model.Advertisings)
-}
-
-@section Scripts {
-    <script src="~/js/views/home/Index.js"></script>
 }

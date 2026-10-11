@@ -1,57 +1,60 @@
-﻿using AutoMapper;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineCinema.Domain;
 using OnlineCinema.Domain.Entities;
 using OnlineCinema.Mvc.Models.ViewModels.Home;
+using OnlineCinema.Mvc.Services;
 using OnlineCinema.Mvc.Services.CurrentUser;
 
 namespace OnlineCinema.Mvc.Controllers;
-
 
 public class AccountController : BaseMvcController
 {
     private readonly SignInManager<User> _signInManager;
     private readonly UserManager<User> _userManager;
     private readonly ICurrentUserService _currentUserService;
-    public AccountController(IMapper mapper, AppDbContext context, SignInManager<User> signInManager, UserManager<User> userManager, ICurrentUserService currentUserService) : base(mapper, context)
+
+    public AccountController(IMapper mapper, AppDbContext context, SignInManager<User> signInManager,
+        UserManager<User> userManager, ICurrentUserService currentUserService) : base(mapper, context)
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _currentUserService = currentUserService;
     }
 
+    [HttpGet]
+    public IActionResult Login(string? returnUrl) => RedirectToAction("Index", "Home", new
+    {
+        login = true,
+        returnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : "/lk"
+    });
+
     [HttpPost]
     public async Task<IActionResult> Login([FromBody] LoginViewModel input)
     {
+        if (!ModelState.IsValid) return InvalidInput();
+        User? user;
         if (!string.IsNullOrWhiteSpace(input.Email))
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == input.Email);
-            var result = await _signInManager.CheckPasswordSignInAsync(user, input.Password, false);
-            if (result.Succeeded)
-            {
-                await _signInManager.SignInAsync(user, true);
-                return Ok(new { Name = user.Name });
-            }
+            user = await _userManager.FindByEmailAsync(input.Email.Trim());
         }
-
-        if (!string.IsNullOrWhiteSpace(input.Phone))
+        else
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == input.Phone);
-            if (user != null)
-            {
-                var result = await _signInManager.PasswordSignInAsync(input.Email, input.Password, false, false);
-                if (result.Succeeded)
-                {
-                    return Ok(new { Name = user.Name });
-                }
-            }
+            var phone = PhoneNumbers.Normalize(input.Phone);
+            if (phone == null) return InvalidCredentials();
+            var matches = await FindByPhone(phone).Take(2).ToListAsync();
+            user = matches.Count == 1 ? matches[0] : null;
         }
-
-        return BadRequest("Неправильный логин и/или пароль");
+        if (user == null) return InvalidCredentials();
+        var result = await _signInManager.PasswordSignInAsync(user, input.Password,
+            input.RememberMe, lockoutOnFailure: true);
+        return result.Succeeded ? Ok(new { user.Name }) : InvalidCredentials();
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> LogOut()
     {
@@ -62,41 +65,58 @@ public class AccountController : BaseMvcController
     [HttpPost]
     public async Task<IActionResult> Register([FromBody] RegisterViewModel input)
     {
-        var user = Mapper.Map<User>(input);
-        user.UserName = input.Email;
-        try
+        if (!ModelState.IsValid) return InvalidInput();
+        var phone = PhoneNumbers.Normalize(input.PhoneNumber);
+        if (phone == null) return BadRequest(new { message = "Укажите российский телефон: +7 и 10 цифр номера." });
+        if (await FindByPhone(phone).AnyAsync())
+            return BadRequest(new { message = "Пользователь с таким телефоном уже зарегистрирован." });
+        var user = new User
         {
-            var result = await _userManager.CreateAsync(user, input.Password);
-            if (result.Succeeded)
-            {
-                return Ok();
-            }
-
-            return BadRequest(result.Errors);
-
-        }
-        catch (Exception ex)
+            Name = input.Name.Trim(), LastName = input.LastName.Trim(),
+            Email = input.Email.Trim(), UserName = input.Email.Trim(),
+            PhoneNumber = phone, IsMan = input.IsMan ?? false
+        };
+        var result = await _userManager.CreateAsync(user, input.Password);
+        if (result.Succeeded) return Ok(new { message = "Регистрация завершена. Теперь войдите в аккаунт." });
+        var messages = result.Errors.Select(error => error.Code switch
         {
-
-            throw;
-        }
+            "DuplicateEmail" or "DuplicateUserName" => "Пользователь с таким email уже зарегистрирован.",
+            "InvalidEmail" or "InvalidUserName" => "Укажите корректный email.",
+            "PasswordTooShort" or "PasswordRequiresDigit" or "PasswordRequiresUpper" or "PasswordRequiresLower" => "Пароль должен содержать минимум 8 символов, заглавные и строчные латинские буквы и цифры.",
+            _ => "Не удалось зарегистрироваться. Проверьте введённые данные."
+        }).Distinct().ToArray();
+        return BadRequest(new { message = string.Join(" ", messages), errors = messages });
     }
 
+    private IQueryable<User> FindByPhone(string phone)
+    {
+        var digits = phone[1..];
+        var national = "8" + digits[1..];
+        return _userManager.Users.Where(user => user.PhoneNumber != null &&
+            (user.PhoneNumber.Replace("+", "").Replace(" ", "").Replace("(", "").Replace(")", "").Replace("-", "") == digits ||
+             user.PhoneNumber.Replace("+", "").Replace(" ", "").Replace("(", "").Replace(")", "").Replace("-", "") == national));
+    }
+
+    private IActionResult InvalidCredentials() => Unauthorized(new { message = "Неверный email/телефон или пароль. Если было несколько неудачных попыток, повторите вход через 15 минут." });
+
+    private IActionResult InvalidInput() => BadRequest(new
+    {
+        message = "Проверьте введённые данные.",
+        errors = ModelState.Values.SelectMany(value => value.Errors)
+            .Select(error => error.ErrorMessage.Any(c => c is >= 'А' and <= 'я' or 'Ё' or 'ё')
+                ? error.ErrorMessage : "Некорректные данные запроса.").ToArray()
+    });
+
+    [Authorize]
     [Route("lk")]
     public async Task<IActionResult> PersonalAccount()
     {
-        if (_currentUserService.UserId == null)
-        {
-            return RedirectToAction("Login", "Account");
-        }
-
-        User user = await Context.Users.FirstOrDefaultAsync(u => u.Id == _currentUserService.UserId.Value);
-
+        var user = await Context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == _currentUserService.UserId);
         if (user == null)
         {
-            return NotFound();
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login", new { returnUrl = "/lk" });
         }
-
         return View("PersonalAccount", user);
     }
 }

@@ -20,7 +20,7 @@ public class CurrentUserService : ICurrentUserService
         get
         {
             var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? null;
-            return userId == null ? null : int.Parse(userId);
+            return int.TryParse(userId, out var id) ? id : null;
         }
     }
 
@@ -32,8 +32,8 @@ public class CurrentUserService : ICurrentUserService
             {
                 return null;
             }
-            var name = _context.Users.First(u => u.Id == UserId.Value).Name;
-            return name;
+            var name = _context.Users.Where(u => u.Id == UserId.Value).Select(u => u.Name).FirstOrDefault();
+            return name ?? "Личный кабинет";
         }
     }
 
@@ -42,7 +42,7 @@ public class CurrentUserService : ICurrentUserService
     public IReadOnlyList<string> Roles => _httpContextAccessor.HttpContext?.User?
         .FindAll(ClaimTypes.Role)
         ?.Select(r => r.Value)
-        ?.ToList();
+        ?.ToList() ?? new List<string>();
 
-    public bool IsAdmin => IsAuthenticated && (Roles?.Any(r => r.ToLower() == StaticRoleNames.ADMIN.ToLower()) ?? false);
+    public bool IsAdmin => IsAuthenticated && Roles.Any(r => string.Equals(r, StaticRoleNames.ADMIN, StringComparison.Ordinal));
 }
