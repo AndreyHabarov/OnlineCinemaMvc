@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,53 +7,22 @@ using OnlineCinema.Mvc.Models.ViewModels.Promotions;
 
 namespace OnlineCinema.Mvc.Controllers;
 
-public class PromotionsController : BaseMvcController
+public class PromotionsController(IMapper mapper, AppDbContext context) : BaseMvcController(mapper, context)
 {
-    public PromotionsController(IMapper mapper, AppDbContext context) : base(mapper, context)
-    {
-    }
-
     [Route("promotions")]
     public async Task<IActionResult> Promotions()
     {
-        try
-        {
-            var promotionsViewModel = await Context.Promotions
-                .ProjectTo<PromotionViewModel>(Mapper.ConfigurationProvider)
-                .ToListAsync();
-
-            if (!promotionsViewModel.Any())
-            {
-                return NotFound();
-            }
-
-            return View("Promotions", promotionsViewModel);
-        }
-        catch (Exception ex)
-        {
-            return NotFound();
-        }
+        var promotions = await Context.Promotions.AsNoTracking().OrderBy(p => p.DateTime).ThenBy(p => p.Id)
+            .ProjectTo<PromotionViewModel>(Mapper.ConfigurationProvider).ToListAsync();
+        return View("Promotions", promotions);
     }
-
     [Route("promotions/{name}")]
     public async Task<IActionResult> Get(string name)
     {
-        try
-        {
-            var promotionViewModel = await Context.Promotions
-                .ProjectTo<PromotionViewModel>(Mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(p => p.Name == name);
-
-            if (promotionViewModel == null)
-            {
-                return NotFound();
-            }
-
-            return View("PromotionDetails", promotionViewModel);
-        }
-        catch (Exception ex)
-        {
-            return NotFound();
-        }
+        var normalized = name.Trim().ToLower();
+        var promotion = await Context.Promotions.AsNoTracking()
+            .Where(p => EF.Property<string>(p, "NormalizedName") == normalized)
+            .ProjectTo<PromotionViewModel>(Mapper.ConfigurationProvider).FirstOrDefaultAsync();
+        return promotion == null ? NotFound() : View("PromotionDetails", promotion);
     }
 }

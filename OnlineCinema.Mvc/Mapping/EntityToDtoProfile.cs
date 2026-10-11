@@ -24,7 +24,6 @@ public class EntityToDtoProfile : Profile
         CreateMap<Promotion, HomePromotionViewModel>();
         CreateMap<News, HomeNewsViewModel>();
         CreateMap<News, NewsViewModel>();
-        CreateMap<Promotion, PromotionViewModel>();
         CreateMap<Hall, HallViewModel>();
         CreateMap<Genre, GenreDto>();
         CreateMap<Promotion, PromotionDto>();

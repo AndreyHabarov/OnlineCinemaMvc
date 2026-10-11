@@ -22,6 +22,19 @@ public class AppDbContext : IdentityDbContext<User, Role, int>
     {
     }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Genre>().Property<string>("NormalizedName")
+            .HasComputedColumnSql("lower(btrim(\"Name\"))", stored: true);
+        modelBuilder.Entity<Genre>().HasIndex("NormalizedName").IsUnique();
+        modelBuilder.Entity<Promotion>().Property<string>("NormalizedName")
+            .HasComputedColumnSql("lower(btrim(\"Name\"))", stored: true);
+        modelBuilder.Entity<Promotion>().HasIndex("NormalizedName").IsUnique();
+        modelBuilder.Entity<MovieGenre>().HasOne(g => g.Genre).WithMany(g => g.MovieGenres)
+            .HasForeignKey(g => g.GenreId).OnDelete(DeleteBehavior.Restrict);
+    }
+
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         base.ConfigureConventions(configurationBuilder);

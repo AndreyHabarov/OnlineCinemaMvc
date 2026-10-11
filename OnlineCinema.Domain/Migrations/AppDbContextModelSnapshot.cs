@@ -171,7 +171,15 @@ namespace OnlineCinema.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("NormalizedName")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("text")
+                        .HasComputedColumnSql("lower(btrim(\"Name\"))", true);
+
                     b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique();
 
                     b.ToTable("Genres");
                 });
@@ -349,7 +357,15 @@ namespace OnlineCinema.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("NormalizedName")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("text")
+                        .HasComputedColumnSql("lower(btrim(\"Name\"))", true);
+
                     b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique();
 
                     b.ToTable("Promotions");
                 });
@@ -610,7 +626,7 @@ namespace OnlineCinema.Domain.Migrations
                     b.HasOne("OnlineCinema.Domain.Entities.Genre", "Genre")
                         .WithMany("MovieGenres")
                         .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("OnlineCinema.Domain.Entities.Movie", "Movie")

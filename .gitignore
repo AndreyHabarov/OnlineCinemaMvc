@@ -371,3 +371,4 @@ FodyWeavers.xsd
 /backups/
 /docker/db/
 **/appsettings.*.local.json
+/OnlineCinema.Mvc/wwwroot/images/promotion/uploads/

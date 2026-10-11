@@ -1,123 +1,88 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using OnlineCinema.Domain;
 using OnlineCinema.Domain.Common;
 using OnlineCinema.Domain.Entities;
 using OnlineCinema.Mvc.Controllers;
 using OnlineCinema.Mvc.Models.Dto.Common;
 using OnlineCinema.Mvc.Models.Dto.Promotions;
+using OnlineCinema.Mvc.Services;
 
 namespace OnlineCinema.Mvc.Areas.Admin.Controllers;
 
 [Authorize(Roles = StaticRoleNames.ADMIN)]
 [Area("Admin")]
-public sealed class PromotionsController : BaseMvcController
+public sealed class PromotionsController(IMapper mapper, AppDbContext context, PromotionImages images) : BaseMvcController(mapper, context)
 {
-    private readonly IWebHostEnvironment _webHostEnvironment;
-    public PromotionsController(IMapper mapper, AppDbContext context, IWebHostEnvironment webHostEnvironment = null) : base(mapper, context)
-    {
-        _webHostEnvironment = webHostEnvironment;
-    }
-
-    public IActionResult Index()
-    {
-        return View();
-    }
-
+    public IActionResult Index() => View();
     [HttpPost]
-    public IActionResult GetAll([FromBody] PagedSearchRequestDto input)
+    public async Task<IActionResult> GetAll([FromBody] PagedSearchRequestDto input)
     {
-        IQueryable<Promotion> query = Context.Promotions;
+        if (!ModelState.IsValid) return BadRequest(new { message = "Размер страницы должен быть от 1 до 100, смещение — от 0 до 100000." });
+        var query = Context.Promotions.AsNoTracking();
+        var total = await query.LongCountAsync();
         if (!string.IsNullOrWhiteSpace(input.Keyword))
         {
-            query = query.Where(g => g.Name.ToLower().Contains(input.Keyword.ToLower()));
+            var keyword = input.Keyword.Trim().ToLower();
+            query = query.Where(p => p.Name.ToLower().Contains(keyword) || p.DisplayName.ToLower().Contains(keyword));
         }
-
-        var totalCount = query.LongCount();
-
-        var entities = query
-            .Skip(input.SkipCount)
-            .Take(input.PageSize)
-            .ToList();
-
-        var dtos = Mapper.Map<IReadOnlyList<PromotionDto>>(entities);
-        return Ok(new PagedResultDto<PromotionDto>(totalCount, dtos));
+        var filtered = await query.LongCountAsync();
+        var items = await query.OrderBy(p => p.DisplayName).ThenBy(p => p.Id).Skip(input.SkipCount).Take(input.PageSize).ToListAsync();
+        return Ok(new PagedResultDto<PromotionDto>(total, Mapper.Map<List<PromotionDto>>(items), filtered));
     }
-
     [HttpGet]
-    public IActionResult Get(int id)
+    public async Task<IActionResult> Get(int id)
     {
-        var promotion = Context.Promotions.FirstOrDefault(p => p.Id == id);
-        if (promotion is null)
-        {
-            return NotFound();
-        }
-
-        var promotionDto = Mapper.Map<PromotionDto>(promotion);
-
-        return Ok(promotionDto);
+        var promotion = await Context.Promotions.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+        return promotion == null ? NotFound(new { message = "Акция не найдена." }) : Ok(Mapper.Map<PromotionDto>(promotion));
     }
+    [HttpPost, RequestSizeLimit(2200000)]
+    public async Task<IActionResult> Create([FromForm] SavePromotionDto input) => await Save(input, false);
+    [HttpPut, RequestSizeLimit(2200000)]
+    public async Task<IActionResult> Update([FromForm] SavePromotionDto input) => await Save(input, true);
 
+    private async Task<IActionResult> Save(SavePromotionDto input, bool update)
+    {
+        if (!ModelState.IsValid) return BadRequest(new { message = "Заполните название, описание, дату и текст кнопки. Адрес акции должен содержать латинские буквы, цифры и дефисы; ссылка — HTTP/HTTPS или локальный путь." });
+        var promotion = update ? await Context.Promotions.FindAsync(input.Id) : new Promotion();
+        if (promotion == null) return NotFound(new { message = "Акция не найдена." });
+        if (!update && input.Image == null) return BadRequest(new { message = "Для новой акции загрузите изображение." });
+        var oldPath = promotion.ImagePath;
+        string? newPath = null;
+        if (input.Image != null)
+        {
+            try { newPath = await images.SaveAsync(input.Image); }
+            catch (ArgumentException exception) { return BadRequest(new { message = exception.Message }); }
+        }
+        promotion.Name = input.Name.Trim();
+        promotion.DisplayName = input.DisplayName.Trim();
+        promotion.Description = input.Description.Trim();
+        promotion.ButtonText = input.ButtonText.Trim();
+        promotion.Link = string.IsNullOrWhiteSpace(input.Link) ? null : input.Link.Trim();
+        promotion.DateTime = DateTime.SpecifyKind(input.DateTime!.Value, DateTimeKind.Unspecified);
+        promotion.ImagePath = newPath ?? oldPath;
+        if (!update) Context.Promotions.Add(promotion);
+        try { await Context.SaveChangesAsync(); }
+        catch (DbUpdateException exception) when (exception.InnerException is PostgresException { SqlState: "23505" })
+        {
+            images.DeleteManaged(newPath);
+            return Conflict(new { message = "Адрес акции уже используется. Выберите другой." });
+        }
+        catch { images.DeleteManaged(newPath); throw; }
+        if (newPath != null && !await Context.Promotions.AnyAsync(p => p.ImagePath == oldPath)) images.DeleteManaged(oldPath);
+        return Ok(new { promotion.Id });
+    }
     [HttpDelete]
-    public IActionResult Delete([FromQuery] int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var promotion = Context.Promotions.FirstOrDefault(p => p.Id == id);
-
-        if (promotion is null)
-        {
-            return BadRequest();
-        }
-
+        var promotion = await Context.Promotions.FindAsync(id);
+        if (promotion == null) return NotFound(new { message = "Акция не найдена." });
         Context.Promotions.Remove(promotion);
-        Context.SaveChanges();
-
-        return Ok();
-    }
-
-    [HttpPut]
-    public IActionResult Update([FromBody] PromotionDto updatePromotionDto)
-    {
-        var files = HttpContext.Request.Form.Files;
-        string webRootPath = _webHostEnvironment.WebRootPath;
-
-
-        var promotion = Context.Promotions.FirstOrDefault(p => p.Id == updatePromotionDto.Id);
-
-        if (promotion is null)
-        {
-            return BadRequest();
-        }
-
-        if (files.Count > 0)
-        {
-            string upload = webRootPath + WC.ImagePath;
-            string fileName = Guid.NewGuid().ToString();
-            string extension = Path.GetExtension(files[0].FileName);
-
-            var oldFile = Path.Combine(upload, promotion.ImagePath);
-
-            if (System.IO.File.Exists(oldFile))
-            {
-                System.IO.File.Delete(oldFile);
-            }
-
-            using (var fileStream = new FileStream(Path.Combine(upload, fileName + extension), FileMode.Create))
-            {
-                files[0].CopyTo(fileStream);
-            }
-
-            updatePromotionDto.ImagePath = fileName + extension;
-        }
-        else
-        {
-            updatePromotionDto.ImagePath = promotion.ImagePath;
-        }
-
-        Mapper.Map(updatePromotionDto, promotion);
-        Context.Promotions.Update(promotion);
-        Context.SaveChanges();
-
+        await Context.SaveChangesAsync();
+        if (!await Context.Promotions.AnyAsync(p => p.ImagePath == promotion.ImagePath)) images.DeleteManaged(promotion.ImagePath);
         return Ok();
     }
 }
