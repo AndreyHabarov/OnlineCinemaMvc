@@ -8,9 +8,10 @@
     int count = 1;
     foreach (var promotion in Model)
     {
+        var link = PublicUrls.NavigationLink(promotion.Link);
         <div class="row">
             <div class="col @(count % 2 == 0 ? "reverse": "normal")">
-                @if (string.IsNullOrWhiteSpace(promotion.Link))
+                @if (link is null)
                 {
                     <a asp-controller="Promotions" asp-action="Get" asp-route-name="@promotion.Name">
                         <img src="@promotion.ImagePath" class="rounded-3" alt="Alternate Text" />
@@ -18,7 +19,7 @@
                 }
                 else
                 {
-                    <a href="@promotion.Link">
+                    <a href="@link">
                         <img src="@promotion.ImagePath" class="rounded-3" alt="Alternate Text" />
                     </a>
                 }
@@ -27,13 +28,13 @@
                         @promotion.DisplayName
                     </h3>
                     <p>@promotion.Description</p>
-                    @if (string.IsNullOrWhiteSpace(promotion.Link))
+                    @if (link is null)
                     {
                         <a class="btn btn-primary learn__more__btn" asp-controller="Promotions" asp-action="Get" asp-route-name="@promotion.Name">@promotion.ButtonText</a>
                     }
                     else
                     {
-                        <a href="@promotion.Link" class="btn btn-primary learn__more__btn">@promotion.ButtonText</a>
+                        <a href="@link" class="btn btn-primary learn__more__btn">@promotion.ButtonText</a>
                     }
                 </div>
             </div>

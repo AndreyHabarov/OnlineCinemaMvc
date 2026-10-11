@@ -2,6 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OnlineCinema.Mvc.Models.Dto.Promotions;
 
+using OnlineCinema.Mvc.Services;
+
 public sealed class SavePromotionDto : IValidatableObject
 {
     public int Id { get; set; }
@@ -21,9 +23,7 @@ public sealed class SavePromotionDto : IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (!string.IsNullOrWhiteSpace(Link) &&
-            !(Link.StartsWith('/') && !Link.StartsWith("//") && !Link.Contains('\\')) &&
-            !(Uri.TryCreate(Link, UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https"))
-            yield return new ValidationResult("Укажите ссылку HTTP/HTTPS или локальный путь.");
+        if (!string.IsNullOrWhiteSpace(Link) && PublicUrls.NavigationLink(Link) is null)
+            yield return new ValidationResult("Укажите ссылку HTTP/HTTPS или локальный путь.", new[] { nameof(Link) });
     }
 }

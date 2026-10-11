@@ -77,6 +77,29 @@ try {
         if ($taskPage.StatusCode -ne 404) { throw "Отсутствующая запись не вернула 404: $taskRoute" }
     }
     Write-Host 'Проверены пустые каталоги/списки: HTTP 200 и сообщения, отсутствие заглушек и пустого слайдера, HTTP 404 отсутствующих записей; миграции с нуля.'
+    # В старых данных могут быть URL, сохранённые до серверной валидации.
+    @'
+INSERT INTO "Promotions" ("Name", "DisplayName", "Description", "DateTime", "ImagePath", "ButtonText", "Link")
+VALUES
+('codex-unsafe-1', 'Проверка <img src=x onerror=alert(1)>', '<script>alert(1)</script>', now()::timestamp, '/images/logo/logo.png', 'Перейти', 'javascript:alert(1)'),
+('codex-unsafe-2', 'Проверка', 'Тест', now()::timestamp, '/images/logo/logo.png', 'Перейти', 'data:text/html,<script>alert(1)</script>'),
+('codex-unsafe-3', 'Проверка', 'Тест', now()::timestamp, '/images/logo/logo.png', 'Перейти', '//example.invalid'),
+('codex-unsafe-4', 'Проверка', 'Тест', now()::timestamp, '/images/logo/logo.png', 'Перейти', '/\example.invalid'),
+('codex-safe-1', 'Проверка', 'Тест', now()::timestamp, '/images/logo/logo.png', 'Перейти', 'https://example.invalid/path'),
+('codex-safe-2', 'Проверка', 'Тест', now()::timestamp, '/images/logo/logo.png', 'Перейти', '/news?x=1&y=2');
+'@ | docker compose exec -T db psql -X -q -U $taskUser -d $taskDb -v ON_ERROR_STOP=1
+    if ($LASTEXITCODE) { throw 'Не удалось подготовить данные проверки HTML/URL в тестовой БД.' }
+    foreach ($taskRoute in @('/', '/promotions')) {
+        $taskPage = Invoke-WebRequest "$taskBase$taskRoute" -NoProxy -TimeoutSec 15
+        if ($taskPage.Content -match '<script>alert|<img src=x onerror') { throw 'Данные БД вставлены как исполняемый HTML.' }
+        $taskLinks = @([regex]::Matches($taskPage.Content, 'href="([^"]*)"') | ForEach-Object { [Net.WebUtility]::HtmlDecode($_.Groups[1].Value) })
+        if (@($taskLinks | Where-Object { $_ -match '^(javascript:|data:|//|/\\)' }).Count) { throw 'Небезопасная ссылка показана.' }
+        foreach ($taskFallback in @('/promotions/codex-unsafe-1','/promotions/codex-unsafe-2','/promotions/codex-unsafe-3','/promotions/codex-unsafe-4')) {
+            if ($taskFallback -notin $taskLinks) { throw 'Нет безопасного перехода к акции.' }
+        }
+        if ('https://example.invalid/path' -notin $taskLinks -or '/news?x=1&y=2' -notin $taskLinks) { throw 'Допустимая ссылка потеряна.' }
+    }
+    Write-Host 'Проверены HTML-экранирование и блокировка опасных URL старых акций; локальные и HTTPS ссылки сохранены.'
     if ($UiHoldSeconds) {
         Write-Host "Браузерная проверка: $taskBase; остановка — файл $taskLogs/stop.flag"
         $taskDeadline = [DateTime]::UtcNow.AddSeconds($UiHoldSeconds)
