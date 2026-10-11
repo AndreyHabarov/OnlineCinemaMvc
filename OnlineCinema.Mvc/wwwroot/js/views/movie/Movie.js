@@ -71,11 +71,11 @@ function updateSessions(sessions) {
         const card = document.createElement('div');
         card.className = 'col-auto ms-2 mb-3';
         const time = document.createElement('a');
-        time.className = 'btn btn-outline-primary px-3 py-2 mb-1';
+        time.className = 'btn btn-primary px-3 py-2 mb-1';
         time.href = `/orders/${session.id}`;
         time.setAttribute('aria-label', `Купить билет на ${session.dateStart.slice(11,16)}, ${session.hallName}`);
         // Местное время кинотеатра без смещения не переводим в часовой пояс браузера.
-        time.textContent = session.dateStart.slice(11, 16);
+        time.textContent = `Купить билет · ${session.dateStart.slice(11, 16)}`;
         const hall = document.createElement('p');
         hall.className = 'mb-1';
         hall.textContent = session.hallName;
