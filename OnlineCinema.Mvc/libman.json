@@ -4,41 +4,84 @@
   "libraries": [
     {
       "library": "font-awesome@6.6.0",
-      "destination": "wwwroot/lib/font-awesome/"
+      "destination": "wwwroot/lib/font-awesome/",
+      "files": [
+        "css/all.min.css",
+        "webfonts/fa-brands-400.ttf",
+        "webfonts/fa-brands-400.woff2",
+        "webfonts/fa-regular-400.ttf",
+        "webfonts/fa-regular-400.woff2",
+        "webfonts/fa-solid-900.ttf",
+        "webfonts/fa-solid-900.woff2",
+        "webfonts/fa-v4compatibility.ttf",
+        "webfonts/fa-v4compatibility.woff2"
+      ]
     },
     {
       "provider": "jsdelivr",
       "library": "bootstrap@5.3.3",
-      "destination": "wwwroot/lib/bootstrap/"
+      "destination": "wwwroot/lib/bootstrap/",
+      "files": [
+        "dist/css/bootstrap.min.css",
+        "dist/js/bootstrap.bundle.min.js",
+        "dist/css/bootstrap.min.css.map",
+        "dist/js/bootstrap.bundle.min.js.map"
+      ]
     },
     {
       "library": "axios@1.7.7",
-      "destination": "wwwroot/lib/axios/"
+      "destination": "wwwroot/lib/axios/",
+      "files": [
+        "axios.min.js",
+        "axios.min.js.map"
+      ]
     },
     {
       "library": "dayjs@1.11.13",
-      "destination": "wwwroot/lib/dayjs/"
+      "destination": "wwwroot/lib/dayjs/",
+      "files": [
+        "dayjs.min.js"
+      ]
     },
     {
       "library": "imask@7.6.1",
-      "destination": "wwwroot/lib/imask/"
+      "destination": "wwwroot/lib/imask/",
+      "files": [
+        "imask.min.js",
+        "imask.min.js.map"
+      ]
     },
     {
       "library": "datatables.net@2.2.1",
-      "destination": "wwwroot/lib/datatables.net/"
+      "destination": "wwwroot/lib/datatables.net/",
+      "files": [
+        "datatables.min.js"
+      ]
     },
     {
       "library": "datatables.net-bs@2.2.1",
-      "destination": "wwwroot/lib/datatables.net-bs/"
+      "destination": "wwwroot/lib/datatables.net-bs/",
+      "files": [
+        "datatables.bootstrap.min.js",
+        "datatables.bootstrap.min.css"
+      ]
     },
     {
       "library": "jquery@3.7.1",
-      "destination": "wwwroot/lib/jquery/"
+      "destination": "wwwroot/lib/jquery/",
+      "files": [
+        "jquery.min.js",
+        "jquery.min.map"
+      ]
     },
     {
       "provider": "jsdelivr",
       "library": "sweetalert2@11.4.0",
-      "destination": "wwwroot/lib/sweetalert2/"
+      "destination": "wwwroot/lib/sweetalert2/",
+      "files": [
+        "dist/sweetalert2.all.min.js",
+        "dist/sweetalert2.min.css"
+      ]
     }
   ]
 }

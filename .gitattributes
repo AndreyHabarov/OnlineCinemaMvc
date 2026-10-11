@@ -3,6 +3,27 @@
 ###############################################################################
 * text=auto
 
+# Project text uses stable line endings; binary assets are never normalized.
+/.editorconfig text eol=lf
+/.gitattributes text eol=lf
+*.cs text eol=lf
+*.cshtml text eol=lf
+*.csproj text eol=lf
+*.json text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.md text eol=lf
+*.ps1 text eol=lf
+*.sql text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.webp binary
+*.woff2 binary
+*.ttf binary
+
 ###############################################################################
 # Set default behavior for command prompt diff.
 #
