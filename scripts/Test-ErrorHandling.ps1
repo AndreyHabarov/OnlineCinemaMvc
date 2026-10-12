@@ -5,6 +5,7 @@ $ErrorActionPreference = 'Stop'
 $taskOldEncoding = [Console]::OutputEncoding
 [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
 $taskRoot = Split-Path $PSScriptRoot -Parent
+. (Join-Path $PSScriptRoot 'lib/Test-Process.ps1')
 $taskMvc = Join-Path $taskRoot 'OnlineCinema.Mvc'
 $taskDll = Join-Path $taskMvc 'bin/Debug/net8.0/OnlineCinema.Mvc.dll'
 if (!(Test-Path $taskDll)) { throw 'Сначала выполните dotnet build OnlineCinemaMvc.sln.' }
@@ -23,13 +24,7 @@ $taskLogs = Join-Path $taskRoot "backups/error-check-$([Guid]::NewGuid().ToStrin
 New-Item -ItemType Directory -Path $taskLogs -Force | Out-Null
 $taskProcess = $null
 try {
-    $taskProcess = Start-Process -FilePath 'dotnet' -ArgumentList @(
-        $taskDll, '--environment', 'Production', '--urls', $taskBase,
-        '--Logging:EventLog:LogLevel:Default', 'None',
-        '--ConnectionStrings:Default', "Host=127.0.0.1;Port=$taskDbPort;Database=error_probe;Username=probe;Password=TEST_ONLY_SECRET;Timeout=1;SSLMode=Disable"
-    ) -WorkingDirectory $taskMvc -WindowStyle Hidden -PassThru `
-        -RedirectStandardOutput (Join-Path $taskLogs 'stdout.log') `
-        -RedirectStandardError (Join-Path $taskLogs 'stderr.log')
+    $taskProcess = Start-CinemaTestProcess -MvcPath $taskMvc -BaseUrl $taskBase -Logs $taskLogs -ExtraArgs @('--ConnectionStrings:Default', "Host=127.0.0.1;Port=$taskDbPort;Database=error_probe;Username=probe;Password=TEST_ONLY_SECRET;Timeout=1;SSLMode=Disable")
 
     $taskReady = $false
     for ($taskAttempt = 0; $taskAttempt -lt 40; $taskAttempt++) {

@@ -3,6 +3,7 @@ param([ValidateRange(0, 300)][int]$UiHoldSeconds = 0)
 
 $ErrorActionPreference = 'Stop'
 $taskRoot = Split-Path $PSScriptRoot -Parent
+. (Join-Path $PSScriptRoot 'lib/Test-Process.ps1')
 Push-Location $taskRoot
 $taskSuffix = [Guid]::NewGuid().ToString('N')
 $taskDb = "codex_public_$taskSuffix"
@@ -35,14 +36,7 @@ try {
     $taskSocket.Stop()
     $taskBase = "http://127.0.0.1:$taskPort"
     $taskMvc = Join-Path $taskRoot 'OnlineCinema.Mvc'
-    $taskProcess = Start-Process dotnet -ArgumentList @(
-        (Join-Path $taskMvc 'bin/Debug/net8.0/OnlineCinema.Mvc.dll'),
-        '--environment', 'Production', '--urls', $taskBase,
-        '--DataProtection:KeysPath', (Join-Path $taskLogs 'keys'),
-        '--Logging:EventLog:LogLevel:Default', 'None'
-    ) -WorkingDirectory $taskMvc -WindowStyle Hidden -PassThru `
-        -RedirectStandardOutput (Join-Path $taskLogs 'stdout.log') `
-        -RedirectStandardError (Join-Path $taskLogs 'stderr.log')
+    $taskProcess = Start-CinemaTestProcess -MvcPath $taskMvc -BaseUrl $taskBase -Logs $taskLogs
     $taskReady = $false
     for ($taskAttempt = 0; $taskAttempt -lt 40; $taskAttempt++) {
         try {

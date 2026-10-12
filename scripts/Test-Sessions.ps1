@@ -34,7 +34,7 @@ $taskMovie = $taskSessions[0].MovieId
 $taskFiltered = @((Get-SessionsResponse "?date=$taskTomorrow&movieId=$taskMovie&hallId=$taskHall").Content | ConvertFrom-Json)
 if ($taskFiltered.Count -ne 1 -or $taskFiltered[0].MovieId -ne $taskMovie) { throw 'Фильтр фильма не работает.' }
 
-foreach ($taskQuery in @('?date=08.10.2025', "?date=$taskTomorrow&movieId=10", "?date=$taskTomorrow&hallId=2147483647")) {
+foreach ($taskQuery in @('?date=08.10.2025', "?date=$taskTomorrow&movieId=2147483647", "?date=$taskTomorrow&hallId=2147483647")) {
     $taskResponse = Get-SessionsResponse $taskQuery
     if ($taskResponse.StatusCode -ne 200 -or $taskResponse.Content.Trim() -ne '[]') { throw "Ожидался пустой список для $taskQuery" }
 }
