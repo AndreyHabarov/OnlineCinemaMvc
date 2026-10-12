@@ -1,27 +1,43 @@
+@inject OnlineCinema.Application.SessionAvailability sessionAvailability
 <footer class="site-footer">
     <div class="container">
-        <div class="row g-4">
-            <div class="col-12 col-md-5">
+        <div class="footer-grid">
+            <div class="footer-brand">
                 <a class="site-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <img src="~/images/logo/logo.png" alt="" class="site-logo" /><span>MovieMax</span>
                 </a>
-                <p class="mt-3 mb-0">Демонстрационный кинотеатр. Покупка билетов проходит без списания денег.</p>
+                <p class="footer-tagline">Кино, к которому хочется возвращаться.</p>
+                <p>Истории большого экрана, любимые актёры и ваш следующий киновечер.</p>
+                <a class="btn btn-primary" href="/#movie-catalog">Выбрать фильм <span aria-hidden="true">→</span></a>
             </div>
-            <nav class="col-12 col-md-7" aria-label="Навигация внизу страницы">
-                <div class="row g-3">
-                    <div class="col-6 d-flex flex-column gap-2">
-                        <a asp-area="" asp-controller="Home" asp-action="Index">Все фильмы</a>
-                        <a asp-area="" asp-controller="Movies" asp-action="KidsMovies">Детям</a>
-                        <a asp-area="" asp-controller="Movies" asp-action="ArtMovies">Арт</a>
-                        <a asp-area="" asp-controller="Hall" asp-action="GetHalls">Залы и места</a>
-                    </div>
-                    <div class="col-6 d-flex flex-column gap-2">
-                        <a asp-area="" asp-controller="Promotions" asp-action="Promotions">Акции</a>
-                        <a asp-area="" asp-controller="News" asp-action="GetAll">Новости</a>
-                        <a asp-area="" asp-controller="Account" asp-action="PersonalAccount">Мои билеты</a>
-                    </div>
-                </div>
+            <nav class="footer-column" aria-label="Навигация внизу страницы">
+                <h2 class="footer-heading">В кино</h2>
+                <a href="/#movie-catalog">Афиша</a>
+                <a asp-area="" asp-controller="Movies" asp-action="KidsMovies">Для всей семьи</a>
+                <a asp-area="" asp-controller="Movies" asp-action="ArtMovies">Арт</a>
+                <a asp-area="" asp-controller="Hall" asp-action="GetHalls">Залы и места</a>
+                <a asp-area="" asp-controller="Promotions" asp-action="Promotions">Акции и подборки</a>
+                <a asp-area="" asp-controller="News" asp-action="GetAll">Истории о кино</a>
             </nav>
+            @await Component.InvokeAsync("FooterGenres")
+            <div class="footer-column">
+                <h2 class="footer-heading">Ваш киновечер</h2>
+                <ol class="footer-steps">
+                    <li>Выберите фильм и сеанс</li>
+                    <li>Войдите и отметьте места</li>
+                    <li>Получите билет в кабинете</li>
+                </ol>
+                <a asp-area="" asp-controller="Account" asp-action="PersonalAccount">Мои билеты →</a>
+                <p class="footer-time">Время сеансов — московское, UTC+3.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>MovieMax · @(sessionAvailability.IsDemo ? "Демонстрационный кинотеатр" : "Кинотеатр")</p>
+            @if (sessionAvailability.IsDemo)
+            {
+                <p class="footer-demo"><span class="footer-status" aria-hidden="true"></span>Демобилеты · без списания денег</p>
+            }
+            <a href="https://github.com/AndreyHabarov/OnlineCinemaMvc" target="_blank" rel="noopener noreferrer">Проект на GitHub <span aria-hidden="true">↗</span></a>
         </div>
     </div>
 </footer>

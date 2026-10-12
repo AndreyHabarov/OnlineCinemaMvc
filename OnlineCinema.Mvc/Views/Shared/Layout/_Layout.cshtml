@@ -8,10 +8,11 @@
     @await Html.PartialAsync("_Styles.cshtml")
 </head>
 <body>
+    <a class="skip-link" href="#main-content">Перейти к содержимому</a>
     @await Html.PartialAsync("_Header.cshtml")
     @RenderSection("Banner", false)
     <div class="container site-content">
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-3" id="main-content" tabindex="-1">
             @RenderBody()
         </main>
     </div>

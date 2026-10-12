@@ -999,3 +999,121 @@ img {
     font-size: .875rem;
     color: var(--cinema-text-muted);
 }
+
+.skip-link {
+    position: fixed;
+    top: .5rem;
+    left: 1rem;
+    z-index: 2000;
+    padding: .75rem 1rem;
+    border-radius: .5rem;
+    background: var(--cinema-accent);
+    color: var(--cinema-text);
+    transform: translateY(-160%);
+}
+
+.skip-link:focus {
+    transform: translateY(0);
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+    gap: 2rem;
+}
+
+.footer-tagline {
+    margin: 1.25rem 0 .75rem;
+    font-size: 1.25rem;
+    font-weight: 650;
+    color: var(--cinema-text);
+    max-width: 18rem;
+}
+
+.footer-brand > p:not(.footer-tagline) {
+    max-width: 20rem;
+    margin-bottom: 1.5rem;
+}
+
+.footer-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .65rem;
+    min-width: 0;
+}
+
+.footer-heading {
+    font-size: .875rem;
+    font-weight: 700;
+    color: var(--cinema-text);
+    margin-bottom: .65rem;
+}
+
+.footer-steps {
+    padding-left: 1.25rem;
+    color: var(--cinema-text-muted);
+    display: grid;
+    gap: .65rem;
+}
+
+.footer-steps li::marker {
+    color: var(--cinema-accent);
+    font-weight: 700;
+}
+
+.footer-time {
+    font-size: .8125rem;
+    margin-top: .75rem;
+}
+
+.footer-bottom {
+    border-top: 1px solid var(--cinema-border);
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem 1.5rem;
+    font-size: .8125rem;
+}
+
+.footer-bottom p {
+    margin: 0;
+}
+
+.footer-demo {
+    display: inline-flex;
+    gap: .5rem;
+    align-items: center;
+}
+
+.footer-status {
+    width: .4rem;
+    height: .4rem;
+    border-radius: 50%;
+    background: var(--cinema-accent);
+}
+
+@media (max-width: 991.98px) {
+    .footer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 575.98px) {
+    .footer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 2rem 1rem;
+    }
+
+    .footer-brand, .footer-column:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
