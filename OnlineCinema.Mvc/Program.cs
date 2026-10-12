@@ -33,6 +33,13 @@ if (builder.Environment.IsDevelopment())
 }
 
 var keysPath = builder.Configuration["DataProtection:KeysPath"];
+var cinemaMode = builder.Configuration["Cinema:Mode"] ?? "production";
+if (cinemaMode is not ("demo" or "production"))
+    throw new DemoConfigurationException("Cinema:Mode должен быть demo или production.");
+if (cinemaMode != "demo" && builder.Configuration.GetValue<bool>("Demo:AdminEnabled"))
+    throw new DemoConfigurationException("Демоадминистратор разрешён только в режиме demo.");
+if (cinemaMode == "demo" && !builder.Configuration.GetValue<bool>("Cinema:Initialize"))
+    builder.Services.AddHostedService<DemoScheduleUpdater>();
 if (!string.IsNullOrWhiteSpace(keysPath))
 {
     var protection = builder.Services.AddDataProtection()
@@ -113,11 +120,6 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 var app = builder.Build();
-var cinemaMode = builder.Configuration["Cinema:Mode"] ?? "production";
-if (cinemaMode is not ("demo" or "production"))
-    throw new DemoConfigurationException("Cinema:Mode должен быть demo или production.");
-if (cinemaMode != "demo" && builder.Configuration.GetValue<bool>("Demo:AdminEnabled"))
-    throw new DemoConfigurationException("Демоадминистратор разрешён только в режиме demo.");
 
 if (builder.Configuration.GetValue<bool>("Cinema:Initialize"))
 {
@@ -129,9 +131,7 @@ if (builder.Configuration.GetValue<bool>("Cinema:Initialize"))
         {
             if (cinemaMode == "demo")
             {
-                var data = Path.Combine(app.Environment.ContentRootPath, "data");
-                if (!Directory.Exists(data)) data = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, "..", "data"));
-                var catalog = await DemoCatalog.LoadAsync(data, app.Environment.WebRootPath);
+                var catalog = await DemoCatalogFiles.LoadAsync(app.Environment);
                 await seeder.SeedAsync(catalog, new DemoAdminOptions(
                     builder.Configuration.GetValue<bool>("Demo:AdminEnabled"),
                     builder.Configuration["Demo:AdminEmail"], builder.Configuration["Demo:AdminPassword"]));

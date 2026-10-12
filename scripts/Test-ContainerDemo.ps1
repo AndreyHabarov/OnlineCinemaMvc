@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([ValidateRange(0, 600)][int]$UiHoldSeconds = 0)
+param([ValidateRange(0, 600)][int]$UiHoldSeconds = 0, [switch]$CheckScheduleRefresh)
 $ErrorActionPreference = 'Stop'
 Push-Location (Split-Path $PSScriptRoot -Parent)
 . (Join-Path $PSScriptRoot 'lib/Docker-TestEnvironment.ps1')
@@ -23,6 +23,7 @@ try {
     $taskScope = New-CinemaDockerTestEnvironment
     $env:DEMO_ADMIN_ENABLED = 'true'
     $env:DEMO_ADMIN_PASSWORD = 'A1a' + [Guid]::NewGuid().ToString('N')
+    if ($CheckScheduleRefresh) { $env:DEMO_SCHEDULE_REFRESH_MINUTES = '1' }
     docker compose up -d --wait *> (Join-Path $taskScope.Logs 'startup.log')
     if ($LASTEXITCODE) { throw 'Чистый Docker-запуск не прошёл.' }
     $taskCounts = Test-Sql 'SELECT (SELECT count(*) FROM "Movies"),(SELECT count(*) FROM "Halls"),(SELECT count(*) FROM "Seats"),(SELECT count(*) FROM "News"),(SELECT count(*) FROM "Promotions"),(SELECT count(*) FROM "AspNetUsers");'
@@ -78,6 +79,30 @@ SELECT md5(jsonb_build_object(
     if ((Test-Sql $taskSnapshotSql) -ne $taskBefore) { throw 'Перезапуск изменил пользователя, билет или админские правки.' }
     $taskReceipt = Invoke-WebRequest "$($taskScope.BaseUrl)$($taskOrder.receiptUrl)" -WebSession $taskClient -NoProxy
     if ($taskReceipt.StatusCode -ne 200) { throw 'Cookie/билет не пережили перезапуск.' }
+    if ($CheckScheduleRefresh) {
+        $taskSlot = (Test-Sql @'
+SELECT s."Id"||'|'||s."HallId"||'|'||to_char(s."DateStart",'YYYY-MM-DD"T"HH24:MI:SS') FROM "Sessions" s
+WHERE NOT EXISTS (SELECT 1 FROM "Tickets" t WHERE t."SessionId"=s."Id")
+AND NOT EXISTS (SELECT 1 FROM "PurchaseOrders" o WHERE o."SessionId"=s."Id")
+ORDER BY s."DateStart" DESC,s."Id" LIMIT 1;
+'@).Split('|')
+        $taskSlotId = [int]$taskSlot[0]
+        $taskSlotHall = [int]$taskSlot[1]
+        $taskSlotDate = [DateTime]::ParseExact($taskSlot[2],'yyyy-MM-ddTHH:mm:ss',[Globalization.CultureInfo]::InvariantCulture).ToString('yyyy-MM-ddTHH:mm:ss')
+        # Только disposable БД: моделируем ещё не заполненный слот, без билетов.
+        $null = Test-Sql ("BEGIN; SELECT pg_advisory_xact_lock(726401991); DELETE FROM ""DemoSeedRecords"" WHERE ""Key"" LIKE 'session:%' AND ""EntityId""=$taskSlotId; DELETE FROM ""Sessions"" WHERE ""Id""=$taskSlotId; COMMIT;")
+        $taskProbe = "SELECT count(*) FROM ""Sessions"" WHERE ""HallId""=$taskSlotHall AND ""DateStart""='$taskSlotDate';"
+        $taskDeadline = [DateTime]::UtcNow.AddSeconds(100)
+        $taskRefreshed = $false
+        Write-Host 'Ожидание фонового пополнения пустого демослота без перезапуска.'
+        while ([DateTime]::UtcNow -lt $taskDeadline) {
+            if ([int](Test-Sql $taskProbe) -eq 1) { $taskRefreshed = $true; break }
+            Start-Sleep -Milliseconds 1000
+        }
+        if (!$taskRefreshed) { throw 'Фоновое расписание не пополнилось.' }
+        if ((Test-Sql $taskSnapshotSql) -ne $taskBefore) { throw 'Фоновое обновление изменило пользователей/билеты/правки.' }
+        Write-Host 'Фоновый процесс пополнил расписание, сохранив купленный сеанс и остальные данные.'
+    }
     $taskDuplicates = Test-Sql 'SELECT count(*) FROM (SELECT "HallId","DateStart" FROM "Sessions" GROUP BY "HallId","DateStart" HAVING count(*)>1) conflicts;'
     if ([int]$taskDuplicates -ne 0) { throw 'Сеансы продублированы.' }
     Write-Host 'Чистый Docker-запуск: каталог/места/сеансы/картинки, роли/админка, регистрация/покупка/билет и повтор с сохранением cookies/данных/правок прошли.'

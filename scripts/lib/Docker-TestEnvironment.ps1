@@ -1,5 +1,5 @@
 function New-CinemaDockerTestEnvironment {
-    $taskVariables = @('COMPOSE_PROJECT_NAME','POSTGRES_USER','POSTGRES_DB','POSTGRES_PASSWORD','POSTGRES_PORT','APP_PORT','ConnectionStrings__Default','CINEMA_MODE','DEMO_ADMIN_ENABLED','DEMO_ADMIN_EMAIL','DEMO_ADMIN_PASSWORD')
+    $taskVariables = @('COMPOSE_PROJECT_NAME','POSTGRES_USER','POSTGRES_DB','POSTGRES_PASSWORD','POSTGRES_PORT','APP_PORT','ConnectionStrings__Default','CINEMA_MODE','DEMO_ADMIN_ENABLED','DEMO_ADMIN_EMAIL','DEMO_ADMIN_PASSWORD','DEMO_SCHEDULE_REFRESH_MINUTES')
     $taskPrevious = @{}
     foreach ($taskName in $taskVariables) { $taskPrevious[$taskName] = [Environment]::GetEnvironmentVariable($taskName, 'Process') }
     $taskProject = 'codex-container-' + [Guid]::NewGuid().ToString('N')
@@ -26,6 +26,7 @@ function New-CinemaDockerTestEnvironment {
     $env:DEMO_ADMIN_ENABLED = 'false'
     $env:DEMO_ADMIN_EMAIL = 'admin@example.invalid'
     $env:DEMO_ADMIN_PASSWORD = $null
+    $env:DEMO_SCHEDULE_REFRESH_MINUTES = '60'
     [pscustomobject]@{ Project = $taskProject; Logs = $taskLogs; Previous = $taskPrevious; Variables = $taskVariables; BaseUrl = "http://127.0.0.1:$($taskPorts[1])" }
 }
 
