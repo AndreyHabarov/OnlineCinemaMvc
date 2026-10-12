@@ -1,5 +1,6 @@
 @model IEnumerable<NewsViewModel>
 <h1 class="page-heading">Новости</h1>
+<p class="section-intro">Истории о кино, его создателях и фильмах нашей афиши.</p>
 @if (!Model.Any())
 {
     @await Html.PartialAsync("_EmptyState", "Новостей пока нет.")
@@ -11,8 +12,9 @@
             <a asp-controller="News" asp-action="GetNewsById" asp-route-id="@news.Id"><img src="@news.ImagePath" class="card-img-top" alt="Новость «@news.Name»" loading="lazy"></a>
             <div class="card-body">
                 <h2 class="h5"><a asp-controller="News" asp-action="GetNewsById" asp-route-id="@news.Id">@news.Name</a></h2>
-                <p class="text-secondary">@news.Description</p>
-                <p class="text-secondary mb-0"><small>@news.Date.ToString("f")</small></p>
+                <p class="text-secondary news-summary">@news.Description</p>
+                <a asp-controller="News" asp-action="GetNewsById" asp-route-id="@news.Id">Читать статью →</a>
+                <p class="text-secondary mb-0"><small>@news.Date.ToString("d MMMM yyyy")</small></p>
             </div>
         </article>
     }

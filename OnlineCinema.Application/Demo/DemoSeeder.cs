@@ -9,7 +9,7 @@ namespace OnlineCinema.Application.Demo;
 public sealed record DemoAdminOptions(bool Enabled, string? Email, string? Password);
 
 public sealed class DemoSeeder(AppDbContext context, RoleManager<Role> roles, UserManager<User> users,
-    MovieCastCatalog casts, DemoPromotionCatalog promotions)
+    MovieCastCatalog casts, DemoPromotionCatalog promotions, DemoNewsCatalog newsCatalog)
 {
     public async Task EnsureRolesAsync()
     {
@@ -82,16 +82,7 @@ public sealed class DemoSeeder(AppDbContext context, RoleManager<Role> roles, Us
             () => context.Advertisings.FirstOrDefaultAsync(a => a.PathToImage == banner),
             () => new Advertising { PathToImage = banner });
         await SeedPromotionsAsync();
-        var news = new[]
-        {
-            ("welcome", "Добро пожаловать в кинотеатр", "В афише — американские фильмы 1990–1999 годов. Билеты демонстрационные, деньги не списываются."),
-            ("tickets", "Как получить демобилет", "Зарегистрируйтесь с тестовыми данными, откройте фильм, выберите сеанс и места. Билет появится в личном кабинете."),
-            ("time", "Сеансы по московскому времени", "Расписание показывает московское время UTC+3. Цена рассчитывается для выбранных мест на сервере.")
-        };
-        foreach (var item in news)
-            await EnsureAsync("news:" + item.Item1,
-                () => context.News.FirstOrDefaultAsync(n => n.Name == item.Item2),
-                () => new News { Name = item.Item2, Description = item.Item3, ImagePath = banner, Date = CinemaTime.Now });
+        await SeedNewsAsync();
         await SeedAdminAsync(admin);
         await PopulateScheduleAsync(catalog);
         await transaction.CommitAsync();
@@ -105,6 +96,27 @@ public sealed class DemoSeeder(AppDbContext context, RoleManager<Role> roles, Us
         await transaction.CommitAsync();
     }
 
+    private async Task SeedNewsAsync()
+    {
+        foreach (var data in newsCatalog.Items)
+        {
+            var result = await EnsureAsync("news:" + data.Key,
+                () => context.News.FirstOrDefaultAsync(n => n.Name == data.Name
+                    || (n.Name == data.Legacy.Name && n.Description == data.Legacy.Description
+                        && n.ImagePath == data.Legacy.ImagePath)),
+                () => new News { Name = data.Name, Description = data.Description,
+                    ImagePath = data.ImagePath, Date = data.Date });
+            if (result.Entity == null || await HasMarkerAsync("news-presentation:v1:" + data.Key)) continue;
+            if (data.Legacy.Matches(result.Entity))
+            {
+                result.Entity.Name = data.Name;
+                result.Entity.Description = data.Description;
+                result.Entity.ImagePath = data.ImagePath;
+            }
+            Mark("news-presentation:v1:" + data.Key, result.Entity.Id);
+            await context.SaveChangesAsync();
+        }
+    }
     private async Task SeedPromotionsAsync()
     {
         foreach (var data in promotions.Items)

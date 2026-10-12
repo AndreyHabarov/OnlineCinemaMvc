@@ -39,6 +39,7 @@ try {
     ./scripts/Update-DemoCatalog.ps1 *> (Join-Path $taskLogs 'catalog.log')
     ./scripts/Update-DemoCast.ps1 *> (Join-Path $taskLogs 'cast.log')
     ./scripts/Update-DemoPromotions.ps1 *> (Join-Path $taskLogs 'promotions.log')
+    ./scripts/Update-DemoNews.ps1 *> (Join-Path $taskLogs 'news.log')
     ./scripts/Update-DemoSeats.ps1 *> (Join-Path $taskLogs 'seats.log')
     ./scripts/Update-DemoSchedule.ps1 *> (Join-Path $taskLogs 'schedule.log')
     'INSERT INTO "AspNetRoles" ("Name","NormalizedName","ConcurrencyStamp") VALUES (''admin'',''ADMIN'',''codex-suite'');' |
@@ -57,7 +58,7 @@ try {
         catch { Start-Sleep -Milliseconds 250 }
     }
     if (!$taskReady) { throw 'Тестовый сайт недоступен.' }
-    foreach ($taskTest in @('Test-Catalog','Test-Cast','Test-DemoPromotions','Test-Authentication','Test-Sessions','Test-Admin','Test-TicketPurchases')) {
+    foreach ($taskTest in @('Test-Catalog','Test-Cast','Test-DemoPromotions','Test-DemoNews','Test-Authentication','Test-Sessions','Test-Admin','Test-TicketPurchases')) {
         & (Join-Path $PSScriptRoot "$taskTest.ps1") -BaseUrl $taskBase
     }
     ./scripts/Test-PublicPages.ps1

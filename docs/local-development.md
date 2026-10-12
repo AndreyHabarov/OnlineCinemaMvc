@@ -48,6 +48,7 @@ dotnet run --project OnlineCinema.Mvc --launch-profile http
 ./scripts/Update-DemoCatalog.ps1
 ./scripts/Update-DemoCast.ps1
 ./scripts/Update-DemoPromotions.ps1
+./scripts/Update-DemoNews.ps1
 ./scripts/Update-DemoSeats.ps1
 ./scripts/Update-DemoSchedule.ps1 -DemoCalendar
 ```

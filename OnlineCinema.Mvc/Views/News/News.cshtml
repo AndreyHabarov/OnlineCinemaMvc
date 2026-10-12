@@ -1,9 +1,25 @@
 @model NewsViewModel
 <article class="detail-page">
-    <p class="eyebrow">Новости кинотеатра</p>
+    <p class="eyebrow">@(Model.IsRetrospective ? "Из истории кино" : "Новости кинотеатра")</p>
     <h1 class="page-heading">@Model.Name</h1>
-    <p class="text-secondary">@Model.Date.ToString("f")</p>
+    <p class="text-secondary">Опубликовано @Model.Date.ToString("d MMMM yyyy")</p>
     <img src="~/@Model.ImagePath.TrimStart('/')" class="detail-image" alt="Новость «@Model.Name»">
     <p class="detail-description">@Model.Description</p>
-    <a asp-controller="News" asp-action="GetAll">← Все новости</a>
+    @if (Model.IsRetrospective)
+    {
+        <p class="news-source">Источники фактов: <a href="@Model.SourceUrl" target="_blank" rel="noopener noreferrer">@Model.SourceTitle</a>
+            @if (Model.SourceUrl!.EndsWith("/1995"))
+            {
+                <span> · <a href="https://www.oscars.org/oscars/ceremonies/1994" target="_blank" rel="noopener noreferrer">Церемония 1994 года</a></span>
+            }
+        </p>
+        <p class="text-secondary"><small>Тематическая иллюстрация создана специально для статьи; это не кадр из фильма.</small></p>
+    }
+    <div class="action-row">
+        @if (Model.MovieId.HasValue)
+        {
+            <a class="btn btn-primary" asp-controller="Movies" asp-action="Get" asp-route-id="@Model.MovieId">Сеансы: @Model.MovieName</a>
+        }
+        <a class="btn btn-outline-light" asp-controller="News" asp-action="GetAll">← Все новости</a>
+    </div>
 </article>

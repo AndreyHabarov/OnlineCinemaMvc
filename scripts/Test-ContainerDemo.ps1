@@ -30,7 +30,7 @@ try {
     if ($taskCounts.Trim() -ne '36|5|506|3|3|1') { throw 'Неполное сидирование.' }
     $taskPaths = @(Test-Sql 'SELECT "PosterPath" FROM "Movies" UNION SELECT "PicturePath" FROM "Halls" UNION SELECT "ImagePath" FROM "News" UNION SELECT "ImagePath" FROM "Promotions";')
     foreach ($taskPath in $taskPaths) { $null = Invoke-WebRequest "$($taskScope.BaseUrl)/$($taskPath.TrimStart('/'))" -NoProxy -TimeoutSec 15 }
-    foreach ($taskTest in @('Test-Catalog','Test-Cast','Test-DemoPromotions','Test-Authentication','Test-Sessions','Test-Admin','Test-TicketPurchases')) {
+    foreach ($taskTest in @('Test-Catalog','Test-Cast','Test-DemoPromotions','Test-DemoNews','Test-Authentication','Test-Sessions','Test-Admin','Test-TicketPurchases')) {
         if ($taskTest -in @('Test-Sessions','Test-TicketPurchases')) {
             & (Join-Path $PSScriptRoot "$taskTest.ps1") -BaseUrl $taskScope.BaseUrl -DemoCalendar
         } else {
