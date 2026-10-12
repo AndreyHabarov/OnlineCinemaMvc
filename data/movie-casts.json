@@ -1,0 +1,578 @@
+[
+  {
+    "Slug": "shawshank-redemption",
+    "OriginalName": "The Shawshank Redemption",
+    "Actors": [
+      "tim-robbins",
+      "morgan-freeman",
+      "bob-gunton",
+      "william-sadler-actor",
+      "clancy-brown"
+    ],
+    "LegacyActors": [
+      "Тим Роббинс, Морган Фриман, Боб Гантон"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Shawshank_Redemption"
+  },
+  {
+    "Slug": "forrest-gump",
+    "OriginalName": "Forrest Gump",
+    "Actors": [
+      "tom-hanks",
+      "robin-wright",
+      "gary-sinise",
+      "mykelti-williamson",
+      "sally-field"
+    ],
+    "LegacyActors": [
+      "Том Хэнкс, Робин Райт, Гэри Синиз"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/Forrest_Gump"
+  },
+  {
+    "Slug": "the-matrix",
+    "OriginalName": "The Matrix",
+    "Actors": [
+      "keanu-reeves",
+      "laurence-fishburne",
+      "carrie-anne-moss",
+      "hugo-weaving",
+      "gloria-foster"
+    ],
+    "LegacyActors": [
+      "Киану Ривз, Лоренс Фишбёрн, Кэрри-Энн Мосс"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Matrix"
+  },
+  {
+    "Slug": "jurassic-park",
+    "OriginalName": "Jurassic Park",
+    "Actors": [
+      "sam-neill",
+      "laura-dern",
+      "jeff-goldblum",
+      "richard-attenborough",
+      "samuel-l-jackson"
+    ],
+    "LegacyActors": [
+      "Сэм Нилл, Лора Дерн, Джефф Голдблюм"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/Jurassic_Park"
+  },
+  {
+    "Slug": "terminator-2",
+    "OriginalName": "Terminator 2: Judgment Day",
+    "Actors": [
+      "arnold-schwarzenegger",
+      "linda-hamilton",
+      "edward-furlong",
+      "robert-patrick",
+      "joe-morton"
+    ],
+    "LegacyActors": [
+      "Арнольд Шварценеггер, Линда Хэмилтон, Эдвард Фёрлонг, Роберт Патрик"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/Terminator_2%3A_Judgment_Day"
+  },
+  {
+    "Slug": "the-lion-king",
+    "OriginalName": "The Lion King",
+    "Actors": [
+      "matthew-broderick",
+      "jeremy-irons",
+      "james-earl-jones",
+      "nathan-lane",
+      "rowan-atkinson"
+    ],
+    "LegacyActors": [
+      "Мэттью Бродерик, Джеймс Эрл Джонс, Джереми Айронс, Нейтан Лейн"
+    ],
+    "IsVoiceCast": true,
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Lion_King"
+  },
+  {
+    "Slug": "toy-story",
+    "OriginalName": "Toy Story",
+    "Actors": [
+      "tom-hanks",
+      "tim-allen",
+      "don-rickles",
+      "wallace-shawn",
+      "john-ratzenberger"
+    ],
+    "LegacyActors": [
+      "Том Хэнкс, Тим Аллен, Дон Риклс"
+    ],
+    "IsVoiceCast": true,
+    "SourcePage": "https://en.wikipedia.org/wiki/Toy_Story"
+  },
+  {
+    "Slug": "groundhog-day",
+    "OriginalName": "Groundhog Day",
+    "Actors": [
+      "bill-murray",
+      "andie-macdowell",
+      "chris-elliott",
+      "stephen-tobolowsky",
+      "brian-doyle-murray"
+    ],
+    "LegacyActors": [
+      "Билл Мюррей, Энди Макдауэлл, Крис Эллиотт"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/Groundhog_Day_(film)"
+  },
+  {
+    "Slug": "the-truman-show",
+    "OriginalName": "The Truman Show",
+    "Actors": [
+      "jim-carrey",
+      "ed-harris",
+      "laura-linney",
+      "noah-emmerich",
+      "natascha-mcelhone"
+    ],
+    "LegacyActors": [
+      "Джим Керри, Лора Линни, Эд Харрис"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Truman_Show"
+  },
+  {
+    "Slug": "the-green-mile",
+    "OriginalName": "The Green Mile",
+    "Actors": [
+      "tom-hanks",
+      "david-morse",
+      "bonnie-hunt",
+      "michael-clarke-duncan",
+      "james-cromwell"
+    ],
+    "LegacyActors": [
+      "Том Хэнкс, Майкл Кларк Дункан, Дэвид Морс"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Green_Mile_(film)"
+  },
+  {
+    "Slug": "home-alone",
+    "OriginalName": "Home Alone",
+    "Actors": [
+      "macaulay-culkin",
+      "joe-pesci",
+      "daniel-stern-actor",
+      "catherine-o-hara",
+      "john-heard-actor"
+    ],
+    "LegacyActors": [
+      "Маколей Калкин, Джо Пеши, Дэниел Стерн, Кэтрин О’Хара"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/Home_Alone"
+  },
+  {
+    "Slug": "titanic",
+    "OriginalName": "Titanic",
+    "Actors": [
+      "leonardo-dicaprio",
+      "kate-winslet",
+      "gloria-stuart",
+      "billy-zane",
+      "frances-fisher"
+    ],
+    "LegacyActors": [
+      "Леонардо Ди Каприо, Кейт Уинслет, Билли Зейн"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/Titanic_(1997_film)"
+  },
+  {
+    "Slug": "pulp-fiction",
+    "OriginalName": "Pulp Fiction",
+    "Actors": [
+      "john-travolta",
+      "samuel-l-jackson",
+      "uma-thurman",
+      "bruce-willis",
+      "harvey-keitel"
+    ],
+    "LegacyActors": [
+      "Джон Траволта, Сэмюэл Л. Джексон, Ума Турман, Брюс Уиллис, Харви Кейтель"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/Pulp_Fiction"
+  },
+  {
+    "Slug": "fight-club",
+    "OriginalName": "Fight Club",
+    "Actors": [
+      "brad-pitt",
+      "edward-norton",
+      "helena-bonham-carter",
+      "meat-loaf-aday",
+      "jared-leto"
+    ],
+    "LegacyActors": [
+      "Эдвард Нортон, Брэд Питт, Хелена Бонэм Картер"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/Fight_Club"
+  },
+  {
+    "Slug": "seven",
+    "OriginalName": "Se7en",
+    "Actors": [
+      "brad-pitt",
+      "morgan-freeman",
+      "gwyneth-paltrow",
+      "richard-roundtree",
+      "r-lee-ermey"
+    ],
+    "LegacyActors": [
+      "Брэд Питт, Морган Фриман, Гвинет Пэлтроу, Джон К. Макгинли"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/Seven_%281995_film%29"
+  },
+  {
+    "Slug": "goodfellas",
+    "OriginalName": "Goodfellas",
+    "Actors": [
+      "robert-de-niro",
+      "ray-liotta",
+      "joe-pesci",
+      "lorraine-bracco",
+      "paul-sorvino"
+    ],
+    "LegacyActors": [
+      "Рэй Лиотта, Роберт Де Ниро, Джо Пеши, Лоррейн Бракко, Пол Сорвино"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/Goodfellas"
+  },
+  {
+    "Slug": "reservoir-dogs",
+    "OriginalName": "Reservoir Dogs",
+    "Actors": [
+      "harvey-keitel",
+      "tim-roth",
+      "michael-madsen",
+      "steve-buscemi",
+      "quentin-tarantino"
+    ],
+    "LegacyActors": [
+      "Харви Кейтель, Тим Рот, Стив Бушеми, Майкл Мэдсен, Крис Пенн"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/Reservoir_Dogs"
+  },
+  {
+    "Slug": "silence-of-the-lambs",
+    "OriginalName": "The Silence of the Lambs",
+    "Actors": [
+      "jodie-foster",
+      "anthony-hopkins",
+      "scott-glenn",
+      "ted-levine",
+      "diane-baker"
+    ],
+    "LegacyActors": [
+      "Джоди Фостер, Энтони Хопкинс, Скотт Гленн, Тед Левайн"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Silence_of_the_Lambs_%28film%29"
+  },
+  {
+    "Slug": "sixth-sense",
+    "OriginalName": "The Sixth Sense",
+    "Actors": [
+      "bruce-willis",
+      "toni-collette",
+      "olivia-williams",
+      "haley-joel-osment",
+      "donnie-wahlberg"
+    ],
+    "LegacyActors": [
+      "Брюс Уиллис, Хэйли Джоэл Осмент, Тони Коллетт, Оливия Уильямс"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Sixth_Sense"
+  },
+  {
+    "Slug": "saving-private-ryan",
+    "OriginalName": "Saving Private Ryan",
+    "Actors": [
+      "tom-hanks",
+      "matt-damon",
+      "tom-sizemore",
+      "edward-burns",
+      "vin-diesel"
+    ],
+    "LegacyActors": [
+      "Том Хэнкс, Мэтт Деймон, Том Сайзмор, Эдвард Бёрнс"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/Saving_Private_Ryan"
+  },
+  {
+    "Slug": "usual-suspects",
+    "OriginalName": "The Usual Suspects",
+    "Actors": [
+      "kevin-spacey",
+      "gabriel-byrne",
+      "chazz-palminteri",
+      "stephen-baldwin",
+      "benicio-del-toro"
+    ],
+    "LegacyActors": [
+      "Кевин Спейси, Гэбриел Бирн, Бенисио дель Торо, Стивен Болдуин, Кевин Поллак"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Usual_Suspects"
+  },
+  {
+    "Slug": "heat",
+    "OriginalName": "Heat",
+    "Actors": [
+      "al-pacino",
+      "robert-de-niro",
+      "val-kilmer",
+      "jon-voight",
+      "tom-sizemore"
+    ],
+    "LegacyActors": [
+      "Аль Пачино, Роберт Де Ниро, Вэл Килмер, Том Сайзмор, Джон Войт"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/Heat_%281995_film%29"
+  },
+  {
+    "Slug": "big-lebowski",
+    "OriginalName": "The Big Lebowski",
+    "Actors": [
+      "jeff-bridges",
+      "john-goodman",
+      "julianne-moore",
+      "steve-buscemi",
+      "john-turturro"
+    ],
+    "LegacyActors": [
+      "Джефф Бриджес, Джон Гудман, Джулианна Мур, Стив Бушеми, Джон Туртурро"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Big_Lebowski"
+  },
+  {
+    "Slug": "fargo",
+    "OriginalName": "Fargo",
+    "Actors": [
+      "frances-mcdormand",
+      "william-h-macy",
+      "steve-buscemi",
+      "harve-presnell",
+      "peter-stormare"
+    ],
+    "LegacyActors": [
+      "Фрэнсис Макдорманд, Уильям Х. Мэйси, Стив Бушеми, Петер Стормаре, Харв Преснелл"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/Fargo_%281996_film%29"
+  },
+  {
+    "Slug": "men-in-black",
+    "OriginalName": "Men in Black",
+    "Actors": [
+      "tommy-lee-jones",
+      "will-smith",
+      "vincent-d-onofrio",
+      "rip-torn",
+      "tony-shalhoub"
+    ],
+    "LegacyActors": [
+      "Уилл Смит, Томми Ли Джонс, Линда Фиорентино, Винсент Д’Онофрио, Рип Торн"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/Men_in_Black_%281997_film%29"
+  },
+  {
+    "Slug": "independence-day",
+    "OriginalName": "Independence Day",
+    "Actors": [
+      "will-smith",
+      "bill-pullman",
+      "jeff-goldblum",
+      "mary-mcdonnell",
+      "judd-hirsch"
+    ],
+    "LegacyActors": [
+      "Уилл Смит, Джефф Голдблюм, Билл Пуллман, Мэри Макдоннелл, Рэнди Куэйд"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/Independence_Day_%281996_film%29"
+  },
+  {
+    "Slug": "back-to-the-future-3",
+    "OriginalName": "Back to the Future Part III",
+    "Actors": [
+      "michael-j-fox",
+      "christopher-lloyd",
+      "mary-steenburgen",
+      "thomas-f-wilson",
+      "lea-thompson"
+    ],
+    "LegacyActors": [
+      "Майкл Дж. Фокс, Кристофер Ллойд, Мэри Стинберген, Томас Ф. Уилсон, Лиа Томпсон"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/Back_to_the_Future_Part_III"
+  },
+  {
+    "Slug": "speed",
+    "OriginalName": "Speed",
+    "Actors": [
+      "keanu-reeves",
+      "dennis-hopper",
+      "sandra-bullock",
+      "joe-morton",
+      "jeff-daniels"
+    ],
+    "LegacyActors": [
+      "Киану Ривз, Сандра Буллок, Деннис Хоппер, Джефф Дэниелс, Джо Мортон"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/Speed_%281994_film%29"
+  },
+  {
+    "Slug": "the-mask",
+    "OriginalName": "The Mask",
+    "Actors": [
+      "jim-carrey",
+      "peter-riegert",
+      "peter-greene",
+      "cameron-diaz",
+      "amy-yasbeck"
+    ],
+    "LegacyActors": [
+      "Джим Керри, Кэмерон Диас, Питер Ригерт, Питер Грин, Эми Ясбек"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Mask_%281994_film%29"
+  },
+  {
+    "Slug": "true-lies",
+    "OriginalName": "True Lies",
+    "Actors": [
+      "arnold-schwarzenegger",
+      "jamie-lee-curtis",
+      "tia-carrere",
+      "tom-arnold-actor",
+      "bill-paxton"
+    ],
+    "LegacyActors": [
+      "Арнольд Шварценеггер, Джейми Ли Кёртис, Том Арнольд, Билл Пэкстон, Тиа Каррере"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/True_Lies"
+  },
+  {
+    "Slug": "edward-scissorhands",
+    "OriginalName": "Edward Scissorhands",
+    "Actors": [
+      "johnny-depp",
+      "winona-ryder",
+      "dianne-wiest",
+      "anthony-michael-hall",
+      "vincent-price"
+    ],
+    "LegacyActors": [
+      "Джонни Депп, Вайнона Райдер, Дайан Уист, Энтони Майкл Холл, Винсент Прайс"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/Edward_Scissorhands"
+  },
+  {
+    "Slug": "beauty-and-the-beast",
+    "OriginalName": "Beauty and the Beast",
+    "Actors": [
+      "paige-o-hara",
+      "robby-benson",
+      "richard-white-actor",
+      "jerry-orbach",
+      "david-ogden-stiers"
+    ],
+    "LegacyActors": [
+      "Пейдж О’Хара, Робби Бенсон, Ричард Уайт, Джерри Орбах, Анджела Лэнсбери"
+    ],
+    "IsVoiceCast": true,
+    "SourcePage": "https://en.wikipedia.org/wiki/Beauty_and_the_Beast_%281991_film%29"
+  },
+  {
+    "Slug": "aladdin",
+    "OriginalName": "Aladdin",
+    "Actors": [
+      "scott-weinger",
+      "robin-williams",
+      "linda-larkin",
+      "jonathan-freeman-actor",
+      "frank-welker"
+    ],
+    "LegacyActors": [
+      "Скотт Уайнгер, Робин Уильямс, Линда Ларкин, Джонатан Фриман, Фрэнк Уэлкер"
+    ],
+    "IsVoiceCast": true,
+    "SourcePage": "https://en.wikipedia.org/wiki/Aladdin_%281992_Disney_film%29"
+  },
+  {
+    "Slug": "iron-giant",
+    "OriginalName": "The Iron Giant",
+    "Actors": [
+      "eli-marienthal",
+      "vin-diesel",
+      "jennifer-aniston",
+      "harry-connick-jr",
+      "christopher-mcdonald"
+    ],
+    "LegacyActors": [
+      "Элай Мариентал, Вин Дизель, Дженнифер Энистон, Гарри Конник-младший, Кристофер Макдональд"
+    ],
+    "IsVoiceCast": true,
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Iron_Giant"
+  },
+  {
+    "Slug": "a-few-good-men",
+    "OriginalName": "A Few Good Men",
+    "Actors": [
+      "tom-cruise",
+      "jack-nicholson",
+      "demi-moore",
+      "kevin-bacon",
+      "kiefer-sutherland"
+    ],
+    "LegacyActors": [
+      "Том Круз, Джек Николсон, Деми Мур, Кевин Бейкон, Кевин Поллак"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/A_Few_Good_Men"
+  },
+  {
+    "Slug": "the-fugitive",
+    "OriginalName": "The Fugitive",
+    "Actors": [
+      "harrison-ford",
+      "tommy-lee-jones",
+      "sela-ward",
+      "julianne-moore",
+      "joe-pantoliano"
+    ],
+    "LegacyActors": [
+      "Харрисон Форд, Томми Ли Джонс, Сила Уорд, Джулианна Мур, Джо Пантольяно"
+    ],
+    "IsVoiceCast": false,
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Fugitive_%281993_film%29"
+  }
+]

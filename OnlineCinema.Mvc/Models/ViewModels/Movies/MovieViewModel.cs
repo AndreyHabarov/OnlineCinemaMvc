@@ -1,4 +1,5 @@
 using OnlineCinema.Mvc.Models.ViewModels.Hall;
+using OnlineCinema.Application.Demo;
 
 namespace OnlineCinema.Mvc.Models.ViewModels.Movies
 {
@@ -24,6 +25,8 @@ namespace OnlineCinema.Mvc.Models.ViewModels.Movies
         public DateTime[] SessionDates { get; set; } = [];
         public bool IsDemoCalendar { get; set; }
         public string DemoCalendarLabel { get; set; } = string.Empty;
+        public IReadOnlyList<ActorPhoto> CastPhotos { get; set; } = [];
+        public bool IsVoiceCast { get; set; }
         public IEnumerable<HallViewModel> Halls { get; set; } = [];
     }
 }

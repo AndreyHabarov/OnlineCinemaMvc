@@ -947,3 +947,13 @@ img {
     text-decoration: none;
 }
 .catalog-pagination .is-current { background: var(--cinema-accent); color: #fff; border-color: var(--cinema-accent); }
+
+.cast-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1.25rem; }
+.cast-card { min-width: 0; }
+.cast-card img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; object-position: center top; border-radius: var(--cinema-radius); }
+.cast-card h3 { font-size: 1rem; margin-top: .75rem; line-height: 1.4; }
+.cast-credits { margin-top: 1.5rem; color: var(--cinema-text-muted); font-size: .85rem; }
+.cast-credits summary { cursor: pointer; padding-block: .5rem; }
+.cast-credits ul { margin-top: .75rem; }
+@media (max-width: 900px) { .cast-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 576px) { .cast-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; } }

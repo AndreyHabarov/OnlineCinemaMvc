@@ -76,3 +76,31 @@
     </dl>
 </section>
 @section Scripts { <script src="~/js/views/movie/movie.js" asp-append-version="true"></script> }
+
+@if (Model.CastPhotos.Count > 0)
+{
+    <section class="movie-cast" aria-labelledby="cast-heading">
+        <h2 id="cast-heading" class="section-heading">@(Model.IsVoiceCast ? "Голоса персонажей" : "Актёры фильма")</h2>
+        @if (Model.IsVoiceCast) { <p class="text-secondary">Исполнители в оригинальной версии мультфильма.</p> }
+        <div class="cast-grid">
+            @foreach (var actor in Model.CastPhotos)
+            {
+                <article class="cast-card">
+                    <img src="~/@actor.PhotoPath" alt="@actor.Name" loading="lazy">
+                    <h3>@actor.Name</h3>
+                </article>
+            }
+        </div>
+        <details class="cast-credits">
+            <summary>Источники и лицензии фотографий</summary>
+            <ul>
+                @foreach (var actor in Model.CastPhotos)
+                {
+                    var licenseName = actor.License == "Public domain" ? "Общественное достояние" : actor.License;
+                    <li>@actor.Name — @actor.Photographer. <a href="@actor.SourcePage" target="_blank" rel="noopener noreferrer">Источник</a>, <a href="@actor.LicenseUrl" target="_blank" rel="noopener noreferrer">@licenseName</a>.</li>
+                }
+            </ul>
+            <p>Фотографии разных лет; использованы с кадрированием для карточек.</p>
+        </details>
+    </section>
+}

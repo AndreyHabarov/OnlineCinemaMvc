@@ -30,7 +30,7 @@ try {
     if ($taskCounts.Trim() -ne '36|5|506|3|1|1') { throw 'Неполное сидирование.' }
     $taskPaths = @(Test-Sql 'SELECT "PosterPath" FROM "Movies" UNION SELECT "PicturePath" FROM "Halls" UNION SELECT "ImagePath" FROM "News" UNION SELECT "ImagePath" FROM "Promotions";')
     foreach ($taskPath in $taskPaths) { $null = Invoke-WebRequest "$($taskScope.BaseUrl)/$($taskPath.TrimStart('/'))" -NoProxy -TimeoutSec 15 }
-    foreach ($taskTest in @('Test-Catalog','Test-Authentication','Test-Sessions','Test-Admin','Test-TicketPurchases')) {
+    foreach ($taskTest in @('Test-Catalog','Test-Cast','Test-Authentication','Test-Sessions','Test-Admin','Test-TicketPurchases')) {
         if ($taskTest -in @('Test-Sessions','Test-TicketPurchases')) {
             & (Join-Path $PSScriptRoot "$taskTest.ps1") -BaseUrl $taskScope.BaseUrl -DemoCalendar
         } else {
@@ -69,6 +69,9 @@ try {
     # Администратор меняет карточку/цену места и удаляет новость: seed не должен отменить это.
     $taskEdit = @'
 UPDATE "Movies" SET "Name"='Сохранённое название' WHERE "Id"=__MOVIE__;
+-- Имитируем пользовательский состав до одноразового обновления старой базы.
+DELETE FROM "DemoSeedRecords" WHERE "Key" LIKE 'cast:v1:%' AND "EntityId"=__MOVIE__;
+UPDATE "Movies" SET "Actor"='Пользовательский состав: сохранить' WHERE "Id"=__MOVIE__;
 UPDATE "Seats" SET "Price"=60 WHERE "Id"=__SEAT__;
 DELETE FROM "News" WHERE "Id"=(SELECT "EntityId" FROM "DemoSeedRecords" WHERE "Key"='news:welcome');
 UPDATE "Promotions" SET "Name"='DEMO-CINEMA-1990S', "DisplayName"='Сохранённая акция' WHERE "Id"=(SELECT "EntityId" FROM "DemoSeedRecords" WHERE "Key"='promotion:1990s');

@@ -9,6 +9,7 @@ using OnlineCinema.Mvc.Models.ViewModels.Movies;
 using System.Globalization;
 using OnlineCinema.Mvc.Services;
 using OnlineCinema.Application;
+using OnlineCinema.Application.Demo;
 
 namespace OnlineCinema.Mvc.Controllers;
 
@@ -16,9 +17,11 @@ namespace OnlineCinema.Mvc.Controllers;
 public class MoviesController : BaseMvcController
 {
     private readonly SessionAvailability availability;
-    public MoviesController(AppDbContext context, SessionAvailability availability) : base(context)
+    private readonly MovieCastCatalog casts;
+    public MoviesController(AppDbContext context, SessionAvailability availability, MovieCastCatalog casts) : base(context)
     {
         this.availability = availability;
+        this.casts = casts;
     }
 
     [Route("movies/{id:int}")]
@@ -37,6 +40,14 @@ public class MoviesController : BaseMvcController
         if (movieViewModel == null)
         {
             return NotFound();
+        }
+
+        var cast = casts.Find(movieViewModel.OriginalName);
+        if (cast != null && (cast.LegacyActors.Contains(movieViewModel.Actor)
+            || casts.ActorNames(cast) == movieViewModel.Actor))
+        {
+            movieViewModel.CastPhotos = casts.Photos(cast);
+            movieViewModel.IsVoiceCast = cast.IsVoiceCast;
         }
 
         movieViewModel.IsDemoCalendar = availability.IsDemo;

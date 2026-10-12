@@ -8,7 +8,8 @@ namespace OnlineCinema.Application.Demo;
 
 public sealed record DemoAdminOptions(bool Enabled, string? Email, string? Password);
 
-public sealed class DemoSeeder(AppDbContext context, RoleManager<Role> roles, UserManager<User> users)
+public sealed class DemoSeeder(AppDbContext context, RoleManager<Role> roles, UserManager<User> users,
+    MovieCastCatalog casts)
 {
     public async Task EnsureRolesAsync()
     {
@@ -44,6 +45,14 @@ public sealed class DemoSeeder(AppDbContext context, RoleManager<Role> roles, Us
                     if (genre.Entity != null)
                         context.MovieGenres.Add(new MovieGenre { MovieId = movie.Entity.Id, GenreId = genre.Entity.Id });
                 }
+                await context.SaveChangesAsync();
+            }
+            if (movie.Entity != null && !await HasMarkerAsync("cast:v1:" + data.Slug))
+            {
+                var cast = casts.Find(data.OriginalName);
+                if (cast != null && cast.LegacyActors.Contains(movie.Entity.Actor))
+                    movie.Entity.Actor = casts.ActorNames(cast);
+                Mark("cast:v1:" + data.Slug, movie.Entity.Id);
                 await context.SaveChangesAsync();
             }
         }
