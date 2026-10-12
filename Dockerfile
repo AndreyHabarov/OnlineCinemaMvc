@@ -17,7 +17,8 @@ WORKDIR /app
 COPY --from=build /out/ ./
 COPY data/ ./data/
 RUN mkdir -p /app/keys /app/wwwroot/images/promotion/uploads \
-    && chown -R app:app /app/keys /app/wwwroot/images/promotion/uploads
+    && chown -R app:app /app/keys /app/wwwroot/images/promotion/uploads \
+    && chmod 700 /app/keys /app/wwwroot/images/promotion/uploads
 ENV ASPNETCORE_URLS=http://+:8080 \
     ASPNETCORE_ENVIRONMENT=Production \
     DataProtection__KeysPath=/app/keys

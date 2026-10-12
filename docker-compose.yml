@@ -1,6 +1,36 @@
 name: onlinecinema
 
 services:
+  web:
+    image: onlinecinema:local
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:8080"
+    environment:
+      Database__Host: db
+      Database__Port: 5432
+      Database__Name: ${POSTGRES_DB:-cinemadb}
+      Database__User: ${POSTGRES_USER:-cinema}
+      Database__Password: ${POSTGRES_PASSWORD:?Укажите пароль PostgreSQL в файле .env}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - protection_keys:/app/keys
+      - promotion_uploads:/app/wwwroot/images/promotion/uploads
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://127.0.0.1:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
   db:
     image: postgres:17-alpine
     restart: unless-stopped
@@ -21,3 +51,5 @@ services:
 
 volumes:
   postgres_data:
+  protection_keys:
+  promotion_uploads:

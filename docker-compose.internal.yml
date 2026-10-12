@@ -1,0 +1,4 @@
+# Опционально: PostgreSQL доступен только внутри сети Compose.
+services:
+  db:
+    ports: !reset []

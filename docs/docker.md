@@ -17,3 +17,19 @@ volumes. Ключи позволяют сохранять cookies между п�
 защищать и резервировать. PostgreSQL запускается отдельным сервисом.
 
 Полная инструкция Compose добавляется после проверки миграций и сидирования.
+
+## Compose
+
+Web подключается к db:5432 по внутренней сети. Порт сайта APP_PORT (8080),
+порт PostgreSQL POSTGRES_PORT (5434) привязаны только к 127.0.0.1.
+Сайт ждёт healthcheck БД и проверяет подключение на /health.
+Volume postgres_data сохраняет БД, protection_keys — cookies,
+promotion_uploads — загруженные изображения. Корень контейнера сайта read-only,
+временные файлы находятся в tmpfs, Linux capabilities сброшены.
+
+PostgreSQL можно оставить без внешнего порта:
+
+    docker compose -f docker-compose.yml -f docker-compose.internal.yml up -d
+
+В текущем промежуточном этапе схема БД должна быть подготовлена миграциями.
+Автоматическая инициализация добавляется следующим блоком.

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineCinema.Mvc.Filters;
 using Microsoft.AspNetCore.DataProtection;
 using OnlineCinema.Application.Extensions;
+using Npgsql;
 
 CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
 CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("ru-RU");
@@ -47,6 +48,18 @@ if (builder.Environment.IsDevelopment()) mvc.AddRazorRuntimeCompilation();
 builder.Services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN");
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
+if (string.IsNullOrWhiteSpace(connectionString) && !string.IsNullOrWhiteSpace(builder.Configuration["Database:Host"]))
+{
+    // Раздельные значения правильно экранируются, включая специальные символы пароля.
+    connectionString = new NpgsqlConnectionStringBuilder
+    {
+        Host = builder.Configuration["Database:Host"],
+        Port = builder.Configuration.GetValue("Database:Port", 5432),
+        Database = builder.Configuration["Database:Name"],
+        Username = builder.Configuration["Database:User"],
+        Password = builder.Configuration["Database:Password"]
+    }.ConnectionString;
+}
 if (string.IsNullOrWhiteSpace(connectionString))
 {
     throw new InvalidOperationException(
@@ -113,6 +126,10 @@ app.UseRouting();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.MapGet("/health", async (AppDbContext context, CancellationToken token) =>
+    await context.Database.CanConnectAsync(token)
+        ? Results.Text("Готов") : Results.StatusCode(StatusCodes.Status503ServiceUnavailable));
 
 app.MapControllerRoute(
     name: "areas",
