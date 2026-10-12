@@ -38,11 +38,12 @@ if (!string.IsNullOrWhiteSpace(keysPath))
         protection.ProtectKeysWithDpapi();
 }
 
-builder.Services.AddControllersWithViews(options =>
+var mvc = builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
     options.Filters.Add(new AntiforgeryErrorFilter());
-}).AddRazorRuntimeCompilation();
+});
+if (builder.Environment.IsDevelopment()) mvc.AddRazorRuntimeCompilation();
 builder.Services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN");
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
