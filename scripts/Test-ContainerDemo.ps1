@@ -27,10 +27,10 @@ try {
     docker compose up -d --wait *> (Join-Path $taskScope.Logs 'startup.log')
     if ($LASTEXITCODE) { throw 'Чистый Docker-запуск не прошёл.' }
     $taskCounts = Test-Sql 'SELECT (SELECT count(*) FROM "Movies"),(SELECT count(*) FROM "Halls"),(SELECT count(*) FROM "Seats"),(SELECT count(*) FROM "News"),(SELECT count(*) FROM "Promotions"),(SELECT count(*) FROM "AspNetUsers");'
-    if ($taskCounts.Trim() -ne '12|5|506|3|1|1') { throw 'Неполное сидирование.' }
+    if ($taskCounts.Trim() -ne '36|5|506|3|1|1') { throw 'Неполное сидирование.' }
     $taskPaths = @(Test-Sql 'SELECT "PosterPath" FROM "Movies" UNION SELECT "PicturePath" FROM "Halls" UNION SELECT "ImagePath" FROM "News" UNION SELECT "ImagePath" FROM "Promotions";')
     foreach ($taskPath in $taskPaths) { $null = Invoke-WebRequest "$($taskScope.BaseUrl)/$($taskPath.TrimStart('/'))" -NoProxy -TimeoutSec 15 }
-    foreach ($taskTest in @('Test-Authentication','Test-Sessions','Test-Admin','Test-TicketPurchases')) {
+    foreach ($taskTest in @('Test-Catalog','Test-Authentication','Test-Sessions','Test-Admin','Test-TicketPurchases')) {
         & (Join-Path $PSScriptRoot "$taskTest.ps1") -BaseUrl $taskScope.BaseUrl
     }
     # Сохраняем реальную регистрацию и покупку через HTTP для проверки перезапуска.

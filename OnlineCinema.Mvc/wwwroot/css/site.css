@@ -913,3 +913,37 @@ img {
         max-width: 16rem;
     }
 }
+.catalog-heading-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.catalog-filters {
+    display: flex;
+    gap: 1rem;
+    align-items: end;
+    flex-wrap: wrap;
+    padding: 1.25rem;
+    border-radius: var(--cinema-radius);
+    background: var(--cinema-surface);
+    margin-bottom: 1rem;
+}
+
+.catalog-filters > div:first-child { flex: 1 1 16rem; }
+.catalog-filters > div:nth-child(2) { flex: 1 1 12rem; }
+.catalog-filters label { display: block; margin-bottom: .5rem; }
+.catalog-collections { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.catalog-pagination { display: flex; gap: .5rem; justify-content: center; margin: 2rem 0; flex-wrap: wrap; }
+.catalog-pagination a, .catalog-pagination span {
+    display: grid;
+    place-items: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    border: 1px solid var(--cinema-border);
+    border-radius: .75rem;
+    text-decoration: none;
+}
+.catalog-pagination .is-current { background: var(--cinema-accent); color: #fff; border-color: var(--cinema-accent); }

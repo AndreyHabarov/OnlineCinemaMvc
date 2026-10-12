@@ -54,7 +54,7 @@ try {
         catch { Start-Sleep -Milliseconds 250 }
     }
     if (!$taskReady) { throw 'Тестовый сайт недоступен.' }
-    foreach ($taskTest in @('Test-Authentication','Test-Sessions','Test-Admin','Test-TicketPurchases')) {
+    foreach ($taskTest in @('Test-Catalog','Test-Authentication','Test-Sessions','Test-Admin','Test-TicketPurchases')) {
         & (Join-Path $PSScriptRoot "$taskTest.ps1") -BaseUrl $taskBase
     }
     ./scripts/Test-PublicPages.ps1

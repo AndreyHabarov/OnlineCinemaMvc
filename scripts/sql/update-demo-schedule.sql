@@ -23,7 +23,7 @@ JOIN halls ON halls.number = slots."HallNumber";
 DO $$
 BEGIN
     IF (SELECT count(*) FROM planned_sessions) <> __EXPECTED_COUNT__ THEN
-        RAISE EXCEPTION 'Для расписания нужны все 12 фильмов каталога и пять залов демокаталога';
+        RAISE EXCEPTION 'Для расписания нужны все 36 фильмов каталога и пять залов демокаталога';
     END IF;
     IF EXISTS (
         SELECT 1 FROM planned_sessions AS planned

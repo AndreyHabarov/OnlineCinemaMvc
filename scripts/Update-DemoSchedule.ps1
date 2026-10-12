@@ -17,7 +17,7 @@ try {
     } else { $taskToday }
     if ($taskFirstDate -lt $taskToday) { throw 'Начальная дата расписания не может быть в прошлом.' }
     $taskMovies = @(Get-Content data/demo-movies.json -Raw -Encoding utf8 | ConvertFrom-Json)
-    if ($taskMovies.Count -ne 12) { throw 'Для расписания требуется каталог из 12 фильмов.' }
+    if ($taskMovies.Count -ne 36) { throw 'Для расписания требуется каталог из 36 фильмов.' }
     $taskHalls = @(Get-Content data/demo-halls.json -Raw -Encoding utf8 | ConvertFrom-Json)
     $taskSlots = @(
         for ($taskDay = 0; $taskDay -lt $Days; $taskDay++) {
@@ -28,7 +28,7 @@ try {
                 for ($taskHall = 0; $taskHall -lt $taskHalls.Count; $taskHall++) {
                     @{
                         DateStart = $taskDate.AddHours(10 + 4 * $taskSlot).ToString('yyyy-MM-ddTHH:mm:ss')
-                        MovieNumber = ($taskDayNumber + 3 * $taskSlot + $taskHall) % 12
+                        MovieNumber = ($taskDayNumber * $taskHalls.Count * 4 + $taskHall * 4 + $taskSlot) % $taskMovies.Count
                         HallNumber = $taskHall
                         Price = $taskHalls[$taskHall].price
                     }

@@ -7,15 +7,58 @@
         <div class="action-row"><a class="btn btn-primary" href="#movie-catalog">Выбрать фильм</a><a class="btn btn-outline-light" asp-controller="Hall" asp-action="GetHalls">Наши залы</a></div>
     </div>
     <div class="hero-posters">
-        @foreach (var poster in Model.Posters.Take(3))
+        @foreach (var poster in Model.FeaturedPosters)
         {
             <a asp-controller="Movies" asp-action="Get" asp-route-id="@poster.Id"><img src="~/@poster.CardImagePath.TrimStart('/')" alt="Постер фильма «@poster.Name»"></a>
         }
     </div>
 </section>
 <section id="movie-catalog" aria-labelledby="catalog-heading">
-    <h2 id="catalog-heading" class="section-heading">Сегодня в кино</h2>
-    @await Html.PartialAsync("_Posters.cshtml", Model.Posters)
+    <div class="catalog-heading-row"><h2 id="catalog-heading" class="section-heading">Афиша</h2><span class="text-muted">Найдено фильмов: @Model.TotalCount</span></div>
+    <form class="catalog-filters" asp-controller="Home" asp-action="Index" method="get" asp-fragment="movie-catalog">
+        <div><label for="catalog-search">Название фильма</label><input id="catalog-search" name="search" class="form-control" type="search" maxlength="100" value="@Model.Search" placeholder="Например, Матрица"></div>
+        <div><label for="catalog-genre">Жанр</label><select id="catalog-genre" name="genreId" class="form-select">
+            <option value="">Все жанры</option>
+            @foreach (var genre in Model.Genres)
+            {
+                <option value="@genre.Id" selected="@(Model.GenreId == genre.Id)">@genre.Name</option>
+            }
+        </select></div>
+        <button class="btn btn-primary" type="submit">Найти фильмы</button>
+        @if (Model.Search.Length > 0 || Model.GenreId.HasValue)
+        {
+            <a class="btn btn-outline-light" asp-action="Index" asp-fragment="movie-catalog">Сбросить</a>
+        }
+    </form>
+    <div class="catalog-collections" aria-label="Готовые подборки"><span>Подборки:</span><a asp-controller="Movies" asp-action="KidsMovies">Детям</a><a asp-controller="Movies" asp-action="ArtMovies">Арт-кино</a></div>
+    @if (Model.TotalCount == 0 && Model.Search.Length == 0 && !Model.GenreId.HasValue)
+    {
+        @await Html.PartialAsync("_EmptyState", "Фильмов в каталоге пока нет.")
+    }
+    else if (Model.TotalCount == 0)
+    {
+        <div class="empty-state"><h3>Ничего не найдено</h3><p>Попробуйте другое название или выберите все жанры.</p><a class="btn btn-outline-light" asp-action="Index" asp-fragment="movie-catalog">Показать всю афишу</a></div>
+    }
+    else
+    {
+        @await Html.PartialAsync("_Posters.cshtml", Model.Posters)
+    }
+    @if (Model.PageCount > 1)
+    {
+        <nav class="catalog-pagination" aria-label="Страницы афиши">
+            @for (var catalogPage = 1; catalogPage <= Model.PageCount; catalogPage++)
+            {
+                if (catalogPage == Model.Page)
+                {
+                    <span class="is-current" aria-current="page" aria-label="Страница @catalogPage">@catalogPage</span>
+                }
+                else
+                {
+                    <a asp-action="Index" asp-route-page="@catalogPage" asp-route-search="@Model.Search" asp-route-genreId="@Model.GenreId" asp-fragment="movie-catalog" aria-label="Страница @catalogPage">@catalogPage</a>
+                }
+            }
+        </nav>
+    }
 </section>
 <section aria-labelledby="promotions-heading">
     <h2 id="promotions-heading" class="section-heading">Предложения кинотеатра</h2>

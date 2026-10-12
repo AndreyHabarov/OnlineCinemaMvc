@@ -19,7 +19,7 @@ $taskResponse = Get-SessionsResponse "?date=$taskTomorrow"
 if ($taskResponse.StatusCode -ne 200) { throw 'Расписание недоступно.' }
 $taskSessions = @($taskResponse.Content | ConvertFrom-Json)
 if ($taskSessions.Count -ne 20) { throw 'Загрузите демонстрационное расписание: завтра ожидаются 20 показов.' }
-if (@($taskSessions.MovieId | Sort-Object -Unique).Count -ne 12) { throw 'Ожидались 12 разных фильмов.' }
+if (@($taskSessions.MovieId | Sort-Object -Unique).Count -ne 20) { throw 'Ожидались 20 разных фильмов.' }
 foreach ($taskSession in $taskSessions) {
     if (!$taskSession.HallName -or !$taskSession.MovieName -or $taskSession.Price -le 0) { throw 'Неполные данные сеанса.' }
     if ($taskSession.PSObject.Properties.Name -contains 'movie' -or $taskSession.PSObject.Properties.Name -contains 'hall') { throw 'В ответе присутствуют EF-навигации.' }

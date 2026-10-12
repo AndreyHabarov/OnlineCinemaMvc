@@ -77,7 +77,7 @@ public sealed class DemoSeeder(AppDbContext context, RoleManager<Role> roles, Us
             () => new Promotion
             {
                 Name = "demo-cinema-1990s", DisplayName = "Американское кино 90-х",
-                Description = "Двенадцать известных фильмов с русскими описаниями и локальными постерами. Выберите сеанс и получите демонстрационный билет без списания денег.",
+                Description = "Тридцать шесть известных фильмов с русскими описаниями и локальными постерами. Выберите сеанс и получите демонстрационный билет без списания денег.",
                 ImagePath = banner, DateTime = CinemaTime.Now, ButtonText = "Выбрать фильм", Link = "/"
             });
         var news = new[]
@@ -118,7 +118,7 @@ public sealed class DemoSeeder(AppDbContext context, RoleManager<Role> roles, Us
                     var hallData = catalog.Halls[hallNumber];
                     var key = $"session:{date:yyyyMMdd}:{hallData.Slug}:{slot}";
                     if (await HasMarkerAsync(key)) continue;
-                    var movieData = catalog.Movies[(dayNumber + 3 * slot + hallNumber) % catalog.Movies.Count];
+                    var movieData = catalog.Movies[(dayNumber * catalog.Halls.Count * 4 + hallNumber * 4 + slot) % catalog.Movies.Count];
                     var movie = await FindMarkedAsync<Movie>("movie:" + movieData.Slug);
                     var hall = await FindMarkedAsync<Hall>("hall:" + hallData.Slug);
                     if (movie is not { IsVisible: true } || movie.Duration <= 0 || hall == null

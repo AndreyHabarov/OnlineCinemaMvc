@@ -94,5 +94,197 @@
     "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/1/18/Titanic_%281997_film%29_poster.png",
     "RetrievedOn": "2026-10-11",
     "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "pulp-fiction",
+    "PosterPath": "images/movies/1990s/pulp-fiction.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/Pulp_Fiction",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/3/3b/Pulp_Fiction_%281994%29_poster.jpg",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "fight-club",
+    "PosterPath": "images/movies/1990s/fight-club.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/Fight_Club",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/f/fc/Fight_Club_poster.jpg",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "seven",
+    "PosterPath": "images/movies/1990s/seven.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/Seven_%281995_film%29",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/6/68/Seven_%28movie%29_poster.jpg",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "goodfellas",
+    "PosterPath": "images/movies/1990s/goodfellas.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/Goodfellas",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/7/7b/Goodfellas.jpg",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "reservoir-dogs",
+    "PosterPath": "images/movies/1990s/reservoir-dogs.png",
+    "SourcePage": "https://en.wikipedia.org/wiki/Reservoir_Dogs",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/0/01/Reservoir_Dogs.png",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "silence-of-the-lambs",
+    "PosterPath": "images/movies/1990s/silence-of-the-lambs.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Silence_of_the_Lambs_%28film%29",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/8/86/The_Silence_of_the_Lambs_poster.jpg",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "sixth-sense",
+    "PosterPath": "images/movies/1990s/sixth-sense.png",
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Sixth_Sense",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/a/a4/The_Sixth_Sense_poster.png",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "saving-private-ryan",
+    "PosterPath": "images/movies/1990s/saving-private-ryan.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/Saving_Private_Ryan",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/a/ac/Saving_Private_Ryan_poster.jpg",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "usual-suspects",
+    "PosterPath": "images/movies/1990s/usual-suspects.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Usual_Suspects",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/9/9c/Usual_suspects_ver1.jpg",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "heat",
+    "PosterPath": "images/movies/1990s/heat.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/Heat_%281995_film%29",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/6/6c/Heatposter.jpg",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "big-lebowski",
+    "PosterPath": "images/movies/1990s/big-lebowski.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Big_Lebowski",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/3/35/Biglebowskiposter.jpg",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "fargo",
+    "PosterPath": "images/movies/1990s/fargo.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/Fargo_%281996_film%29",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/3/33/Fargo_%281996_movie_poster%29.jpg",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "men-in-black",
+    "PosterPath": "images/movies/1990s/men-in-black.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/Men_in_Black_%281997_film%29",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/f/fb/Men_in_Black_Poster.jpg",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "independence-day",
+    "PosterPath": "images/movies/1990s/independence-day.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/Independence_Day_%281996_film%29",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/b/bb/Independence_day_movieposter.jpg",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "back-to-the-future-3",
+    "PosterPath": "images/movies/1990s/back-to-the-future-3.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/Back_to_the_Future_Part_III",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/4/4e/Back_to_the_Future_Part_III.jpg",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "speed",
+    "PosterPath": "images/movies/1990s/speed.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/Speed_%281994_film%29",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/4/45/Speed_movie_poster.jpg",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "the-mask",
+    "PosterPath": "images/movies/1990s/the-mask.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Mask_%281994_film%29",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/4/4b/The_Mask_%28film%29_poster.jpg",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "true-lies",
+    "PosterPath": "images/movies/1990s/true-lies.png",
+    "SourcePage": "https://en.wikipedia.org/wiki/True_Lies",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/8/81/True_Lies_poster.png",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "edward-scissorhands",
+    "PosterPath": "images/movies/1990s/edward-scissorhands.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/Edward_Scissorhands",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/3/3b/Edwardscissorhandsposter.JPG",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "beauty-and-the-beast",
+    "PosterPath": "images/movies/1990s/beauty-and-the-beast.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/Beauty_and_the_Beast_%281991_film%29",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/5/5e/Beauty_and_the_Beast_%281991_film%29_poster.jpg",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "aladdin",
+    "PosterPath": "images/movies/1990s/aladdin.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/Aladdin_%281992_Disney_film%29",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/b/bd/Aladdin_%281992_Disney_film%29_poster.jpg",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "iron-giant",
+    "PosterPath": "images/movies/1990s/iron-giant.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Iron_Giant",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/d/d3/The_Iron_Giant_poster.JPG",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "a-few-good-men",
+    "PosterPath": "images/movies/1990s/a-few-good-men.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/A_Few_Good_Men",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/4/45/A_Few_Good_Men_poster.jpg",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
+  },
+  {
+    "Slug": "the-fugitive",
+    "PosterPath": "images/movies/1990s/the-fugitive.jpg",
+    "SourcePage": "https://en.wikipedia.org/wiki/The_Fugitive_%281993_film%29",
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/en/c/c7/The_Fugitive_movie.jpg",
+    "RetrievedOn": "2026-10-12",
+    "Usage": "Оригинальный рекламный постер; права принадлежат правообладателям фильма. Не является изображением со свободной лицензией."
   }
 ]

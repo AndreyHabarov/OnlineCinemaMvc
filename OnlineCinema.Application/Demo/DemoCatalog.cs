@@ -46,9 +46,9 @@ public sealed record DemoCatalog(IReadOnlyList<DemoMovie> Movies, IReadOnlyDicti
             await File.ReadAllTextAsync(Path.Combine(dataDirectory, "demo-movies.json")), options) ?? [];
         var sources = JsonSerializer.Deserialize<List<Poster>>(
             await File.ReadAllTextAsync(Path.Combine(dataDirectory, "movie-poster-sources.json")), options) ?? [];
-        if (movies.Count != 12 || movies.Select(m => m.Slug).Distinct().Count() != 12
-            || movies.Select(m => m.OriginalName).Distinct().Count() != 12)
-            throw new DemoConfigurationException("Демокаталог должен содержать 12 разных фильмов.");
+        if (movies.Count != 36 || movies.Select(m => m.Slug).Distinct().Count() != 36
+            || movies.Select(m => m.OriginalName).Distinct().Count() != 36)
+            throw new DemoConfigurationException("Демокаталог должен содержать 36 разных фильмов.");
         var posters = sources.ToDictionary(p => p.Slug, p => p.PosterPath);
         foreach (var movie in movies)
         {

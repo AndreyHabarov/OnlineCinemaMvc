@@ -10,8 +10,8 @@ try {
     $OutputEncoding = [Text.UTF8Encoding]::new($false)
     $taskMovies = @(Get-Content -LiteralPath data/demo-movies.json -Raw -Encoding utf8 | ConvertFrom-Json)
     $taskSources = @(Get-Content -LiteralPath data/movie-poster-sources.json -Raw -Encoding utf8 | ConvertFrom-Json)
-    if ($taskMovies.Count -ne 12 -or @($taskMovies.OriginalName | Select-Object -Unique).Count -ne 12) {
-        throw 'В каталоге должны быть 12 разных фильмов.'
+    if ($taskMovies.Count -ne 36 -or @($taskMovies.OriginalName | Select-Object -Unique).Count -ne 36) {
+        throw 'В каталоге должны быть 36 разных фильмов.'
     }
 
     foreach ($taskMovie in $taskMovies) {
@@ -48,6 +48,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Не удалось создать резервную копию каталога.' }
     & docker compose cp "db:/tmp/$taskBackupName" (Join-Path $taskBackupRoot $taskBackupName)
     if ($LASTEXITCODE -ne 0) { throw 'Не удалось сохранить резервную копию локально.' }
+    & docker compose exec -T db pg_restore --list "/tmp/$taskBackupName" *> $null
+    if ($LASTEXITCODE -ne 0) { throw 'Резервная копия не прошла проверку.' }
 
     $taskCatalogJson = ConvertTo-Json -InputObject $taskMovies -Depth 5 -Compress
     $taskSqlTemplate = Get-Content -LiteralPath scripts/sql/update-demo-catalog.sql -Raw -Encoding utf8
@@ -55,7 +57,7 @@ try {
     $taskSql | & docker compose exec -T -e PGCLIENTENCODING=UTF8 db psql -X -U $taskUser -d $taskDatabase --set=ON_ERROR_STOP=1
     if ($LASTEXITCODE -ne 0) { throw 'Не удалось обновить каталог. Изменения транзакции откатились.' }
 
-    Write-Host 'Каталог обновлён: 12 американских фильмов 90-х с русскими описаниями и оригинальными постерами.'
+    Write-Host 'Каталог обновлён: 36 американских фильмов 90-х. Существующие карточки и заказы сохранены.'
     Write-Host "Резервная копия: backups/$taskBackupName"
 }
 finally {
