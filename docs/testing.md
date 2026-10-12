@@ -26,3 +26,14 @@ Production-сервер на свободном локальном порту с
 Отдельные `Test-Authentication`, `Test-Sessions`, `Test-Admin`,
 `Test-TicketPurchases` доступны с `-BaseUrl`; они требуют сайта и БД с
 демокаталогом/расписанием. Для общей регрессии предпочитайте изолированный runner.
+
+## GitHub Actions
+
+Workflow запускается при push в master, pull request и вручную. На Ubuntu
+восстанавливает SDK/EF, собирает с warnaserror, проверяет NuGet, поднимает
+PostgreSQL и запускает Test-All. Рабочие секреты и backlog не нужны.
+Ключи, дампы и приватные журналы не публикуются как артефакты.
+
+Внешние actions закреплены проверенными SHA официальных релизов; Dependabot
+предлагает обновления NuGet и actions еженедельно. Политика GitHub:
+https://docs.github.com/en/actions/reference/security/secure-use

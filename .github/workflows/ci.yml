@@ -1,0 +1,58 @@
+name: Проверки OnlineCinema
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integration:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      POSTGRES_USER: cinema
+      POSTGRES_DB: cinemadb
+      POSTGRES_PASSWORD: CI_ONLY_NOT_A_PRODUCTION_PASSWORD
+      POSTGRES_PORT: 5434
+      COMPOSE_PROJECT_NAME: onlinecinema-ci
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: '8.0.x'
+      - name: Восстановление
+        run: |
+          dotnet restore OnlineCinemaMvc.sln
+          if ($LASTEXITCODE) { throw 'Restore не прошёл.' }
+          dotnet tool restore
+          if ($LASTEXITCODE) { throw 'Инструмент EF не восстановлен.' }
+      - name: Сборка без предупреждений
+        run: |
+          dotnet build OnlineCinemaMvc.sln --no-restore -warnaserror
+          if ($LASTEXITCODE) { throw 'Сборка не прошла.' }
+      - name: Аудит NuGet
+        run: ./scripts/Test-Dependencies.ps1
+      - name: PostgreSQL
+        run: |
+          docker compose up -d --wait db
+          if ($LASTEXITCODE) { throw 'PostgreSQL недоступен.' }
+      - name: Интеграционные сценарии
+        run: ./scripts/Test-All.ps1 -SkipBuild
+      - name: Остановка тестовых контейнеров
+        if: always()
+        run: docker compose down --remove-orphans
