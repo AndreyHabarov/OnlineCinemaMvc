@@ -6,5 +6,4 @@ public class HomeViewModel
     public IEnumerable<HomePosterViewModel> Posters { get; set; } = [];
     public IEnumerable<HomePromotionViewModel> Promotions { get; set; } = [];
     public IEnumerable<HomeNewsViewModel> News { get; set; } = [];
-    public IEnumerable<LoginViewModel> Logins { get; set; } = [];
 }

@@ -19,8 +19,4 @@
     <ProjectReference Include="..\OnlineCinema.Application\OnlineCinema.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Areas\Admin\Models\" />
-  </ItemGroup>
-
 </Project>
