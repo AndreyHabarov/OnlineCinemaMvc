@@ -18,7 +18,7 @@ foreach ($taskQuery in @('', '?date=bad', '?date=31.02.2026', '?date=31.12.9999'
 $taskResponse = Get-SessionsResponse "?date=$taskTomorrow"
 if ($taskResponse.StatusCode -ne 200) { throw 'Расписание недоступно.' }
 $taskSessions = @($taskResponse.Content | ConvertFrom-Json)
-if ($taskSessions.Count -ne 12) { throw 'Загрузите демонстрационное расписание: завтра ожидаются 12 показов.' }
+if ($taskSessions.Count -ne 20) { throw 'Загрузите демонстрационное расписание: завтра ожидаются 20 показов.' }
 if (@($taskSessions.MovieId | Sort-Object -Unique).Count -ne 12) { throw 'Ожидались 12 разных фильмов.' }
 foreach ($taskSession in $taskSessions) {
     if (!$taskSession.HallName -or !$taskSession.MovieName -or $taskSession.Price -le 0) { throw 'Неполные данные сеанса.' }
@@ -43,4 +43,4 @@ $taskCurrent = @((Get-SessionsResponse "?date=$taskToday").Content | ConvertFrom
 if (@($taskCurrent | Where-Object { [DateTime]$_.DateStart -lt $taskNow }).Count) { throw 'Возвращены начавшиеся сеансы.' }
 $taskPage = Invoke-WebRequest -NoProxy -TimeoutSec 20 "$BaseUrl/movies/$taskMovie"
 if ($taskPage.Content -notmatch 'session-date active' -or $taskPage.Content -notmatch 'data-date=') { throw 'Не выбрана первая доступная дата фильма.' }
-Write-Host 'Проверены: 12 показов, фильтры фильма/зала, сортировка, DTO, московское время, неверные параметры, прошедшие/скрытые сеансы и активная дата.'
+Write-Host 'Проверены: 20 показов, фильтры фильма/зала, сортировка, DTO, московское время, неверные параметры, прошедшие/скрытые сеансы и активная дата.'

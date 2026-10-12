@@ -764,3 +764,152 @@ img {
     object-fit: contain;
     background: var(--cinema-surface);
 }
+
+/* Hall comparison: table on desktop, a complete card for each hall on mobile. */
+.halls-intro {
+    max-width: 52rem;
+    line-height: 1.8;
+}
+
+.halls-overview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem 2rem;
+    padding: 1rem 1.25rem;
+    margin-block: 1.5rem;
+    background: var(--cinema-surface);
+    border-radius: var(--cinema-radius-sm);
+    color: var(--cinema-text-muted);
+}
+
+.halls-overview strong {
+    color: var(--cinema-accent-soft);
+}
+
+.halls-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 1rem;
+    table-layout: fixed;
+}
+
+.halls-table thead th {
+    color: var(--cinema-text-muted);
+    font-weight: 500;
+    padding: 0 1.25rem;
+}
+
+.halls-table thead th:first-child {
+    width: 32%;
+}
+
+.halls-table thead th:nth-child(2) {
+    width: 24%;
+}
+
+.halls-table tbody td, .halls-table tbody th {
+    padding: 1.25rem;
+    vertical-align: middle;
+    background: var(--cinema-surface);
+}
+
+.halls-table tbody td:first-child {
+    border-radius: var(--cinema-radius) 0 0 var(--cinema-radius);
+}
+
+.halls-table tbody td:last-child {
+    border-radius: 0 var(--cinema-radius) var(--cinema-radius) 0;
+}
+
+.hall-photo {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: var(--cinema-radius-sm);
+}
+
+.hall-title {
+    font-size: 1.4rem;
+    margin-bottom: .8rem;
+    overflow-wrap: anywhere;
+}
+
+.hall-capacity {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    color: var(--cinema-text-muted);
+    font-size: .85rem;
+    font-weight: 400;
+}
+
+.hall-capacity span {
+    background: var(--cinema-surface-raised);
+    border-radius: 2rem;
+    padding: .35rem .7rem;
+}
+
+.hall-description-cell p {
+    color: var(--cinema-text-muted);
+    line-height: 1.75;
+}
+
+.booking-hall-info {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 1rem;
+    align-items: center;
+    margin-block: 1rem 1.5rem;
+}
+
+.booking-hall-info img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: var(--cinema-radius-sm);
+}
+
+.booking-hall-info p {
+    font-size: .9rem;
+    color: var(--cinema-text-muted);
+    margin-bottom: .5rem;
+}
+
+@media (max-width: 767.98px) {
+    .halls-table, .halls-table tbody {
+        display: block;
+    }
+
+    .halls-table thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+    }
+
+    .halls-table tbody tr {
+        display: grid;
+        margin-bottom: 1.25rem;
+    }
+
+    .halls-table tbody td:first-child {
+        border-radius: var(--cinema-radius) var(--cinema-radius) 0 0;
+    }
+
+    .halls-table tbody td:last-child {
+        border-radius: 0 0 var(--cinema-radius) var(--cinema-radius);
+    }
+
+    .halls-table .hall-info-cell {
+        padding-block: 0;
+    }
+
+    .booking-hall-info {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .booking-hall-info img {
+        max-width: 16rem;
+    }
+}

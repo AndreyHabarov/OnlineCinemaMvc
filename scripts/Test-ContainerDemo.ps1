@@ -27,7 +27,7 @@ try {
     docker compose up -d --wait *> (Join-Path $taskScope.Logs 'startup.log')
     if ($LASTEXITCODE) { throw 'Чистый Docker-запуск не прошёл.' }
     $taskCounts = Test-Sql 'SELECT (SELECT count(*) FROM "Movies"),(SELECT count(*) FROM "Halls"),(SELECT count(*) FROM "Seats"),(SELECT count(*) FROM "News"),(SELECT count(*) FROM "Promotions"),(SELECT count(*) FROM "AspNetUsers");'
-    if ($taskCounts.Trim() -ne '12|3|410|3|1|1') { throw 'Неполное сидирование.' }
+    if ($taskCounts.Trim() -ne '12|5|506|3|1|1') { throw 'Неполное сидирование.' }
     $taskPaths = @(Test-Sql 'SELECT "PosterPath" FROM "Movies" UNION SELECT "PicturePath" FROM "Halls" UNION SELECT "ImagePath" FROM "News" UNION SELECT "ImagePath" FROM "Promotions";')
     foreach ($taskPath in $taskPaths) { $null = Invoke-WebRequest "$($taskScope.BaseUrl)/$($taskPath.TrimStart('/'))" -NoProxy -TimeoutSec 15 }
     foreach ($taskTest in @('Test-Authentication','Test-Sessions','Test-Admin','Test-TicketPurchases')) {
@@ -48,6 +48,19 @@ try {
     $taskOrder = (Test-Post 'orders/purchase' @{requestId=[Guid]::NewGuid();sessionId=$taskSession.Id;seatIds=@($taskSeat);viewerAge=30}).Content | ConvertFrom-Json
     $taskReceipt = Invoke-WebRequest "$($taskScope.BaseUrl)$($taskOrder.receiptUrl)" -WebSession $taskClient -NoProxy
     if ($taskReceipt.StatusCode -ne 200) { throw 'Билет недоступен.' }
+    foreach ($taskHallName in @('Комфорт', 'Камерный')) {
+        $taskNewSession = @((Invoke-WebRequest "$($taskScope.BaseUrl)/Movies/GetAllSessions?date=$taskTomorrow" -NoProxy).Content | ConvertFrom-Json | Where-Object HallName -eq $taskHallName)[0]
+        if (!$taskNewSession) { throw "Нет сеанса нового зала: $taskHallName" }
+        $taskHallData = @(Get-Content data/demo-halls.json -Raw -Encoding utf8 | ConvertFrom-Json | Where-Object name -eq $taskHallName)[0]
+        $taskCheckout = Invoke-WebRequest "$($taskScope.BaseUrl)/orders/$($taskNewSession.Id)" -WebSession $taskClient -NoProxy
+        if (!$taskCheckout.Content.Contains($taskHallData.picturePath) -or !([Net.WebUtility]::HtmlDecode($taskCheckout.Content)).Contains($taskHallName)) { throw 'Заказ не показывает информацию выбранного зала.' }
+        $taskNewSeat = [int](Test-Sql ('SELECT "Id" FROM "Seats" WHERE "HallId"={0} ORDER BY "Id" LIMIT 1;' -f [int]$taskNewSession.HallId))
+        $taskNewOrder = (Test-Post 'orders/purchase' @{requestId=[Guid]::NewGuid();sessionId=$taskNewSession.Id;seatIds=@($taskNewSeat);viewerAge=30}).Content | ConvertFrom-Json
+        $taskNewReceipt = Invoke-WebRequest "$($taskScope.BaseUrl)$($taskNewOrder.receiptUrl)" -WebSession $taskClient -NoProxy
+        if (!([Net.WebUtility]::HtmlDecode($taskNewReceipt.Content)).Contains($taskHallName)) { throw 'Новый зал не соответствует выданному билету.' }
+    }
+    $taskHallsPage = Invoke-WebRequest "$($taskScope.BaseUrl)/halls" -NoProxy
+    if (!$taskHallsPage.Content.Contains('506')) { throw 'Не показана фактическая вместимость залов.' }
     # Администратор меняет карточку/цену места и удаляет новость: seed не должен отменить это.
     $taskEdit = @'
 UPDATE "Movies" SET "Name"='Сохранённое название' WHERE "Id"=__MOVIE__;

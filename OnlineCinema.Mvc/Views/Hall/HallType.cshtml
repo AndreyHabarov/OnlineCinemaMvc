@@ -1,29 +1,30 @@
 @using OnlineCinema.Mvc.Models.ViewModels.Hall
 @model IEnumerable<HallViewModel>
-
-<h1 class="text-white">Типы залов и мест</h1>
-@if (!Model.Any())
-{
-    @await Html.PartialAsync("_EmptyState", "Информация о залах пока не добавлена.")
-}
-<div class="table-responsive">
-<table class="hall-table">
-    <thead>
-        <tr>
-            <th>Название зала</th>
-            <th>Описание</th>
-            <th>Фото</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var hall in Model)
-        {
-            <tr>
-                <td class="hall-name">@hall.Name</td>
-                <td>@hall.Description</td>
-                <td><img src="@hall.PicturePath" alt="Зал «@hall.Name»" /></td>
-            </tr>
-        }
-    </tbody>
-</table>
-</div>
+<section aria-labelledby="halls-heading">
+    <p class="eyebrow">Выберите свой формат вечера</p>
+    <h1 id="halls-heading" class="page-heading">Наши залы</h1>
+    <p class="halls-intro text-secondary">Большой экран для приключений, просторные кресла для долгого фильма или уютный зал для тихого вечера. Сравните залы, затем выберите фильм и сеанс.</p>
+    @if (!Model.Any())
+    {
+        @await Html.PartialAsync("_EmptyState", "Информация о залах пока не добавлена.")
+    }
+    else
+    {
+        <div class="halls-overview"><span>Залов: <strong>@Model.Count()</strong></span><span>Всего мест: <strong>@Model.Sum(h => h.SeatCount)</strong></span><span>Место выбирается перед подтверждением покупки</span></div>
+        <table class="halls-table">
+            <caption class="visually-hidden">Сравнение залов: интерьер, вместимость и особенности</caption>
+            <thead><tr><th scope="col">Интерьер</th><th scope="col">Зал и места</th><th scope="col">Какой вечер выбрать</th></tr></thead>
+            <tbody>
+                @foreach (var hall in Model)
+                {
+                    <tr>
+                        <td class="hall-photo-cell"><img src="@hall.PicturePath" alt="Интерьер зала «@hall.Name»" class="hall-photo" loading="lazy"></td>
+                        <th scope="row" class="hall-info-cell"><h2 class="hall-title">@hall.Name</h2><div class="hall-capacity"><span>Мест: <strong>@hall.SeatCount</strong></span><span>Рядов: <strong>@hall.RowCount</strong></span></div></th>
+                        <td class="hall-description-cell"><p>@hall.Description</p><a class="btn btn-outline-light" asp-controller="Home" asp-action="Index" asp-fragment="movie-catalog">Выбрать фильм</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <p class="form-hint mt-3">Изображения — иллюстрации демопроекта. Фактическая схема мест показана при выборе сеанса.</p>
+    }
+</section>

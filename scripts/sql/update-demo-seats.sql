@@ -1,26 +1,39 @@
 BEGIN;
-SELECT pg_advisory_xact_lock(hashtext('onlinecinema-demo-seats'));
+SELECT pg_advisory_xact_lock(726401991);
+CREATE TEMP TABLE demo_hall_data ON COMMIT DROP AS
+SELECT * FROM jsonb_to_recordset('__HALLS_JSON__'::jsonb)
+AS h(slug text, name text, rows integer, "seatsPerRow" integer, "picturePath" text, description text, "legacyDescriptions" jsonb);
 
 INSERT INTO "Halls" ("Name", "PicturePath", "Description")
-SELECT name, picture, description FROM (VALUES
-    ('IMAX Зал', '/images/hall/imax.jpg', 'Большой зал: 10 рядов по 25 мест.'),
-    ('VIP Lounge', '/images/hall/vip.jpg', 'VIP-зал: 5 рядов по 8 мест.'),
-    ('Классический Зал', '/images/hall/classic.jpg', 'Классический зал: 10 рядов по 12 мест.')
-) AS hall(name, picture, description)
-WHERE NOT EXISTS (SELECT 1 FROM "Halls" WHERE "Name" = hall.name);
+SELECT name, "picturePath", description FROM demo_hall_data d
+WHERE NOT EXISTS (SELECT 1 FROM "Halls" h WHERE h."Name"=d.name)
+AND NOT EXISTS (SELECT 1 FROM "DemoSeedRecords" m WHERE m."Key"='hall:'||d.slug);
 
-WITH empty_halls AS (
-    SELECT h."Id", h."Name" FROM "Halls" h
-    WHERE h."Name" IN ('IMAX Зал','VIP Lounge','Классический Зал')
-      AND NOT EXISTS (SELECT 1 FROM "Seats" s WHERE s."HallId"=h."Id")
-)
-INSERT INTO "Seats" ("HallId", "Row", "Number", "Price")
-SELECT h."Id", r.number, s.number, 0
-FROM empty_halls h
-CROSS JOIN LATERAL generate_series(1, CASE WHEN h."Name"='VIP Lounge' THEN 5 ELSE 10 END) r(number)
-CROSS JOIN LATERAL generate_series(1, CASE WHEN h."Name"='IMAX Зал' THEN 25 WHEN h."Name"='VIP Lounge' THEN 8 ELSE 12 END) s(number)
+CREATE TEMP TABLE demo_hall_bindings ON COMMIT DROP AS
+SELECT DISTINCT ON (d.slug) d.*, h."Id" AS hall_id
+FROM demo_hall_data d LEFT JOIN "DemoSeedRecords" m ON m."Key"='hall:'||d.slug
+JOIN "Halls" h ON (m."Key" IS NOT NULL AND h."Id"=m."EntityId") OR (m."Key" IS NULL AND h."Name"=d.name)
+ORDER BY d.slug,h."Id";
+INSERT INTO "DemoSeedRecords" ("Key","EntityId")
+SELECT 'hall:'||slug,hall_id FROM demo_hall_bindings ON CONFLICT DO NOTHING;
+
+UPDATE "Halls" h SET
+"Description"=CASE WHEN d."legacyDescriptions" ? h."Description" THEN d.description ELSE h."Description" END,
+"PicturePath"=CASE WHEN h."PicturePath"='/images/hall/'||d.slug||'.jpg' THEN d."picturePath" ELSE h."PicturePath" END
+FROM demo_hall_bindings d WHERE h."Id"=d.hall_id
+AND NOT EXISTS (SELECT 1 FROM "DemoSeedRecords" m WHERE m."Key"='hall-presentation:v2:'||d.slug);
+INSERT INTO "DemoSeedRecords" ("Key","EntityId")
+SELECT 'hall-presentation:v2:'||slug,hall_id FROM demo_hall_bindings ON CONFLICT DO NOTHING;
+
+INSERT INTO "Seats" ("HallId","Row","Number","Price")
+SELECT d.hall_id,r.number,s.number,0 FROM demo_hall_bindings d
+CROSS JOIN LATERAL generate_series(1,d.rows) r(number)
+CROSS JOIN LATERAL generate_series(1,d."seatsPerRow") s(number)
+WHERE NOT EXISTS (SELECT 1 FROM "Seats" existing WHERE existing."HallId"=d.hall_id)
+AND NOT EXISTS (SELECT 1 FROM "DemoSeedRecords" m WHERE m."Key"='layout:'||d.slug)
 ON CONFLICT ("HallId","Row","Number") DO NOTHING;
+INSERT INTO "DemoSeedRecords" ("Key","EntityId")
+SELECT 'layout:'||slug,hall_id FROM demo_hall_bindings ON CONFLICT DO NOTHING;
 COMMIT;
-
-SELECT h."Name", count(s."Id") AS "Количество мест"
-FROM "Halls" h LEFT JOIN "Seats" s ON s."HallId"=h."Id" GROUP BY h."Id" ORDER BY h."Id";
+SELECT h."Name",count(s."Id") AS "Количество мест" FROM "Halls" h
+LEFT JOIN "Seats" s ON s."HallId"=h."Id" GROUP BY h."Id" ORDER BY h."Id";

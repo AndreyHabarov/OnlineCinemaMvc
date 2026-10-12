@@ -18,7 +18,20 @@ public sealed class DemoMovie
     public required string[] Genres { get; init; }
 }
 
-public sealed record DemoCatalog(IReadOnlyList<DemoMovie> Movies, IReadOnlyDictionary<string, string> Posters)
+public sealed class DemoHall
+{
+    public required string Slug { get; init; }
+    public required string Name { get; init; }
+    public int Rows { get; init; }
+    public int SeatsPerRow { get; init; }
+    public int Price { get; init; }
+    public required string PicturePath { get; init; }
+    public required string Description { get; init; }
+    public required string[] LegacyDescriptions { get; init; }
+}
+
+public sealed record DemoCatalog(IReadOnlyList<DemoMovie> Movies, IReadOnlyDictionary<string, string> Posters,
+    IReadOnlyList<DemoHall> Halls)
 {
     private sealed class Poster
     {
@@ -47,6 +60,18 @@ public sealed record DemoCatalog(IReadOnlyList<DemoMovie> Movies, IReadOnlyDicti
                 || !File.Exists(Path.Combine(webRoot, path)))
                 throw new DemoConfigurationException("Некорректные данные или отсутствующий локальный постер.");
         }
-        return new(movies, posters);
+        var halls = JsonSerializer.Deserialize<List<DemoHall>>(
+            await File.ReadAllTextAsync(Path.Combine(dataDirectory, "demo-halls.json")), options) ?? [];
+        if (halls.Count != 5 || halls.Select(h => h.Slug).Distinct().Count() != halls.Count
+            || halls.Select(h => h.Name).Distinct().Count() != halls.Count)
+            throw new DemoConfigurationException("Демокаталог должен содержать пять разных залов.");
+        foreach (var hall in halls)
+            if (!Regex.IsMatch(hall.Slug, "^[a-z0-9-]+$") || string.IsNullOrWhiteSpace(hall.Name)
+                || string.IsNullOrWhiteSpace(hall.Description) || hall.Rows is < 1 or > 30
+                || hall.SeatsPerRow is < 1 or > 40 || hall.Price is < 1 or > 10000
+                || !Regex.IsMatch(hall.PicturePath, @"^/images/hall/[a-z0-9-]+\.png$")
+                || !File.Exists(Path.Combine(webRoot, hall.PicturePath.TrimStart('/'))))
+                throw new DemoConfigurationException("Некорректные данные или отсутствующая иллюстрация зала.");
+        return new(movies, posters, halls);
     }
 }

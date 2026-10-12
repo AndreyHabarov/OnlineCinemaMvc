@@ -10,9 +10,6 @@ public sealed record DemoAdminOptions(bool Enabled, string? Email, string? Passw
 
 public sealed class DemoSeeder(AppDbContext context, RoleManager<Role> roles, UserManager<User> users)
 {
-    private static readonly (string Slug, string Name, int Rows, int Seats)[] Halls =
-    [ ("imax", "IMAX Зал", 10, 25), ("vip", "VIP Lounge", 5, 8), ("classic", "Классический Зал", 10, 12) ];
-
     public async Task EnsureRolesAsync()
     {
         if (!await roles.RoleExistsAsync(StaticRoleNames.ADMIN))
@@ -50,15 +47,23 @@ public sealed class DemoSeeder(AppDbContext context, RoleManager<Role> roles, Us
                 await context.SaveChangesAsync();
             }
         }
-        foreach (var hall in Halls)
+        foreach (var hall in catalog.Halls)
         {
             var result = await EnsureAsync("hall:" + hall.Slug,
                 () => context.Halls.FirstOrDefaultAsync(h => h.Name == hall.Name),
-                () => new Hall { Name = hall.Name, PicturePath = $"/images/hall/{hall.Slug}.jpg", Description = $"{hall.Rows} рядов по {hall.Seats} мест." });
+                () => new Hall { Name = hall.Name, PicturePath = hall.PicturePath, Description = hall.Description });
+            if (result.Entity != null && !await HasMarkerAsync("hall-presentation:v2:" + hall.Slug))
+            {
+                // Обновляем только прежний демоконтент; пользовательские правки сохраняются.
+                if (hall.LegacyDescriptions.Contains(result.Entity.Description)) result.Entity.Description = hall.Description;
+                if (result.Entity.PicturePath == $"/images/hall/{hall.Slug}.jpg") result.Entity.PicturePath = hall.PicturePath;
+                Mark("hall-presentation:v2:" + hall.Slug, result.Entity.Id);
+                await context.SaveChangesAsync();
+            }
             if (result.Entity == null || await HasMarkerAsync("layout:" + hall.Slug)) continue;
             if (!await context.Seats.AnyAsync(s => s.HallId == result.Entity.Id))
                 for (var row = 1; row <= hall.Rows; row++)
-                    for (var seat = 1; seat <= hall.Seats; seat++)
+                    for (var seat = 1; seat <= hall.SeatsPerRow; seat++)
                         context.Seats.Add(new Seat { HallId = result.Entity.Id, Row = row, Number = seat, Price = 0 });
             Mark("layout:" + hall.Slug, result.Entity.Id);
             await context.SaveChangesAsync();
@@ -106,11 +111,11 @@ public sealed class DemoSeeder(AppDbContext context, RoleManager<Role> roles, Us
             var date = now.Date.AddDays(day);
             var dayNumber = (int)(date - new DateTime(2000, 1, 1)).TotalDays;
             for (var slot = 0; slot < 4; slot++)
-                for (var hallNumber = 0; hallNumber < Halls.Length; hallNumber++)
+                for (var hallNumber = 0; hallNumber < catalog.Halls.Count; hallNumber++)
                 {
                     var start = date.AddHours(10 + 4 * slot);
                     if (start <= now) continue;
-                    var hallData = Halls[hallNumber];
+                    var hallData = catalog.Halls[hallNumber];
                     var key = $"session:{date:yyyyMMdd}:{hallData.Slug}:{slot}";
                     if (await HasMarkerAsync(key)) continue;
                     var movieData = catalog.Movies[(dayNumber + 3 * slot + hallNumber) % catalog.Movies.Count];
@@ -123,7 +128,7 @@ public sealed class DemoSeeder(AppDbContext context, RoleManager<Role> roles, Us
                     var end = start.AddMinutes(movie.Duration + 30);
                     if (await context.Sessions.AnyAsync(s => s.HallId == hall.Id
                         && s.DateStart < end && s.DateStart.AddMinutes(s.Movie.Duration + 30) > start)) continue;
-                    var session = new Session { MovieId = movie.Id, HallId = hall.Id, DateStart = start, Price = 350 + 100 * hallNumber };
+                    var session = new Session { MovieId = movie.Id, HallId = hall.Id, DateStart = start, Price = hallData.Price };
                     context.Sessions.Add(session);
                     await context.SaveChangesAsync();
                     Mark(key, session.Id);

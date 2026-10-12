@@ -12,6 +12,10 @@
             <div class="surface">
                 <h2 class="h4">@Model.MovieName · @Model.AgeRating+</h2>
                 <p class="text-secondary">@Model.StartsAt.ToString("dd.MM.yyyy HH:mm") · @Model.HallName · время московское</p>
+                <div class="booking-hall-info">
+                    <img src="@Model.HallPicturePath" alt="Интерьер зала «@Model.HallName»">
+                    <div><p>@Model.HallDescription</p><p>Мест: @Model.Seats.Count · рядов: @Model.Seats.Select(s => s.Row).Distinct().Count()</p><a asp-controller="Hall" asp-action="GetHalls">Сравнить залы</a></div>
+                </div>
                 <div class="seat-legend"><span><i></i>Свободно</span><span><i class="legend-selected"></i>Выбрано</span><span><i class="legend-occupied"></i>Занято</span></div>
                 <div class="seat-map" tabindex="0" role="region" aria-label="Схема мест; на узком экране прокручивается по горизонтали">
                     <div class="cinema-screen mb-4">ЭКРАН</div>

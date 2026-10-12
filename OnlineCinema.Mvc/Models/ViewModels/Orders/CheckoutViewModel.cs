@@ -6,6 +6,8 @@ public sealed class CheckoutViewModel
     public string MovieName { get; init; } = string.Empty;
     public int AgeRating { get; init; }
     public string HallName { get; init; } = string.Empty;
+    public string HallDescription { get; init; } = string.Empty;
+    public string HallPicturePath { get; init; } = string.Empty;
     public DateTime StartsAt { get; init; }
     public List<CheckoutSeat> Seats { get; set; } = [];
 }
