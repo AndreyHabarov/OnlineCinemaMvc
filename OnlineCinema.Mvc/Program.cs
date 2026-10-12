@@ -9,6 +9,7 @@ using OnlineCinema.Mvc.Filters;
 using Microsoft.AspNetCore.DataProtection;
 using OnlineCinema.Application.Extensions;
 using Npgsql;
+using OnlineCinema.Mvc.Infrastructure;
 
 CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
 CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("ru-RU");
@@ -68,6 +69,7 @@ if (string.IsNullOrWhiteSpace(connectionString))
 }
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddScoped<DatabaseInitializer>();
 
 builder.Services.AddIdentity<User, Role>(opt =>
 {
@@ -110,6 +112,23 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 var app = builder.Build();
+
+if (builder.Configuration.GetValue<bool>("Cinema:Initialize"))
+{
+    await using var scope = app.Services.CreateAsyncScope();
+    try
+    {
+        await scope.ServiceProvider.GetRequiredService<DatabaseInitializer>().InitializeAsync();
+        Console.WriteLine("Миграции PostgreSQL завершены.");
+    }
+    catch (Exception exception)
+    {
+        // Не раскрываем строку подключения или данные из исключения.
+        Console.Error.WriteLine($"Инициализация БД не выполнена ({exception.GetType().Name}). Проверьте подключение и конфликты миграций.");
+        Environment.ExitCode = 1;
+    }
+    return;
+}
 
 
 if (!app.Environment.IsDevelopment())

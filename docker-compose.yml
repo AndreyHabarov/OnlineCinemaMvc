@@ -1,13 +1,12 @@
 name: onlinecinema
 
 services:
-  web:
+  initialize:
     image: onlinecinema:local
     build: .
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:${APP_PORT:-8080}:8080"
-    environment:
+    restart: "no"
+    command: ["--Cinema:Initialize", "true"]
+    environment: &database
       Database__Host: db
       Database__Port: 5432
       Database__Name: ${POSTGRES_DB:-cinemadb}
@@ -16,6 +15,24 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+  web:
+    image: onlinecinema:local
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:8080"
+    environment: *database
+    depends_on:
+      db:
+        condition: service_healthy
+      initialize:
+        condition: service_completed_successfully
     volumes:
       - protection_keys:/app/keys
       - promotion_uploads:/app/wwwroot/images/promotion/uploads
