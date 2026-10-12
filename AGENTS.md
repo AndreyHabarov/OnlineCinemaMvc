@@ -6,7 +6,7 @@
 - Довести существующее приложение до демонстрации для портфолио. Покупка билетов демонстрационная, без списания денег; выдаёт билеты и сохраняет их в личном кабинете.
 - Пользовательские тексты, описания и инструкции писать на русском.
 - Очередь задач и выполненные блоки находятся в локальном `backlog.md`. Если файл отсутствует в новом checkout, уточнить задачу из запроса пользователя; не считать его отсутствие ошибкой.
-- Финальный этап после исправлений: сайт и PostgreSQL в отдельных контейнерах Docker Compose, автоматические миграции и повторяемое сидирование с локальными постерами и актуальными сеансами. Сейчас в Compose только БД; сайт запускается отдельно.
+- Демонстрация разворачивается через Docker Compose: web и PostgreSQL в отдельных контейнерах, initialize автоматически применяет миграции и повторяемое сидирование. Постеры локальные; фоновый процесс поддерживает будущие сеансы. Локальная разработка с отдельным запуском сайта также поддерживается.
 
 ## Границы изменений
 
@@ -19,7 +19,15 @@
 
 ## Запуск и команды
 
-Из корня проекта в PowerShell 7:
+Команды выполняются из корня проекта.
+
+Для готовой демонстрации (PowerShell 5.1 или 7):
+
+```powershell
+./scripts/Start-Demo.ps1
+```
+
+Для локальной разработки:
 
 ```powershell
 ./scripts/Initialize-Local.ps1
@@ -29,11 +37,17 @@
 dotnet run --project OnlineCinema.Mvc --launch-profile http
 ```
 
-- Сайт: `http://localhost:5175`. Контейнерная БД: `127.0.0.1:5434`, база `cinemadb`, пользователь `cinema`. Проверять фактические настройки Compose; пароль не выводить в сообщения или логи.
+- Сайт Docker: `http://localhost:8080`; профиль локальной разработки: `http://localhost:5175`. Контейнерная БД: `127.0.0.1:5434`, база `cinemadb`, пользователь `cinema`. Проверять фактические настройки Compose; пароль не выводить в сообщения или логи.
 - Подключение Development хранится в игнорируемом `OnlineCinema.Mvc/appsettings.Development.local.json`; `ConnectionStrings__Default` имеет приоритет.
-- Инструкции: `docs/local-development.md`, `docs/demo-catalog.md`, `docs/demo-schedule.md`, `docs/ticket-purchases.md`, `docs/admin-catalog.md`, `docs/project-files.md`.
+- Инструкции: `docs/quick-start.md`, `docs/docker.md`, `docs/testing.md`, `docs/local-development.md`, `docs/demo-catalog.md`, `docs/demo-schedule.md`, `docs/ticket-purchases.md`, `docs/admin-catalog.md`, `docs/project-files.md`.
 
 ## Проверки
+
+Общая регрессия приложения: `./scripts/Test-All.ps1` (собственная временная БД).
+Чистое контейнерное развёртывание: `Test-ContainerMigrations.ps1`,
+`Test-ContainerDemo.ps1 -CheckScheduleRefresh`, `Test-ProductionMode.ps1`
+в папке scripts. Эти runner создают и удаляют только свои временные
+Compose-проекты; рабочие БД и volumes не затрагиваются.
 
 ```powershell
 dotnet build OnlineCinemaMvc.sln --no-restore
