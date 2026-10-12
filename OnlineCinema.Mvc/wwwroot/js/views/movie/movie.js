@@ -25,36 +25,40 @@ function showSessionsMessage(message) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const movieIdElement = document.getElementById('MovieId');
+    const movieIdElement = document.getElementById('movie-id');
     if (!movieIdElement) return;
-    const dateButtons = document.querySelectorAll('.movie__session__btn');
-    const hallButtons = document.querySelectorAll('.hall__other__btn');
-    const allHallsButton = document.getElementById('btnAllHalls');
+    const dateButtons = document.querySelectorAll('.session-date');
+    const hallButtons = document.querySelectorAll('[data-hall-id]');
+    const allHallsButton = document.getElementById('btn-all-halls');
     const refresh = () => {
-        const date = document.querySelector('.movie__session__btn.active')?.dataset.date;
+        const date = document.querySelector('.session-date.active')?.dataset.date;
         if (!date) {
             showSessionsMessage('Для этого фильма пока нет предстоящих сеансов.');
             return;
         }
         handleSessionsUpdate({
             movieId: Number(movieIdElement.value), date,
-            hallId: document.querySelector('.hall__other__btn.active')?.dataset.hallId
+            hallId: document.querySelector('[data-hall-id].active')?.dataset.hallId
         });
     };
     dateButtons.forEach(button => button.addEventListener('click', () => {
-        dateButtons.forEach(item => item.classList.remove('active'));
+        dateButtons.forEach(item => { item.classList.remove('active'); item.setAttribute('aria-pressed', 'false'); });
         button.classList.add('active');
+        button.setAttribute('aria-pressed', 'true');
         refresh();
     }));
     hallButtons.forEach(button => button.addEventListener('click', () => {
-        hallButtons.forEach(item => item.classList.remove('active'));
+        hallButtons.forEach(item => { item.classList.remove('active'); item.setAttribute('aria-pressed', 'false'); });
         allHallsButton.classList.remove('active');
+        allHallsButton.setAttribute('aria-pressed', 'false');
         button.classList.add('active');
+        button.setAttribute('aria-pressed', 'true');
         refresh();
     }));
     allHallsButton.addEventListener('click', () => {
-        hallButtons.forEach(item => item.classList.remove('active'));
+        hallButtons.forEach(item => { item.classList.remove('active'); item.setAttribute('aria-pressed', 'false'); });
         allHallsButton.classList.add('active');
+        allHallsButton.setAttribute('aria-pressed', 'true');
         refresh();
     });
     refresh();
@@ -69,9 +73,9 @@ function updateSessions(sessions) {
     container.replaceChildren();
     sessions.forEach(session => {
         const card = document.createElement('div');
-        card.className = 'col-auto ms-2 mb-3';
+        card.className = 'session-card';
         const time = document.createElement('a');
-        time.className = 'btn btn-primary px-3 py-2 mb-1';
+        time.className = 'btn btn-primary';
         time.href = `/orders/${session.id}`;
         time.setAttribute('aria-label', `Купить билет на ${session.dateStart.slice(11,16)}, ${session.hallName}`);
         // Местное время кинотеатра без смещения не переводим в часовой пояс браузера.

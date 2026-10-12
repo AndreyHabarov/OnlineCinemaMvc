@@ -1,13 +1,13 @@
-<section id="AdminCatalog" data-kind="genres" class="text-white">
-    <div class="d-flex justify-content-between align-items-center"><h1>Жанры</h1><button id="CatalogAdd" class="btn btn-outline-light">Добавить жанр</button></div>
-    <p id="CatalogError" class="text-danger" role="alert"></p>
-    <table id="CatalogTable" class="table"><thead><tr><th>Название</th><th>Действия</th></tr></thead></table>
+<section id="admin-catalog" data-kind="genres" class="admin-catalog">
+    <div class="admin-heading"><h1>Жанры</h1><button id="catalog-add" class="btn btn-outline-light">Добавить жанр</button></div>
+    <p id="catalog-error" class="text-danger" role="alert"></p>
+    <div class="admin-table-scroll"><table id="catalog-table" class="table"><thead><tr><th>Название</th><th>Действия</th></tr></thead></table></div>
 </section>
-<div class="modal fade" id="CatalogModal" tabindex="-1" aria-labelledby="CatalogTitle"><div class="modal-dialog modal-dialog-centered"><div class="modal-content">
-    <div class="modal-header"><h2 id="CatalogTitle" class="h5">Жанр</h2><button class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button></div>
-    <form id="CatalogForm"><div class="modal-body"><input name="Id" type="hidden" value="0">
-        <label class="form-label" for="GenreName">Название</label><input id="GenreName" name="Name" class="form-control" required maxlength="80">
-        <p id="CatalogFormError" class="text-danger" role="alert"></p>
-    </div><div class="modal-footer"><button id="CatalogSave" type="submit" class="btn btn-primary">Сохранить</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button></div></form>
+<div class="modal fade" id="catalog-modal" tabindex="-1" aria-labelledby="catalog-title"><div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h2 id="catalog-title" class="h5">Жанр</h2><button class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button></div>
+    <form id="catalog-form"><div class="modal-body"><input name="Id" type="hidden" value="0">
+        <label class="form-label" for="genre-name">Название</label><input id="genre-name" name="Name" class="form-control" required maxlength="80">
+        <p id="catalog-form-error" class="text-danger" role="alert"></p>
+    </div><div class="modal-footer"><button id="catalog-save" type="submit" class="btn btn-primary">Сохранить</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button></div></form>
 </div></div></div>
 @section Scripts { <script src="~/js/admin-catalog.js" asp-append-version="true"></script> }

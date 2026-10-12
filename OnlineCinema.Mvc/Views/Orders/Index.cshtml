@@ -1,41 +1,47 @@
 @using OnlineCinema.Mvc.Models.ViewModels.Orders
 @model CheckoutViewModel
 <link rel="stylesheet" href="~/css/booking.css" asp-append-version="true">
-<section class="text-white mt-4" id="Checkout" data-session-id="@Model.SessionId">
-    <h1>Выбор мест</h1>
-    <h2 class="h4">@Model.MovieName · @Model.AgeRating+</h2>
-    <p>@Model.StartsAt.ToString("dd.MM.yyyy HH:mm") · @Model.HallName · время московское</p>
+<section id="checkout" data-session-id="@Model.SessionId">
+    <p class="eyebrow">Сеанс → места → ваши билеты</p>
+    <h1 class="page-heading">Выбор мест</h1>
     <p class="alert alert-info">Демонстрационная покупка: деньги не списываются.</p>
-    @if (!Model.Seats.Any())
-    {
-        <p>В этом зале пока не настроены места.</p>
-    }
+    @if (!Model.Seats.Any()) { <p class="empty-state">В этом зале пока не настроены места.</p> }
     else
     {
-        <div class="seat-map mb-4">
-            <div class="cinema-screen mb-4">ЭКРАН</div>
-            @foreach (var row in Model.Seats.GroupBy(s => s.Row))
-            {
-                <div class="seat-row mb-2"><span class="seat-row-label">Ряд @row.Key</span>
-                    @foreach (var seat in row)
+        <div class="booking-layout">
+            <div class="surface">
+                <h2 class="h4">@Model.MovieName · @Model.AgeRating+</h2>
+                <p class="text-secondary">@Model.StartsAt.ToString("dd.MM.yyyy HH:mm") · @Model.HallName · время московское</p>
+                <div class="seat-legend"><span><i></i>Свободно</span><span><i class="legend-selected"></i>Выбрано</span><span><i class="legend-occupied"></i>Занято</span></div>
+                <div class="seat-map" tabindex="0" role="region" aria-label="Схема мест; на узком экране прокручивается по горизонтали">
+                    <div class="cinema-screen mb-4">ЭКРАН</div>
+                    @foreach (var row in Model.Seats.GroupBy(s => s.Row))
                     {
-                        <button type="button" class="seat-button @(seat.Occupied ? "occupied" : "")" disabled="@seat.Occupied" aria-pressed="false"
-                            aria-label="Ряд @seat.Row, место @seat.Number, @seat.Price рублей@(seat.Occupied ? ", занято" : "")"
-                            data-seat-id="@seat.Id" data-row="@seat.Row" data-number="@seat.Number" data-price="@seat.Price">@seat.Number</button>
+                        <div class="seat-row mb-2"><span class="seat-row-label">Ряд @row.Key</span>
+                            @foreach (var seat in row)
+                            {
+                                <button type="button" class="seat-button @(seat.Occupied ? "is-occupied" : "")" disabled="@seat.Occupied" aria-pressed="false"
+                                    aria-label="Ряд @seat.Row, место @seat.Number, @seat.Price рублей@(seat.Occupied ? ", занято" : "")"
+                                    data-seat-id="@seat.Id" data-row="@seat.Row" data-number="@seat.Number" data-price="@seat.Price">@seat.Number</button>
+                            }
+                        </div>
                     }
                 </div>
-            }
+                <p class="text-secondary mb-0">Выберите от 1 до 6 мест. На узком экране схему можно прокрутить.</p>
+            </div>
+            <aside class="surface booking-summary" aria-labelledby="summary-heading">
+                <h2 id="summary-heading">Ваш заказ</h2>
+                <p id="selected-seats" aria-live="polite">Места не выбраны.</p>
+                <p class="booking-total">Итого: <strong id="order-total">0 ₽</strong></p>
+                <form id="purchase-form">
+                    <label for="viewer-age" class="form-label">Возраст самого младшего зрителя</label>
+                    <input id="viewer-age" type="number" class="form-control booking-age" value="18" min="@Model.AgeRating" max="120" required>
+                    <p id="purchase-error" class="text-danger mt-2" role="alert"></p>
+                    <button id="purchase-button" class="btn btn-primary" type="submit" disabled>Подтвердить демопокупку</button>
+                    <button id="refresh-seats" class="btn btn-outline-light" type="button">Обновить схему</button>
+                </form>
+            </aside>
         </div>
-        <p>Выберите от 1 до 6 мест. Серые места уже заняты.</p>
-        <p id="SelectedSeats" aria-live="polite">Места не выбраны.</p>
-        <p>Итого: <strong id="OrderTotal">0 ₽</strong></p>
-        <form id="PurchaseForm">
-            <label for="ViewerAge" class="form-label">Возраст самого младшего зрителя в заказе</label>
-            <input id="ViewerAge" type="number" class="form-control booking-age" value="18" min="@Model.AgeRating" max="120" required>
-            <p id="PurchaseError" class="text-danger mt-2" role="alert"></p>
-            <button id="PurchaseButton" class="btn btn-primary" type="submit" disabled>Подтвердить демопокупку</button>
-            <button id="RefreshSeats" class="btn btn-outline-light" type="button">Обновить схему</button>
-        </form>
     }
 </section>
-@section Scripts { <script src="~/js/views/order/Order.js" asp-append-version="true"></script> }
+@section Scripts { <script src="~/js/views/order/checkout.js" asp-append-version="true"></script> }

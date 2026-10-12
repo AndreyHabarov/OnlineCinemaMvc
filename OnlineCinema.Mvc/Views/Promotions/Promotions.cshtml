@@ -1,16 +1,17 @@
 @model IEnumerable<PromotionViewModel>
+<h1 class="page-heading">Акции</h1>
 
 @{
     if (!Model.Any())
     {
         @await Html.PartialAsync("_EmptyState", "Акций пока нет.")
     }
-    int count = 1;
+
     foreach (var promotion in Model)
     {
         var link = PublicUrls.NavigationLink(promotion.Link);
         <div class="row">
-            <div class="col promotion-item @(count % 2 == 0 ? "reverse": "normal")">
+            <div class="promotion-item">
                 @if (link is null)
                 {
                     <a asp-controller="Promotions" asp-action="Get" asp-route-name="@promotion.Name">
@@ -23,22 +24,22 @@
                         <img src="@promotion.ImagePath" class="img-fluid rounded-3" alt="Акция «@promotion.DisplayName»" />
                     </a>
                 }
-                <div>
+                <div class="promotion-copy">
                     <h3>
                         @promotion.DisplayName
                     </h3>
                     <p>@promotion.Description</p>
                     @if (link is null)
                     {
-                        <a class="btn btn-primary learn__more__btn" asp-controller="Promotions" asp-action="Get" asp-route-name="@promotion.Name">@promotion.ButtonText</a>
+                        <a class="btn btn-primary promotion-action" asp-controller="Promotions" asp-action="Get" asp-route-name="@promotion.Name">@promotion.ButtonText</a>
                     }
                     else
                     {
-                        <a href="@link" class="btn btn-primary learn__more__btn">@promotion.ButtonText</a>
+                        <a href="@link" class="btn btn-primary promotion-action">@promotion.ButtonText</a>
                     }
                 </div>
             </div>
         </div>
-        count++;
+
     }
 }

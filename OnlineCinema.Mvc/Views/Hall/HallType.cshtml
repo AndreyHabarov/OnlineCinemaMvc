@@ -1,4 +1,4 @@
-﻿@using OnlineCinema.Mvc.Models.ViewModels.Hall
+@using OnlineCinema.Mvc.Models.ViewModels.Hall
 @model IEnumerable<HallViewModel>
 
 <h1 class="text-white">Типы залов и мест</h1>
@@ -7,7 +7,7 @@
     @await Html.PartialAsync("_EmptyState", "Информация о залах пока не добавлена.")
 }
 <div class="table-responsive">
-<table class="hall__seat__types">
+<table class="hall-table">
     <thead>
         <tr>
             <th>Название зала</th>
@@ -19,7 +19,7 @@
         @foreach (var hall in Model)
         {
             <tr>
-                <td class="td__width">@hall.Name</td>
+                <td class="hall-name">@hall.Name</td>
                 <td>@hall.Description</td>
                 <td><img src="@hall.PicturePath" alt="Зал «@hall.Name»" /></td>
             </tr>

@@ -1,5 +1,5 @@
-﻿<!DOCTYPE html>
-<html lang="ru">
+<!DOCTYPE html>
+<html lang="ru" data-bs-theme="dark">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,7 +10,7 @@
 <body>
     @await Html.PartialAsync("_Header.cshtml")
     @RenderSection("Banner", false)
-    <div class="container">
+    <div class="container site-content">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

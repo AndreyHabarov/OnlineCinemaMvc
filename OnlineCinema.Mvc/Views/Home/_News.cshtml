@@ -1,26 +1,17 @@
-﻿@model IEnumerable<HomeNewsViewModel>
-
-<div class="container-fluid">
-    @if (!Model.Any())
+@model IEnumerable<HomeNewsViewModel>
+@if (!Model.Any())
+{
+    @await Html.PartialAsync("_EmptyState", "Новостей пока нет.")
+}
+<div class="news-grid">
+    @foreach (var news in Model)
     {
-        @await Html.PartialAsync("_EmptyState", "Новостей пока нет.")
-    }
-    <div class="row">
-        @foreach (var card in Model)
-        {
-            <div class="col">
-                <div class="card news__card__custom mb-3">
-                    <a asp-controller="News" asp-action="GetNewsById" asp-route-id="@card.Id">
-                        <img src="@card.ImagePath" class="card-img-top" alt="Новость «@card.Name»">
-                    </a>
-                    <div class="card-body">
-                        <a asp-controller="News" asp-action="GetNewsById" asp-route-id="@card.Id">
-                            <h5 class="card-title">@card.Name</h5>
-                        </a>
-                        <p class="card-text"><small class="text-white-50">@card.Date.ToString("f")</small></p>
-                    </div>
-                </div>
+        <article class="card news-card">
+            <a asp-controller="News" asp-action="GetNewsById" asp-route-id="@news.Id"><img src="@news.ImagePath" class="card-img-top" alt="Новость «@news.Name»" loading="lazy"></a>
+            <div class="card-body">
+                <h3 class="h5"><a asp-controller="News" asp-action="GetNewsById" asp-route-id="@news.Id">@news.Name</a></h3>
+                <p class="text-secondary mb-0"><small>@news.Date.ToString("f")</small></p>
             </div>
-        }
-    </div>
+        </article>
+    }
 </div>

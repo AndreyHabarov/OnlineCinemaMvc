@@ -6,34 +6,36 @@
     string accountController = currentUserService.IsAuthenticated ? "Account" : "";
     string accountAction = currentUserService.IsAuthenticated ? "PersonalAccount" : "";
     string accountDataToggle = currentUserService.IsAuthenticated ? "" : "modal";
-    string accountDataTarget = currentUserService.IsAuthenticated ? "" : "#PersonalAccountModal";
+    string accountDataTarget = currentUserService.IsAuthenticated ? "" : "#personal-account-modal";
 }
 
-<header>
-    <nav class="navbar navbar-expand-lg header__navbar__custom" data-bs-theme="dark">
+<header class="site-header">
+    <nav class="navbar navbar-expand-lg site-navbar" data-bs-theme="dark">
         <div class="container">
-            <a class="navbar-brand logo__custom__effect" asp-area="" asp-controller="Home" asp-action="Index">
-                <img src="~/images/logo/logo.png" alt="Кинотеатр MovieMax — главная" class="logo__image__custom" />
+            <a class="navbar-brand site-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <img src="~/images/logo/logo.png" alt="" class="site-logo" /><span>MovieMax</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#NavbarSupportedContent" aria-controls="NavbarSupportedContent" aria-expanded="false" aria-label="Открыть меню">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-supported-content" aria-controls="navbar-supported-content" aria-expanded="false" aria-label="Открыть меню">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="NavbarSupportedContent">
-                <ul class="nav nav-underline">
+            <div class="collapse navbar-collapse" id="navbar-supported-content">
+                <ul class="nav">
+                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Афиша</a></li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Promotions" asp-action="Promotions">АКЦИИ</a>
+                        <a class="nav-link" asp-area="" asp-controller="Promotions" asp-action="Promotions">Акции</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Movies" asp-action="KidsMovies">ДЕТЯМ</a>
+                        <a class="nav-link" asp-area="" asp-controller="Movies" asp-action="KidsMovies">Детям</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Movies" asp-action="ArtMovies">АРТ</a>
+                        <a class="nav-link" asp-area="" asp-controller="Movies" asp-action="ArtMovies">Арт</a>
                     </li>
+                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Hall" asp-action="GetHalls">Залы</a></li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link text-white" asp-controller="@accountController" asp-action="@accountAction" data-bs-toggle="@accountDataToggle" data-bs-target="@accountDataTarget">
-                            <i class="fa-regular fa-user me-1"></i><span id="AccountUserName">@account</span>
+                        <a class="nav-link account-link" asp-area="" asp-controller="@accountController" asp-action="@accountAction" data-bs-toggle="@accountDataToggle" data-bs-target="@accountDataTarget">
+                            <i class="fa-regular fa-user me-1"></i><span id="account-user-name">@account</span>
                         </a>
                     </li>
                 </ul>

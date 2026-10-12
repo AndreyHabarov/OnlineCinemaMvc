@@ -42,5 +42,5 @@ $taskToday = $taskNow.ToString('dd.MM.yyyy')
 $taskCurrent = @((Get-SessionsResponse "?date=$taskToday").Content | ConvertFrom-Json)
 if (@($taskCurrent | Where-Object { [DateTime]$_.DateStart -lt $taskNow }).Count) { throw 'Возвращены начавшиеся сеансы.' }
 $taskPage = Invoke-WebRequest -NoProxy -TimeoutSec 20 "$BaseUrl/movies/$taskMovie"
-if ($taskPage.Content -notmatch 'movie__session__btn active' -or $taskPage.Content -notmatch 'data-date=') { throw 'Не выбрана первая доступная дата фильма.' }
+if ($taskPage.Content -notmatch 'session-date active' -or $taskPage.Content -notmatch 'data-date=') { throw 'Не выбрана первая доступная дата фильма.' }
 Write-Host 'Проверены: 12 показов, фильтры фильма/зала, сортировка, DTO, московское время, неверные параметры, прошедшие/скрытые сеансы и активная дата.'

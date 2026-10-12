@@ -1,9 +1,9 @@
 @model PromotionViewModel
-
-<div class="text-white">
-    <h1 class="mt-5">@Model.DisplayName</h1>
-    <p class="mt-5">@Model.DateTime.ToString("f")</p>
-    <h5 class="mb-3">@Model.DisplayName</h5>
-    <p>@Model.Description</p>
-    <img src="~/@Model.ImagePath.TrimStart('/')" class="img-fluid rounded-3" alt="Акция «@Model.DisplayName»" />
-</div>
+<article class="detail-page">
+    <p class="eyebrow">Предложения кинотеатра</p>
+    <h1 class="page-heading">@Model.DisplayName</h1>
+    <p class="text-secondary">@Model.DateTime.ToString("f")</p>
+    <img src="~/@Model.ImagePath.TrimStart('/')" class="detail-image" alt="Акция «@Model.DisplayName»">
+    <p class="detail-description">@Model.Description</p>
+    <a asp-controller="Promotions" asp-action="Promotions">← Все акции</a>
+</article>

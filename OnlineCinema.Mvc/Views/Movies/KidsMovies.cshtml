@@ -1,24 +1,19 @@
-﻿@model IEnumerable<KidsViewModel>
-
-<div class="row row-cols-1 row-cols-md-4 g-4 p-3">
-    @if (!Model.Any())
-    {
-        @await Html.PartialAsync("_EmptyState", "Фильмов для детей пока нет.")
-    }
+@model IEnumerable<KidsViewModel>
+<h1 class="page-heading">Кино для всей семьи</h1>
+@if (!Model.Any())
+{
+    @await Html.PartialAsync("_EmptyState", "Фильмов для детей пока нет.")
+}
+<div class="movie-grid">
     @foreach (var movie in Model)
     {
-        <div class="col">
-            <div class="card h-100 movie__card_custom">
-                <a asp-controller="Movies" asp-action="Get" asp-route-id="@movie.Id">
-                    <img src="~/@movie.CardImagePath.TrimStart('/')" class="movie__img__custom" alt="Постер фильма «@movie.Name»" loading="lazy">
-                </a>
-                <div class="card-body">
-                    <p class="card-text">@movie.AgeRating+</p>
-                </div>
-                <div class="movie__card__overlay">
-                    <div class="movie-title">@movie.Name</div>
-                </div>
+        <article class="movie-card">
+            <a asp-controller="Movies" asp-action="Get" asp-route-id="@movie.Id"><img src="~/@movie.CardImagePath.TrimStart('/')" class="movie-poster" alt="Постер фильма «@movie.Name»" loading="lazy"></a>
+            <div class="movie-card-body">
+                <h3 class="movie-card-title"><a asp-controller="Movies" asp-action="Get" asp-route-id="@movie.Id">@movie.Name</a></h3>
+                <p class="movie-card-meta">@movie.AgeRating+</p>
+                <a class="movie-card-action" asp-controller="Movies" asp-action="Get" asp-route-id="@movie.Id" asp-fragment="movie-sessions">Сеансы и билеты →</a>
             </div>
-        </div>
+        </article>
     }
 </div>

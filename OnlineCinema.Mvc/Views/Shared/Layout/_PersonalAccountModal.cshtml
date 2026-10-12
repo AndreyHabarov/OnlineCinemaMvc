@@ -1,41 +1,41 @@
-﻿<div class="modal" tabindex="-1" id="PersonalAccountModal">
+<div class="modal" tabindex="-1" id="personal-account-modal">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
 
             <div class="modal-header">
-                <div class="d-flex justify-content-start personal__account__navbuttons">
+                <div class="d-flex justify-content-start account-tabs">
                     <ul class="nav nav-underline" role="tablist">
                         <li class="nav-item me-1">
-                            <a class="nav-link active" id="LoginTab" data-bs-toggle="tab" href="#Login" role="tab">ВХОД</a>
+                            <a class="nav-link active" id="login-tab" data-bs-toggle="tab" href="#login" role="tab">ВХОД</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="RegistrationTab" data-bs-toggle="tab" href="#Registration" role="tab">РЕГИСТРАЦИЯ</a>
+                            <a class="nav-link" id="registration-tab" data-bs-toggle="tab" href="#registration" role="tab">РЕГИСТРАЦИЯ</a>
                         </li>
                     </ul>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" aria-label="Закрыть" data-bs-dismiss="modal"></button>
             </div>
 
-            <div class="tab-content" id="myTabContent">
+            <div class="tab-content" id="my-tab-content">
                 <!-- Вход -->
-                <div class="tab-pane fade show active" id="Login" role="tabpanel">
+                <div class="tab-pane fade show active" id="login" role="tabpanel">
                     <div class="container-fluid">
                         <div class="row d-flex justify-content-between align-items-center">
 
                             <div class="container-fluid mb-2">
                                 <div class="row d-flex justify-content-between align-items-center">
-                                    <div class="col">
+                                    <div class="col-12 col-md-6">
                                         <p class="mt-2 fw-bolder">Способ авторизации</p>
 
-                                        <ul class="nav nav-pills mb-2 contact__btns__custom" id="pills-tab" role="tablist">
+                                        <ul class="nav nav-pills mb-2 contact-tabs" id="pills-tab" role="tablist">
                                             <li class="nav-item" role="presentation">
-                                                <button class="nav-link active " id="EmailBtn" data-bs-toggle="pill" data-bs-target="#pills-email" type="button" role="tab">Email</button>
+                                                <button class="nav-link active " id="email-btn" data-bs-toggle="pill" data-bs-target="#pills-email" type="button" role="tab">Email</button>
                                             </li>
                                             <li class="nav-item" role="presentation">
-                                                <button class="nav-link" id="PhoneBtn" data-bs-toggle="pill" data-bs-target="#pills-phone" type="button" role="tab">Телефон</button>
+                                                <button class="nav-link" id="phone-btn" data-bs-toggle="pill" data-bs-target="#pills-phone" type="button" role="tab">Телефон</button>
                                         </ul>
                                     </div>
-                                    <div class="col">
+                                    <div class="col-12 col-md-6">
                                         <p>
                                             Демонстрационный проект: билеты выдаются без оплаты. Для регистрации используйте тестовые данные.
                                         </p>
@@ -43,28 +43,28 @@
                                 </div>
                             </div>
 
-                            <div class="col-6 personal__login__input">
-                                <div class="input-group mb-3" id="EmailWrapper">
+                            <div class="col-12 col-md-6 login-fields">
+                                <div class="input-group mb-3" id="email-wrapper">
                                     <span class="input-group-text"><i class="fa-solid fa-at"></i></span>
-                                    <input id="Email" type="text" class="form-control" placeholder="Ваш email">
+                                    <input id="email" type="text" class="form-control" placeholder="Ваш email">
                                 </div>
-                                <div class="input-group mb-3 d-none" id="PhoneWrapper">
+                                <div class="input-group mb-3 d-none" id="phone-wrapper">
                                     <span class="input-group-text"><i class="fa-solid fa-mobile-screen-button"></i></span>
-                                    <input id="Phone" type="text" class="form-control" placeholder="Ваш номер телефона">
+                                    <input id="phone" type="text" class="form-control" placeholder="Ваш номер телефона">
                                 </div>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text"><i class="fa-solid fa-unlock-keyhole"></i></span>
-                                    <input id="Password" type="password" autocomplete="current-password" class="form-control" placeholder="Пароль">
+                                    <input id="password" type="password" autocomplete="current-password" class="form-control" placeholder="Пароль">
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class=" form-check remember__me__btn">
-                                        <input class="form-check-input" type="checkbox" id="FlexCheckIndeterminate">
-                                        <label class="form-check-label ms-2" for="FlexCheckIndeterminate">Запомнить меня</label>
+                                <div class="account-options">
+                                    <div class=" form-check remember-me">
+                                        <input class="form-check-input" type="checkbox" id="flex-check-indeterminate">
+                                        <label class="form-check-label ms-2" for="flex-check-indeterminate">Запомнить меня</label>
                                     </div>
-                                    <span class="forget__password__text ms-3">Восстановление пароля в демоверсии недоступно.</span>
+                                    <span class="form-hint">Восстановление пароля в демоверсии недоступно.</span>
                                 </div>
-                                <p id="LoginError" class="text-danger" role="alert"></p>
-                                <button type="button" class="btn btn-primary enter__btn__custom w-100 mt-3 mb-3 " id="LoginButton">Войти</button>
+                                <p id="login-error" class="text-danger" role="alert"></p>
+                                <button type="button" class="btn btn-primary login-submit w-100 mt-3 mb-3 " id="login-button">Войти</button>
                             </div>
 
 
@@ -73,46 +73,46 @@
                 </div>
 
                 <!-- Регистрация -->
-                <div class="tab-pane fade" id="Registration" role="tabpanel">
+                <div class="tab-pane fade" id="registration" role="tabpanel">
                     <div class="container mt-3">
                         <p>Укажите ваши данные</p>
-                        <div class="row personal__registration__input">
-                            <div class="col-6">
+                        <div class="row registration-fields">
+                            <div class="col-12 col-md-6">
                                 <div class="input-group mb-3">
                                     <span class="input-group-text"><i class="fa-solid fa-mobile-screen-button"></i></span>
-                                    <input type="text" class="mask-phone form-control" placeholder="Ваш номер телефона" id="PhoneRegistration">
+                                    <input type="text" class="mask-phone form-control" placeholder="Ваш номер телефона" id="phone-registration">
                                 </div>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text"><i class="fa-regular fa-circle-user"></i></span>
-                                    <input type="text" class="form-control" placeholder="Ваше имя" id="NameRegistration">
+                                    <input type="text" class="form-control" placeholder="Ваше имя" id="name-registration">
                                 </div>
                                 <div class="input-group mb-3 has-validation">
-                                    <span class="input-group-text" id="inputGroupPrepend3"><i class="fa-solid fa-lock"></i></span>
-                                    <input type="password" class="form-control" id="EnterPassword" required placeholder="Придумайте пароль">
-                                    <div id="EnterPasswordValidation" class="invalid-feedback">
+                                    <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                                    <input type="password" class="form-control" id="enter-password" required placeholder="Придумайте пароль">
+                                    <div id="enter-password-validation" class="invalid-feedback">
                                     </div>
                                 </div>
-                                <p style="font-size: 12px;">Пароль должен содержать цифры, заглавные и строчные буквы. Длина — от 8 до 128 символов.</p>
+                                <p class="form-hint">Пароль должен содержать цифры, заглавные и строчные буквы. Длина — от 8 до 128 символов.</p>
                             </div>
 
-                            <div class="col-6">
+                            <div class="col-12 col-md-6">
                                 <div class="input-group mb-3">
                                     <span class="input-group-text"><i class="fa-solid fa-at"></i></span>
-                                    <input type="email" class="form-control" placeholder="Введите ваш email" id="EmailRegistration">
+                                    <input type="email" class="form-control" placeholder="Введите ваш email" id="email-registration">
                                 </div>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text"><i class="fa-regular fa-circle-user"></i></span>
-                                    <input type="text" class="form-control" placeholder="Ваша фамилия" id="SurnameRegistration">
+                                    <input type="text" class="form-control" placeholder="Ваша фамилия" id="surname-registration">
                                 </div>
                                 <div class="input-group mb-3 has-validation">
-                                    <span class="input-group-text" id="inputGroupPrepend3"><i class="fa-solid fa-lock"></i></span>
-                                    <input type="password" class="form-control" id="RepeatPassword" required placeholder="Повторите пароль">
-                                    <div id="ConfirmPasswordValidation" class="invalid-feedback">
+                                    <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                                    <input type="password" class="form-control" id="repeat-password" required placeholder="Повторите пароль">
+                                    <div id="confirm-password-validation" class="invalid-feedback">
                                     </div>
                                 </div>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text"><i class="fa-solid fa-venus-mars"></i></span>
-                                    <select id="GenderRegistration" class="form-select">
+                                    <select id="gender-registration" class="form-select">
                                         <option disabled selected>Укажите ваш пол</option>
                                         <option value="male">Мужской</option>
                                         <option value="female">Женский</option>
@@ -120,9 +120,9 @@
                                 </div>
                             </div>
                         </div>
-                        <p id="RegistrationError" class="text-danger" role="alert"></p>
+                        <p id="registration-error" class="text-danger" role="alert"></p>
                         <div class="d-flex justify-content-center">
-                            <button type="button" class="btn btn-primary registration__btn_custom w-50 mb-3 mt-3" id="RegistrationButton">Зарегистрироваться</button>
+                            <button type="button" class="btn btn-primary registration-submit w-100 mb-3 mt-3" id="registration-button">Зарегистрироваться</button>
                         </div>
                     </div>
                 </div>

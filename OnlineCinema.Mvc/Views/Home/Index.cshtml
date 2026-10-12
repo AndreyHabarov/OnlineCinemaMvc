@@ -1,13 +1,27 @@
 @model HomeViewModel
-
-@await Html.PartialAsync("_Posters.cshtml", Model.Posters)
-@await Html.PartialAsync("_Promotion.cshtml", Model.Promotions)
-@await Html.PartialAsync("_News.cshtml", Model.News)
-
-
-@await Html.PartialAsync("_RegistrationSuccessModal.cshtml")
-@await Html.PartialAsync("_LoginSuccessModal.cshtml")
-
-@section Banner {
-    @await Html.PartialAsync("_Slider.cshtml", Model.Advertisings)
-}
+<section class="home-hero" aria-labelledby="hero-heading">
+    <div>
+        <span class="eyebrow">Американское кино 90-х</span>
+        <h1 id="hero-heading">Кино, к которому хочется вернуться</h1>
+        <p>Знакомые истории на большом экране. Выберите фильм, сеанс и ваши места.</p>
+        <div class="action-row"><a class="btn btn-primary" href="#movie-catalog">Выбрать фильм</a><a class="btn btn-outline-light" asp-controller="Hall" asp-action="GetHalls">Наши залы</a></div>
+    </div>
+    <div class="hero-posters">
+        @foreach (var poster in Model.Posters.Take(3))
+        {
+            <a asp-controller="Movies" asp-action="Get" asp-route-id="@poster.Id"><img src="~/@poster.CardImagePath.TrimStart('/')" alt="Постер фильма «@poster.Name»"></a>
+        }
+    </div>
+</section>
+<section id="movie-catalog" aria-labelledby="catalog-heading">
+    <h2 id="catalog-heading" class="section-heading">Сегодня в кино</h2>
+    @await Html.PartialAsync("_Posters.cshtml", Model.Posters)
+</section>
+<section aria-labelledby="promotions-heading">
+    <h2 id="promotions-heading" class="section-heading">Предложения кинотеатра</h2>
+    @await Html.PartialAsync("_Promotion.cshtml", Model.Promotions)
+</section>
+<section aria-labelledby="news-heading">
+    <h2 id="news-heading" class="section-heading">Новости и события</h2>
+    @await Html.PartialAsync("_News.cshtml", Model.News)
+</section>

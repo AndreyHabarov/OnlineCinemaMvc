@@ -1,599 +1,766 @@
+/* Bootstrap tokens and shared typography. */
+[data-bs-theme="dark"] {
+    --bs-body-bg: var(--cinema-bg);
+    --bs-body-color: var(--cinema-text);
+    --bs-body-color-rgb: 247, 244, 248;
+    --bs-secondary-color: var(--cinema-text-muted);
+    --bs-secondary-rgb: 193, 183, 198;
+    --bs-tertiary-bg: var(--cinema-surface-raised);
+    --bs-secondary-bg: var(--cinema-surface);
+    --bs-border-color: var(--cinema-border);
+    --bs-link-color: var(--cinema-accent-soft);
+    --bs-link-hover-color: var(--cinema-text);
+    --bs-link-color-rgb: 245, 138, 198;
+    --bs-link-hover-color-rgb: 247, 244, 248;
+    --bs-danger-rgb: 255, 155, 168;
+}
+
 html {
-    font-size: 14px;
-}
-
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-    position: relative;
-    min-height: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: 2rem;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    background-color: hsl(0, 0%, 18%);
-}
-
-h1, h2, h3 {
-    margin: 0;
-}
-
-:root {
-    --main-color: #bd257f;
-}
-
-.header__container {
+    min-height: 100vh;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    font-family: system-ui, sans-serif;
 }
 
-/* Админка */
-
-/* Цвет текста label у таблицы жанры */
-.dt-search, .dt-length, .dt-info {
-    color: white;
+main {
+    min-width: 0;
+    padding-block: 2rem 3rem;
 }
 
-.admin__title {
-    margin-left: 15px;
+.site-content {
+    flex: 1;
 }
 
-.admin-add-btn {
-    margin-right: 15px;
+h1, h2, h3, h4, h5 {
+    font-weight: 650;
+    line-height: 1.2;
+    text-wrap: balance;
 }
 
-    .admin-add-btn:active,
-    .admin-add-btn:focus {
-        box-shadow: none !important;
-    }
-
-
-
-
-
-/* Header */
-
-/* Логотип в шапке и в футер */
-.logo__image__custom {
-    width: 75px;
-    height: auto;
+h1 {
+    font-size: clamp(1.8rem, 4vw, 2.75rem);
+    letter-spacing: -.035em;
 }
 
-/* Убирается выделение логотипа */
-.logo__custom__effect:hover,
-.logo__custom__effect:focus,
-.logo__custom__effect:active {
-    background: none !important;
+h2 {
+    font-size: clamp(1.4rem, 3vw, 2rem);
 }
 
-/* Меню в шапке АКЦИИ ДЕТЯМ АРТ*/
-.header__navbar__custom a {
-    margin: 10px 5px 0 0;
-    padding: 0;
-    color: #fff;
-}
-
-    .header__navbar__custom a:hover {
-        background-color: #2a2a2a;
-        color: var(--main-color);
-    }
-
-    .header__navbar__custom a:focus {
-        background-color: #2a2a2a;
-        color: #bd257f;
-    }
-
-/* Ссылка на личный кабинет */
-
-.header__personal__account .nav-link:hover {
-    color: #bd257f !important;
-    box-shadow: none !important;
-}
-
-/* Окно регистрации пользователя */
-/* Кнопки Вход и Регистрация */
-.personal__account__navbuttons .nav-link {
-    padding: 5px;
-    color: black !important;
-}
-
-    .personal__account__navbuttons .nav-link:hover {
-        color: #bd257f !important;
-    }
-
-/* Кнопки Email и Телефон */
-.contact__btns__custom .nav-link {
-    padding: 5px 10px;
-    margin: 0 10px 3px 0;
-    border: 1px solid #bd257f;
-    color: #bd257f;
-}
-
-    .contact__btns__custom .nav-link.active {
-        background-color: #bd257f !important;
-        color: white !important;
-    }
-
-    .contact__btns__custom .nav-link:hover {
-        color: #bd257fa9;
-    }
-
-.contact__btns__custom:active,
-.contact__btns__custom:focus {
-    border-color: #c60085d4;
-    box-shadow: none !important;
-}
-
-/* Поля ввода данных для логина */
-.personal__login__input .form-control:focus {
-    border-color: #bd257f !important;
-    box-shadow: 0 0 3px rgba(189, 37, 127, 0.5) !important;
-}
-
-.personal__login__input .input-group:focus-within .input-group-text i {
-    color: #bd257f !important;
-}
-
-/* Текст Забыли пароль */
-.forget__password__text {
-    text-decoration: none !important;
-    color: #bd257f;
-}
-
-    .forget__password__text:hover {
-        color: #bd257fab;
-    }
-
-/* Кнопка Войти */
-.enter__btn__custom {
-    background-color: #bd257f96 !important;
-    color: white !important;
-    border-color: transparent;
-}
-
-    .enter__btn__custom:hover {
-        background-color: #bd257fa4 !important;
-        color: white !important;
-        border-color: transparent;
-    }
-
-    .enter__btn__custom:focus {
-        box-shadow: none !important;
-    }
-
-/* Кнопки в личном кабинете */
-.personal__account__button {
-    padding: 3px 18px;
-    margin: 15px 8px 15px 0;
-    color: white;
-    background-color: transparent;
-    border: 1px solid grey;
-}
-
-    .personal__account__button:hover {
-        border: 1px solid white;
-        background-color: transparent;
-        color: #ffffffe4;
-    }
-
-    .personal__account__button.active {
-        border-color: #c60085d4;
-        color: #c60085d4;
-    }
-
-    .personal__account__button:active,
-    .personal__account__button:focus {
-        border: 1px solid white !important;
-        box-shadow: none !important;
-        background-color: transparent !important;
-    }
-
-/* Текст Пользовательского соглашения */
-.personal__agreement__text {
-    color: #bd257f;
-}
-
-    .personal__agreement__text:hover {
-        text-decoration: none;
-    }
-
-/* Поля ввода данных для регистрации  */
-.personal__registration__input .form-control:focus {
-    border-color: #bd257f !important;
-    box-shadow: 0 0 3px rgba(189, 37, 127, 0.5) !important;
-}
-
-.personal__registration__input .form-select:focus {
-    border-color: #bd257f !important;
-    box-shadow: 0 0 3px rgba(189, 37, 127, 0.5) !important;
-}
-
-.personal__registration__input .input-group:focus-within .input-group-text i {
-    color: #bd257f !important;
-}
-
-/* Кнопка  Зарегистрироваться*/
-.registration__btn_custom {
-    background-color: #bd257f96 !important;
-    color: white !important;
-    border-color: transparent;
-}
-
-    .registration__btn_custom:hover {
-        background-color: #bd257fa4 !important;
-        color: white !important;
-        border-color: transparent;
-    }
-
-    .registration__btn_custom:focus {
-        box-shadow: none !important;
-    }
-
-/* Кнопка Запомнить меня */
-.remember__me__btn .form-check-input:focus,
-.remember__me__btn .form-check-input:active {
-    box-shadow: none !important;
-}
-
-.remember__me__btn .form-check-input:checked {
-    background-color: #bd257f !important;
-    border-color: #bd257f !important;
-}
-
-.remember__me__btn .form-check-input:not(:checked) {
-    border-color: #bd257f !important;
-}
-
-
-
-/* Main */
-
-/* Слайдер рекламы фильмов ближе к header */
-.carousel__slider__custom img {
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-}
-
-/* Карточки фильмов на стартовой странице */
-.movie__card_custom {
-    position: relative;
-    overflow: hidden;
-    border-radius: 18px;
-    border: 0px;
-    display: block;
-}
-
-    .movie__card_custom:hover .movie__card__overlay {
-        height: 30%;
-    }
-
-.movie__img__custom {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-}
-
-.movie__card__overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 20%;
-    background-color: #c60085d4;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1rem;
-    transition: height 0.2s ease-out;
-}
-
-/* Расположение карточек акций поочередно слева и справа */
-.reverse {
-    display: flex;
-    flex-direction: row-reverse;
-    align-items: center;
-    color: white;
-}
-
-.normal {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: white;
-}
-
-.promotion-item {
-    gap: 1.5rem;
-    margin-block: 1.5rem;
+p, dd, .card-title {
     overflow-wrap: anywhere;
 }
 
-.promotion-item > a {
-    flex: 0 1 40%;
-    min-width: 0;
+a {
+    text-underline-offset: .2em;
 }
 
-.promotion-item > div {
-    flex: 1;
-    min-width: 0;
-}
-
-.hall__seat__types img {
-    width: 180px;
+img {
     max-width: 100%;
-    height: auto;
+}
+
+:focus-visible {
+    outline: 3px solid var(--cinema-accent-soft);
+    outline-offset: 4px;
+}
+
+[id] {
+    scroll-margin-top: 2rem;
+}
+
+.page-heading {
+    margin-bottom: 1.5rem;
+}
+
+.section-heading {
+    margin-block: 2.5rem 1.25rem;
+}
+
+.eyebrow {
+    color: var(--cinema-accent-soft);
+    font-size: .8rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.surface {
+    background: var(--cinema-surface);
+    border: 1px solid var(--cinema-border);
+    border-radius: var(--cinema-radius);
+    padding: clamp(1rem, 3vw, 2rem);
+}
+
+.empty-state {
+    border: 1px dashed var(--cinema-border);
+    border-radius: var(--cinema-radius);
+    padding: 2rem;
+    color: var(--cinema-text-muted);
+}
+
+/* Shared button states. */
+.btn {
+    --bs-btn-border-radius: var(--cinema-radius-sm);
+    --bs-btn-padding-x: 1rem;
+    --bs-btn-padding-y: .65rem;
+    font-weight: 600;
+    white-space: normal;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--cinema-accent);
+    --bs-btn-border-color: var(--cinema-accent);
+    --bs-btn-hover-bg: var(--cinema-accent-hover);
+    --bs-btn-hover-border-color: var(--cinema-accent-hover);
+    --bs-btn-active-bg: var(--cinema-accent-hover);
+    --bs-btn-active-border-color: var(--cinema-accent-hover);
+    --bs-btn-disabled-bg: var(--cinema-accent);
+    --bs-btn-disabled-border-color: var(--cinema-accent);
+    --bs-btn-focus-shadow-rgb: 245, 138, 198;
+}
+
+.btn-secondary, .btn-outline-light, .btn-outline-primary {
+    --bs-btn-color: var(--cinema-text);
+    --bs-btn-bg: var(--cinema-surface);
+    --bs-btn-border-color: var(--cinema-border);
+    --bs-btn-hover-color: var(--cinema-text);
+    --bs-btn-hover-bg: var(--cinema-surface-raised);
+    --bs-btn-hover-border-color: var(--cinema-accent-soft);
+    --bs-btn-active-color: var(--cinema-text);
+    --bs-btn-active-bg: var(--cinema-surface-raised);
+    --bs-btn-active-border-color: var(--cinema-accent-soft);
+    --bs-btn-focus-shadow-rgb: 245, 138, 198;
+}
+
+.btn-outline-danger {
+    --bs-btn-color: var(--cinema-danger);
+    --bs-btn-border-color: var(--cinema-danger);
+}
+
+.btn-sm {
+    --bs-btn-padding-x: .65rem;
+    --bs-btn-padding-y: .4rem;
+}
+
+.action-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+    align-items: center;
+}
+
+/* Navigation. */
+.site-header {
+    border-bottom: 1px solid var(--cinema-border);
+}
+
+.site-navbar {
+    padding-block: .9rem;
+}
+
+.site-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: .6rem;
+    text-decoration: none;
+    font-weight: 750;
+    letter-spacing: -.03em;
+    color: var(--cinema-text);
+}
+
+.site-logo {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+}
+
+.site-navbar .nav-link {
+    color: var(--cinema-text-muted);
+    padding: .6rem .9rem;
+    border-radius: var(--cinema-radius-sm);
+}
+
+.site-navbar .nav-link:hover, .site-navbar .nav-link:focus-visible {
+    color: var(--cinema-accent-soft);
+    background: var(--cinema-surface);
+}
+
+.account-link {
+    max-width: 20rem;
+    overflow-wrap: anywhere;
+}
+
+.site-footer {
+    border-top: 1px solid var(--cinema-border);
+    background: var(--cinema-surface);
+    padding-block: 2rem;
+}
+
+.site-footer p {
+    color: var(--cinema-text-muted);
+    max-width: 28rem;
+}
+
+.site-footer a {
+    text-decoration: none;
+}
+
+.site-footer nav a {
+    color: var(--cinema-text-muted);
+}
+
+.site-footer nav a:hover {
+    color: var(--cinema-accent-soft);
+}
+
+/* Home hero and catalogue. */
+.home-hero {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2rem;
+    align-items: center;
+    background: var(--cinema-surface);
+    padding: clamp(1.5rem, 4vw, 3rem);
+    border-radius: var(--cinema-radius);
+}
+
+.home-hero h1 {
+    max-width: 18ch;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    margin-block: 1rem;
+}
+
+.home-hero p {
+    color: var(--cinema-text-muted);
+    max-width: 40ch;
+}
+
+.hero-posters {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: .75rem;
+    align-items: center;
+    padding-block: .75rem;
+}
+
+.hero-posters img {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border-radius: var(--cinema-radius-sm);
+}
+
+.hero-posters a:nth-child(2) {
+    transform: translateY(-.75rem);
+}
+
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+.movie-card {
+    min-width: 0;
+    background: var(--cinema-surface);
+    border: 1px solid transparent;
+    border-radius: var(--cinema-radius);
+    overflow: hidden;
+    transition: border-color var(--cinema-transition), transform var(--cinema-transition);
+}
+
+.movie-card:hover, .movie-card:focus-within {
+    border-color: var(--cinema-accent-soft);
+    transform: translateY(-4px);
+}
+
+.movie-poster {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    display: block;
+}
+
+.movie-card-body {
+    padding: 1rem;
+}
+
+.movie-card-title {
+    font-size: 1.05rem;
+    margin-bottom: .5rem;
+}
+
+.movie-card-title a {
+    color: var(--cinema-text);
+    text-decoration: none;
+}
+
+.movie-card-meta {
+    color: var(--cinema-text-muted);
+    font-size: .9rem;
+    margin-bottom: .75rem;
+}
+
+.movie-card-action {
+    color: var(--cinema-accent-soft);
+    font-size: .9rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* Editorial pages. */
+.promotion-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: 2rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    background: var(--cinema-surface);
+    border-radius: var(--cinema-radius);
+    padding: 1.5rem;
+    overflow-wrap: anywhere;
+}
+
+.promotion-item img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}
+
+.promotion-copy {
+    min-width: 0;
+}
+
+.promotion-copy p {
+    color: var(--cinema-text-muted);
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+.news-card {
+    --bs-card-bg: var(--cinema-surface);
+    --bs-card-border-color: var(--cinema-border);
+    --bs-card-border-radius: var(--cinema-radius);
+    height: 100%;
+    overflow: hidden;
+}
+
+.news-card img {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}
+
+.news-card a {
+    color: var(--cinema-text);
+    text-decoration: none;
+}
+
+.news-card a:hover {
+    color: var(--cinema-accent-soft);
+}
+
+.news-card .card-body {
+    padding: 1.25rem;
+}
+
+.detail-page {
+    max-width: 58rem;
+    margin-inline: auto;
+}
+
+.detail-image {
+    display: block;
+    max-height: 30rem;
+    width: 100%;
+    object-fit: contain;
+    background: var(--cinema-surface);
+    border-radius: var(--cinema-radius);
+}
+
+.detail-description {
+    margin-top: 1.5rem;
+    line-height: 1.8;
+}
+
+.hall-table {
+    width: 100%;
+    min-width: 36rem;
+    border-collapse: collapse;
+    margin-block: 1rem;
+}
+
+.hall-table th, .hall-table td {
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--cinema-border);
+    vertical-align: middle;
+}
+
+.hall-table th {
+    color: var(--cinema-text-muted);
+    font-weight: 500;
+}
+
+.hall-table td:first-child {
+    width: 10rem;
+    font-weight: 650;
+}
+
+.hall-table img {
+    width: 180px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: var(--cinema-radius-sm);
+}
+
+/* Film and sessions. */
+.movie-hero {
+    display: grid;
+    grid-template-columns: minmax(150px, 240px) minmax(0, 1fr);
+    gap: 2rem;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.movie-hero-poster {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border-radius: var(--cinema-radius);
+}
+
+.genre-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-block: 1rem;
+}
+
+.genre-tag {
+    padding: .3rem .7rem;
+    border-radius: 2rem;
+    background: var(--cinema-surface-raised);
+    color: var(--cinema-text-muted);
+    font-size: .85rem;
+}
+
+.movie-sessions {
+    margin-bottom: 2rem;
+}
+
+.session-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+    margin-block: 1rem;
+}
+
+.session-date, .session-hall {
+    color: var(--cinema-text-muted);
+    background: var(--cinema-bg);
+    border: 1px solid var(--cinema-border);
+}
+
+.session-date:hover, .session-hall:hover {
+    color: var(--cinema-text);
+    border-color: var(--cinema-accent-soft);
+}
+
+.session-date.active, .session-hall.active {
+    color: var(--cinema-text);
+    background: var(--cinema-accent);
+    border-color: var(--cinema-accent);
+}
+
+.session-date div {
+    font-size: .8rem;
+    font-weight: 400;
+    margin-top: .2rem;
+}
+
+.session-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 1rem;
+}
+
+.session-card {
+    padding: 1rem;
+    border: 1px solid var(--cinema-border);
+    border-radius: var(--cinema-radius-sm);
+}
+
+.session-card p {
+    margin-block: .65rem 0;
+}
+
+.session-card p:last-child {
+    color: var(--cinema-text-muted);
+}
+
+.movie-description {
+    line-height: 1.8;
+}
+
+.movie-description dt {
+    color: var(--cinema-text-muted);
+    font-weight: 500;
+}
+
+/* Forms and dialogs. */
+.modal-content {
+    --bs-modal-bg: var(--cinema-surface);
+    --bs-modal-border-color: var(--cinema-border);
+    --bs-modal-border-radius: var(--cinema-radius);
+}
+
+.modal-header, .modal-footer, .modal-body {
+    padding: 1.25rem;
+}
+
+.account-tabs .nav-link {
+    color: var(--cinema-text-muted);
+}
+
+.account-tabs .nav-link.active {
+    color: var(--cinema-accent-soft);
+}
+
+.contact-tabs .nav-link {
+    color: var(--cinema-text-muted);
+    border: 1px solid var(--cinema-border);
+    margin-right: .5rem;
+}
+
+.contact-tabs .nav-link.active {
+    background: var(--cinema-accent);
+    color: var(--cinema-text);
+}
+
+.form-control, .form-select, .input-group-text {
+    background-color: var(--cinema-bg);
+    border-color: var(--cinema-border);
+    color: var(--cinema-text);
+}
+
+.form-control::placeholder {
+    color: var(--cinema-text-muted);
+    opacity: .8;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--cinema-bg);
+    color: var(--cinema-text);
+    border-color: var(--cinema-accent-soft);
+    box-shadow: 0 0 0 .2rem rgb(245 138 198 / 15%);
+}
+
+.form-check-input:checked {
+    background-color: var(--cinema-accent);
+    border-color: var(--cinema-accent);
+}
+
+.form-check-input:focus {
+    border-color: var(--cinema-accent-soft);
+    box-shadow: 0 0 0 .2rem rgb(245 138 198 / 15%);
+}
+
+.form-hint {
+    font-size: .85rem;
+    color: var(--cinema-text-muted);
+}
+
+.account-options {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .75rem;
+}
+
+.alert-info {
+    --bs-alert-color: var(--cinema-text);
+    --bs-alert-bg: var(--cinema-surface-raised);
+    --bs-alert-border-color: var(--cinema-border);
+    border-left: 3px solid var(--cinema-accent-soft);
+}
+
+.swal2-popup {
+    background: var(--cinema-surface);
+    color: var(--cinema-text);
+    border-radius: var(--cinema-radius);
+}
+
+.swal2-confirm {
+    background: var(--cinema-accent);
+}
+
+.dashboard-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.order-card {
+    background: var(--cinema-surface);
+    border-color: var(--cinema-border);
+}
+
+/* Admin tables. */
+.admin-catalog {
+    background: var(--cinema-surface);
+    border: 1px solid var(--cinema-border);
+    border-radius: var(--cinema-radius);
+    padding: 1.5rem;
+}
+
+.admin-heading {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+}
+
+.admin-table-scroll {
+    overflow-x: auto;
+}
+
+.admin-catalog .table {
+    --bs-table-bg: var(--cinema-surface);
+    --bs-table-color: var(--cinema-text);
+    --bs-table-border-color: var(--cinema-border);
+    min-width: 30rem;
+}
+
+.admin-catalog .table th, .admin-catalog .table td {
+    padding: 1rem .75rem;
+    vertical-align: middle;
+}
+
+.admin-catalog .table th {
+    color: var(--cinema-text-muted);
+}
+
+.admin-catalog .dt-search, .admin-catalog .dt-length {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    flex-wrap: wrap;
+    margin-bottom: .75rem;
+}
+
+.admin-catalog .dt-info {
+    color: var(--cinema-text-muted);
+    margin-top: .75rem;
+}
+
+.pagination {
+    --bs-pagination-bg: var(--cinema-bg);
+    --bs-pagination-color: var(--cinema-text);
+    --bs-pagination-border-color: var(--cinema-border);
+    --bs-pagination-hover-bg: var(--cinema-surface-raised);
+    --bs-pagination-hover-color: var(--cinema-text);
+    --bs-pagination-active-bg: var(--cinema-accent);
+    --bs-pagination-active-border-color: var(--cinema-accent);
+    --bs-pagination-disabled-bg: var(--cinema-surface);
+    --bs-pagination-disabled-color: var(--cinema-text-muted);
+    --bs-pagination-disabled-border-color: var(--cinema-border);
+    flex-wrap: wrap;
+}
+
+@media (max-width: 991.98px) {
+    .movie-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .site-navbar .navbar-collapse {
+        padding-top: 1rem;
+    }
+
+    .site-navbar .navbar-nav {
+        margin-top: .75rem;
+    }
+
 }
 
 @media (max-width: 767.98px) {
-    .promotion-item.normal,
-    .promotion-item.reverse {
-        flex-direction: column;
-        align-items: stretch;
+    main {
+        padding-block: 1.5rem 2rem;
     }
+
+    .home-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-posters {
+        max-width: 28rem;
+    }
+
+    .movie-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .85rem;
+    }
+
+    .movie-card-body {
+        padding: .8rem;
+    }
+
+    .movie-card-title {
+        font-size: .95rem;
+    }
+
+    .news-grid, .promotion-item {
+        grid-template-columns: 1fr;
+    }
+
+    .movie-hero {
+        grid-template-columns: 110px minmax(0, 1fr);
+        gap: 1rem;
+        align-items: start;
+    }
+
+    .movie-hero h1 {
+        font-size: 1.65rem;
+    }
+
+    .admin-catalog {
+        padding: 1rem;
+    }
+
 }
 
-/* Кнопка УЗНАТЬ БОЛЬШЕ в news на главной странице */
-.learn__more__btn {
-    background-color: #bd257f;
-    border-radius: 17px;
-    border: 0px;
-    padding: 15px 35px;
-    transition: background-color 0.2s ease;
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *, *::before, *::after {
+        transition-duration: .01ms;
+        animation-duration: .01ms;
+    }
+
+    .movie-card:hover, .movie-card:focus-within {
+        transform: none;
+    }
+
 }
 
-    .learn__more__btn:hover {
-        background-color: #f632a6;
-    }
-
-    .learn__more__btn:active,
-    .learn__more__btn:focus {
-        background-color: #f632a6 !important;
-        border: 0 !important;
-        box-shadow: none !important;
-    }
-
-/* Карточки новостей на главной странице ближе к footer */
-.news__card__custom {
-    background-color: transparent;
-    border: none;
-    color: #fff !important;
+.promo-carousel {
+    overflow: hidden;
+    border-radius: var(--cinema-radius);
 }
 
-    .news__card__custom img {
-        border-radius: 15px;
-    }
-
-    .news__card__custom a {
-        text-decoration: none;
-        color: #fff;
-        transition: color 0.2s linear, font-size 0.2s linear;
-    }
-
-        .news__card__custom a:hover {
-            text-decoration: none;
-            color: #f632a6;
-        }
-
-
-/* Элементы сайта, при покупке билета */
-/* Кнопка отображения дней показов фильма при покупке билета */
-.movie__session__btn {
-    padding: 3px 18px;
-    margin: 15px 8px 15px 0;
-    color: white;
-    background-color: transparent;
-    border: 1px solid grey;
-}
-
-    .movie__session__btn:hover {
-        border: 1px solid #bd257f;
-        color: #bd257f;
-    }
-
-    .movie__session__btn.active {
-        border-color: #c60085d4;
-        color: #c60085d4;
-    }
-
-    .movie__session__btn:active,
-    .movie__session__btn:focus {
-        border: 1px solid #c60085d4 !important;
-        box-shadow: none !important;
-    }
-
-/* Кнопка Все холлы*/
-.all__hall__btn {
-    padding: 0px 8px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-right: 9px;
-    background-color: transparent !important;
-    color: white !important;
-    border-radius: 15px;
-    border: 1px solid grey !important;
-}
-
-    .all__hall__btn:hover {
-        border: 1px solid #bd257f !important;
-        color: #bd257f !important;
-    }
-
-    .all__hall__btn.active {
-        padding: 0px 8px;
-        background-color: transparent !important;
-        border: 1px solid grey !important;
-        color: white !important;
-        border-radius: 15px;
-        border: 1px solid #bd257f !important;
-        color: #bd257f !important;
-    }
-
-    .all__hall__btn:active,
-    .all__hall__btn:focus {
-        border-color: #c60085d4;
-        border: 1px solid #bd257f !important;
-        box-shadow: none !important;
-    }
-
-.btn-session-time {
-    padding: 3px 18px;
-    margin: 15px 8px 15px 0;
-    color: white;
-    background-color: transparent !important;
-    border: 1px solid grey;
-}
-
-    .btn-session-time:hover {
-        border: 1px solid #bd257f;
-        color: #bd257f;
-    }
-
-    .btn-session-time.active {
-        border-color: #c60085d4;
-        color: #c60085d4;
-    }
-
-    .btn-session-time:active,
-    .btn-session-time:focus {
-        border: 1px solid #c60085d4 !important;
-        box-shadow: none !important;
-    }
-
-
-/*Остальные кнопки остальных видов холла*/
-.hall__other__btn {
-    padding: 0px 8px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-right: 9px;
-    background-color: transparent !important;
-    border: 1px solid grey !important;
-    color: white !important;
-    border-radius: 15px;
-}
-
-    .hall__other__btn:hover {
-        border: 1px solid #bd257f !important;
-        color: #bd257f !important;
-    }
-
-    .hall__other__btn.active {
-        padding: 0px 8px;
-        margin: 5px;
-        background-color: transparent !important;
-        border: 1px solid grey !important;
-        color: white !important;
-        border-radius: 15px;
-        border: 1px solid #bd257f !important;
-        color: #bd257f !important;
-    }
-
-    .hall__other__btn:active,
-    .hall__other__btn:focus {
-        border-color: #c60085d4;
-        border: 1px solid #bd257f !important;
-        box-shadow: none !important;
-    }
-
-/*Типы залов и мест*/
-.hall__seat__types {
+.promo-carousel img {
     width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    font-size: 16px;
-    text-align: left;
-    background-color: hsl(0, 0%, 18%);
-}
-
-    .hall__seat__types th {
-        text-align: center;
-        color: white;
-        padding: 12px;
-    }
-
-    .hall__seat__types td {
-        text-align: left;
-        color: white;
-        padding: 12px;
-    }
-
-    .hall__seat__types .td__width {
-        width: 175px;
-    }
-
-/* Footer */
-/* Соцсети footer */
-.btn-circle {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    padding: 10px;
-    text-align: center;
-    font-size: 16px;
-    line-height: 1.5;
-}
-
-/* Цвет текста ссылок */
-.text-white a {
-    color: white;
-}
-
-/* Текст предложений для клиентов */
-.offer__text__custom a:hover {
-    color: #f632a6 !important;
-    text-decoration: none !important;
-}
-
-
-/* Анимация карточек фильмов */
-.movie__card_custom:hover {
-    -webkit-animation: pulsate-fwd 0.9s ease-in-out both;
-    animation: pulsate-fwd 0.7s ease-in-out both;
-}
-
-@-webkit-keyframes pulsate-fwd {
-    0% {
-        -webkit-transform: scale(1);
-        transform: scale(1);
-    }
-
-    50% {
-        -webkit-transform: scale(1.1);
-        transform: scale(1.1);
-    }
-
-    100% {
-        -webkit-transform: scale(1);
-        transform: scale(1);
-    }
-}
-
-@keyframes pulsate-fwd {
-    0% {
-        -webkit-transform: scale(1);
-        transform: scale(1);
-    }
-
-    50% {
-        -webkit-transform: scale(1.1);
-        transform: scale(1.1);
-    }
-
-    100% {
-        -webkit-transform: scale(1);
-        transform: scale(1);
-    }
+    max-height: 25rem;
+    object-fit: contain;
+    background: var(--cinema-surface);
 }

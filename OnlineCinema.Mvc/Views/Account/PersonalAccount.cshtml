@@ -1,7 +1,7 @@
 @using OnlineCinema.Mvc.Models.ViewModels.Account
 @model AccountDashboardViewModel
-<section class="container text-white mt-3">
-    <div class="d-flex justify-content-between align-items-center">
+<section>
+    <div class="dashboard-heading">
         <h1>Здравствуйте, @Model.Name</h1>
         <form asp-controller="Account" asp-action="LogOut" method="post"><button type="submit" class="btn btn-outline-light">Выйти</button></form>
     </div>
@@ -13,14 +13,14 @@
         </nav>
     }
     <h2 class="h4 mt-4">Мои билеты</h2>
-    <p class="text-white-50">Последние 50 демонстрационных заказов. Деньги не списываются.</p>
+    <p class="text-secondary">Последние 50 демонстрационных заказов. Деньги не списываются.</p>
     @if (!Model.Orders.Any())
     {
         <p>У вас пока нет билетов. Выберите фильм и сеанс в афише.</p><a href="/" class="btn btn-primary">Перейти к фильмам</a>
     }
     @foreach (var order in Model.Orders)
     {
-        <article class="border rounded p-3 mb-3">
+        <article class="order-card surface mb-3">
             <h3 class="h5">@order.MovieName</h3>
             <p>@order.StartsAt.ToString("dd.MM.yyyy HH:mm") · @order.HallName · время московское</p>
             <p>Места: @string.Join("; ", order.Seats.Select(s => $"ряд {s.Row}, место {s.Number}"))</p>

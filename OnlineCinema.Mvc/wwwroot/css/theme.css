@@ -1,0 +1,16 @@
+:root {
+    color-scheme: dark;
+    --cinema-bg: #141218;
+    --cinema-surface: #24202a;
+    --cinema-surface-raised: #302936;
+    --cinema-text: #f7f4f8;
+    --cinema-text-muted: #c1b7c6;
+    --cinema-accent: #bd257f;
+    --cinema-accent-hover: #a71f70;
+    --cinema-accent-soft: #f58ac6;
+    --cinema-border: #4b4052;
+    --cinema-danger: #ff9ba8;
+    --cinema-radius: 1rem;
+    --cinema-radius-sm: .65rem;
+    --cinema-transition: 160ms ease;
+}
