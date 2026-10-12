@@ -105,16 +105,13 @@ public sealed class DemoSeeder(AppDbContext context, RoleManager<Role> roles, Us
 
     private async Task PopulateScheduleAsync(DemoCatalog catalog)
     {
-        var now = CinemaTime.Now;
-        for (var day = 0; day < 7; day++)
+        foreach (var date in catalog.Dates)
         {
-            var date = now.Date.AddDays(day);
             var dayNumber = (int)(date - new DateTime(2000, 1, 1)).TotalDays;
             for (var slot = 0; slot < 4; slot++)
                 for (var hallNumber = 0; hallNumber < catalog.Halls.Count; hallNumber++)
                 {
                     var start = date.AddHours(10 + 4 * slot);
-                    if (start <= now) continue;
                     var hallData = catalog.Halls[hallNumber];
                     var key = $"session:{date:yyyyMMdd}:{hallData.Slug}:{slot}";
                     if (await HasMarkerAsync(key)) continue;

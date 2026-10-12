@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([ValidatePattern('^https?://(localhost|127\.0\.0\.1)(:\d+)?/?$')][string]$BaseUrl = 'http://127.0.0.1:5175')
+param([ValidatePattern('^https?://(localhost|127\.0\.0\.1)(:\d+)?/?$')][string]$BaseUrl = 'http://127.0.0.1:5175', [switch]$DemoCalendar)
 $ErrorActionPreference = 'Stop'
 Push-Location (Split-Path -Parent $PSScriptRoot)
 $taskSuffix = [Guid]::NewGuid().ToString('N')
@@ -68,7 +68,12 @@ try {
     $taskSeats = @((Sql "SELECT `"Id`" FROM `"Seats`" WHERE `"HallId`"=$taskHall ORDER BY `"Row`",`"Number`" LIMIT 8;") | ForEach-Object {[int]$_})
     $taskForeign = [int](Sql "SELECT `"Id`" FROM `"Seats`" WHERE `"HallId`"<>$taskHall LIMIT 1;")
     foreach ($taskDays in @(30,-30)) {
-        $taskId = [int]((Sql "INSERT INTO `"Sessions`" (`"DateStart`",`"Price`",`"MovieId`",`"HallId`") VALUES (timezone('Europe/Moscow',now())+interval '$taskDays days',350,$taskMovie,$taskHall) RETURNING `"Id`";") | Select-Object -First 1)
+        $taskDateExpression = "timezone('Europe/Moscow',now())+interval '$taskDays days'"
+        if ($DemoCalendar) {
+            $taskCalendar = Get-Content data/demo-calendar.json -Raw -Encoding utf8 | ConvertFrom-Json
+            $taskDateExpression = if ($taskDays -gt 0) { "timestamp '$($taskCalendar.dates[0]) 09:01:00'" } else { "timestamp '2000-01-01 09:01:00'" }
+        }
+        $taskId = [int]((Sql "INSERT INTO `"Sessions`" (`"DateStart`",`"Price`",`"MovieId`",`"HallId`") VALUES ($taskDateExpression,350,$taskMovie,$taskHall) RETURNING `"Id`";") | Select-Object -First 1)
         $taskSessionIds += $taskId
     }
     $taskFuture=$taskSessionIds[0]; $taskPast=$taskSessionIds[1]

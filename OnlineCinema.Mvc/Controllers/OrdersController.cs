@@ -14,14 +14,13 @@ namespace OnlineCinema.Mvc.Controllers;
 
 [Authorize]
 public sealed class OrdersController(AppDbContext context, ICurrentUserService currentUser,
-    TicketPurchases purchases) : BaseMvcController(context)
+    TicketPurchases purchases, SessionAvailability availability) : BaseMvcController(context)
 {
     [HttpGet("orders/{id:int}")]
     public async Task<IActionResult> Index(int id)
     {
-        var now = CinemaTime.Now;
-        var session = await Context.Sessions.AsNoTracking()
-            .Where(s => s.Id == id && s.Movie.IsVisible && s.DateStart > now)
+        var session = await availability.Available(Context.Sessions.AsNoTracking())
+            .Where(s => s.Id == id && s.Movie.IsVisible)
             .Select(s => new { s.Id, s.HallId, s.Price, s.DateStart, MovieName = s.Movie.Name,
                 s.Movie.AgeRating, HallName = s.Hall.Name, HallDescription = s.Hall.Description,
                 HallPicturePath = s.Hall.PicturePath }).FirstOrDefaultAsync();

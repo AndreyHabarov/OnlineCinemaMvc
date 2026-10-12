@@ -6,7 +6,7 @@
 - Довести существующее приложение до демонстрации для портфолио. Покупка билетов демонстрационная, без списания денег; выдаёт билеты и сохраняет их в личном кабинете.
 - Пользовательские тексты, описания и инструкции писать на русском.
 - Очередь задач и выполненные блоки находятся в локальном `backlog.md`. Если файл отсутствует в новом checkout, уточнить задачу из запроса пользователя; не считать его отсутствие ошибкой.
-- Демонстрация разворачивается через Docker Compose: web и PostgreSQL в отдельных контейнерах, initialize автоматически применяет миграции и повторяемое сидирование. Постеры локальные; фоновый процесс поддерживает будущие сеансы. Локальная разработка с отдельным запуском сайта также поддерживается.
+- Демонстрация разворачивается через Docker Compose: web и PostgreSQL в отдельных контейнерах, initialize автоматически применяет миграции и повторяемое сидирование. Постеры локальные; demo использует семь постоянных дат из data/demo-calendar.json независимо от часов. Фоновый процесс заполняет отсутствующие слоты этого календаря. Production разрешает только не начавшиеся показы. Локальная разработка с отдельным запуском сайта также поддерживается.
 
 ## Границы изменений
 
@@ -33,7 +33,7 @@
 ./scripts/Initialize-Local.ps1
 ./scripts/Update-DemoCatalog.ps1
 ./scripts/Update-DemoSeats.ps1
-./scripts/Update-DemoSchedule.ps1
+./scripts/Update-DemoSchedule.ps1 -DemoCalendar
 dotnet run --project OnlineCinema.Mvc --launch-profile http
 ```
 
@@ -53,9 +53,9 @@ Compose-проекты; рабочие БД и volumes не затрагиваю
 dotnet build OnlineCinemaMvc.sln --no-restore
 dotnet ef migrations has-pending-model-changes --project OnlineCinema.Domain --startup-project OnlineCinema.Mvc -- --environment Development
 ./scripts/Test-Authentication.ps1
-./scripts/Test-Sessions.ps1
+./scripts/Test-Sessions.ps1 -DemoCalendar
 ./scripts/Test-Admin.ps1
-./scripts/Test-TicketPurchases.ps1
+./scripts/Test-TicketPurchases.ps1 -DemoCalendar
 ```
 
 - При отсутствии восстановленных пакетов сначала выполнить restore/build без `--no-restore`. EF-команды используют локальный инструмент из `.config/dotnet-tools.json`.

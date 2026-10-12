@@ -31,7 +31,7 @@ public sealed class DemoHall
 }
 
 public sealed record DemoCatalog(IReadOnlyList<DemoMovie> Movies, IReadOnlyDictionary<string, string> Posters,
-    IReadOnlyList<DemoHall> Halls)
+    IReadOnlyList<DemoHall> Halls, IReadOnlyList<DateTime> Dates)
 {
     private sealed class Poster
     {
@@ -72,6 +72,6 @@ public sealed record DemoCatalog(IReadOnlyList<DemoMovie> Movies, IReadOnlyDicti
                 || !Regex.IsMatch(hall.PicturePath, @"^/images/hall/[a-z0-9-]+\.png$")
                 || !File.Exists(Path.Combine(webRoot, hall.PicturePath.TrimStart('/'))))
                 throw new DemoConfigurationException("Некорректные данные или отсутствующая иллюстрация зала.");
-        return new(movies, posters, halls);
+        return new(movies, posters, halls, await DemoCalendar.LoadAsync(dataDirectory));
     }
 }

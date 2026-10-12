@@ -27,6 +27,12 @@ Production-сервер на свободном локальном порту с
 `Test-TicketPurchases` доступны с `-BaseUrl`; они требуют сайта и БД с
 демокаталогом/расписанием. Для общей регрессии предпочитайте изолированный runner.
 
+Для сайта в режиме demo передавайте `-DemoCalendar` в `Test-Sessions` и
+`Test-TicketPurchases`: они используют постоянные даты вместо текущего дня.
+`Test-All` отдельно проверяет production с будущими и прошедшими сеансами.
+`Test-DemoCalendarPolicy` проверяет часы до, внутри и после демопериода;
+для Release-сборки используйте `-Configuration Release`.
+
 ## GitHub Actions
 
 Workflow запускается при push в master, pull request и вручную. На Ubuntu

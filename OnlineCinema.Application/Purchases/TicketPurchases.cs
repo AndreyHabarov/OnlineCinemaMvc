@@ -9,7 +9,7 @@ namespace OnlineCinema.Application.Purchases;
 
 public sealed record PurchaseResult(Guid? OrderId, string? Error = null, bool Conflict = false);
 
-public sealed class TicketPurchases(AppDbContext context)
+public sealed class TicketPurchases(AppDbContext context, SessionAvailability availability)
 {
     public async Task<PurchaseResult> Purchase(int userId, PurchaseRequest input)
     {
@@ -22,7 +22,7 @@ public sealed class TicketPurchases(AppDbContext context)
         if (existing != null) return Replay(existing, input);
         var session = await context.Sessions.AsNoTracking().Include(s => s.Movie).Include(s => s.Hall)
             .FirstOrDefaultAsync(s => s.Id == input.SessionId);
-        if (session == null || !session.Movie.IsVisible || session.DateStart <= CinemaTime.Now)
+        if (session == null || !session.Movie.IsVisible || !availability.CanPurchase(session.DateStart))
             return new(null, "Сеанс недоступен или уже начался.");
         if (input.ViewerAge < session.Movie.AgeRating)
             return new(null, $"Для этого фильма нужен возраст не меньше {session.Movie.AgeRating} лет.");

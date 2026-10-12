@@ -100,7 +100,9 @@ builder.Services.AddIdentity<User, Role>(opt =>
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<OnlineCinema.Mvc.Services.PromotionImages>();
-builder.Services.AddOnlineCinemaApplication();
+var demoDates = cinemaMode == "demo"
+    ? await DemoCalendar.LoadAsync(DemoCatalogFiles.GetDataDirectory(builder.Environment)) : [];
+builder.Services.AddOnlineCinemaApplication(cinemaMode == "demo", demoDates);
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";

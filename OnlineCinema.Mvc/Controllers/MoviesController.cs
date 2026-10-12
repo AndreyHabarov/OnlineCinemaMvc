@@ -15,8 +15,10 @@ namespace OnlineCinema.Mvc.Controllers;
 
 public class MoviesController : BaseMvcController
 {
-    public MoviesController(AppDbContext context) : base(context)
+    private readonly SessionAvailability availability;
+    public MoviesController(AppDbContext context, SessionAvailability availability) : base(context)
     {
+        this.availability = availability;
     }
 
     [Route("movies/{id:int}")]
@@ -37,10 +39,18 @@ public class MoviesController : BaseMvcController
             return NotFound();
         }
 
-        var dateNow = CinemaTime.Now;
-
-        movieViewModel.SessionDates = await Context.Sessions.AsNoTracking()
-             .Where(s => s.MovieId == id && s.DateStart >= dateNow)
+        movieViewModel.IsDemoCalendar = availability.IsDemo;
+        if (availability.IsDemo)
+        {
+            var dates = availability.DemoDates;
+            var culture = CultureInfo.GetCultureInfo("ru-RU");
+            movieViewModel.DemoCalendarLabel = dates[^1] - dates[0] == TimeSpan.FromDays(6)
+                && dates[0].Month == dates[^1].Month && dates[0].Year == dates[^1].Year
+                ? $"{dates[0].Day}–{dates[^1].ToString("d MMMM yyyy", culture)}"
+                : string.Join(", ", dates.Select(d => d.ToString("d MMMM yyyy", culture)));
+        }
+        movieViewModel.SessionDates = await availability.Available(Context.Sessions.AsNoTracking())
+             .Where(s => s.MovieId == id)
              .Select(s => s.DateStart.Date)
              .Distinct()
              .OrderBy(s => s)
@@ -93,10 +103,8 @@ public class MoviesController : BaseMvcController
         }
 
         var dateEnd = inputDate.AddDays(1);
-        var now = CinemaTime.Now;
-        var query = Context.Sessions.AsNoTracking()
-            .Where(s => s.Movie.IsVisible && s.DateStart >= now
-                && s.DateStart >= inputDate && s.DateStart < dateEnd);
+        var query = availability.Available(Context.Sessions.AsNoTracking())
+            .Where(s => s.Movie.IsVisible && s.DateStart >= inputDate && s.DateStart < dateEnd);
 
         if (input.HallId.HasValue)
         {

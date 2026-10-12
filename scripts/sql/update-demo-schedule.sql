@@ -4,8 +4,9 @@ SELECT pg_advisory_xact_lock(726401991);
 CREATE TEMP TABLE planned_sessions ON COMMIT DROP AS
 WITH films AS (
     SELECT m."Id",m."Duration",d.ordinality-1 AS number
-    FROM jsonb_array_elements_text('__MOVIE_NAMES__'::jsonb) WITH ORDINALITY d(name,ordinality)
-    JOIN "Movies" m ON m."OriginalName"=d.name AND m."IsVisible"
+    FROM jsonb_array_elements_text('__MOVIE_SLUGS__'::jsonb) WITH ORDINALITY d(slug,ordinality)
+    JOIN "DemoSeedRecords" marker ON marker."Key"='movie:'||d.slug
+    JOIN "Movies" m ON m."Id"=marker."EntityId" AND m."IsVisible"
 ), halls AS (
     SELECT h."Id",d.ordinality-1 AS number
     FROM jsonb_array_elements_text('__HALL_SLUGS__'::jsonb) WITH ORDINALITY d(slug,ordinality)
@@ -13,9 +14,9 @@ WITH films AS (
     JOIN "Halls" h ON h."Id"=marker."EntityId"
 ), slots AS (
     SELECT * FROM jsonb_to_recordset('__SCHEDULE_JSON__'::jsonb)
-        AS slot("DateStart" timestamp, "MovieNumber" integer, "HallNumber" integer, "Price" integer)
+        AS slot("DateStart" timestamp, "MovieNumber" integer, "HallNumber" integer, "Price" integer, "SeedKey" text)
 )
-SELECT films."Id" AS "MovieId", halls."Id" AS "HallId", slots."DateStart", slots."Price", films."Duration"
+SELECT films."Id" AS "MovieId", halls."Id" AS "HallId", slots."DateStart", slots."Price", films."Duration", slots."SeedKey"
 FROM slots
 JOIN films ON films.number = slots."MovieNumber"
 JOIN halls ON halls.number = slots."HallNumber";
@@ -43,9 +44,15 @@ END $$;
 INSERT INTO "Sessions" ("MovieId", "HallId", "DateStart", "Price")
 SELECT "MovieId", "HallId", "DateStart", "Price"
 FROM planned_sessions AS planned
-WHERE NOT EXISTS (
+WHERE NOT EXISTS (SELECT 1 FROM "DemoSeedRecords" marker WHERE marker."Key"=planned."SeedKey")
+AND NOT EXISTS (
     SELECT 1 FROM "Sessions" AS existing
     WHERE existing."HallId" = planned."HallId"
       AND existing."DateStart" = planned."DateStart"
 );
+
+INSERT INTO "DemoSeedRecords" ("Key","EntityId")
+SELECT planned."SeedKey",existing."Id" FROM planned_sessions planned
+JOIN "Sessions" existing ON existing."HallId"=planned."HallId" AND existing."DateStart"=planned."DateStart"
+ON CONFLICT DO NOTHING;
 COMMIT;

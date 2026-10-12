@@ -22,6 +22,8 @@ namespace OnlineCinema.Mvc.Models.ViewModels.Movies
         public string CardImagePath { get; set; } = string.Empty;
 
         public DateTime[] SessionDates { get; set; } = [];
+        public bool IsDemoCalendar { get; set; }
+        public string DemoCalendarLabel { get; set; } = string.Empty;
         public IEnumerable<HallViewModel> Halls { get; set; } = [];
     }
 }

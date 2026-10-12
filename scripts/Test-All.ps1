@@ -17,6 +17,7 @@ try {
         if ($LASTEXITCODE) { throw 'Сборка не прошла. При необходимости сначала выполните restore.' }
     }
     $taskConfig = docker compose config --format json | ConvertFrom-Json
+    ./scripts/Test-DemoCalendarPolicy.ps1
     if ($LASTEXITCODE) { throw 'Не удалось прочитать Compose.' }
     $taskUser = [string]$taskConfig.services.db.environment.POSTGRES_USER
     $taskConnection = [Data.Common.DbConnectionStringBuilder]::new()

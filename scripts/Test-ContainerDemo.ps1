@@ -31,7 +31,11 @@ try {
     $taskPaths = @(Test-Sql 'SELECT "PosterPath" FROM "Movies" UNION SELECT "PicturePath" FROM "Halls" UNION SELECT "ImagePath" FROM "News" UNION SELECT "ImagePath" FROM "Promotions";')
     foreach ($taskPath in $taskPaths) { $null = Invoke-WebRequest "$($taskScope.BaseUrl)/$($taskPath.TrimStart('/'))" -NoProxy -TimeoutSec 15 }
     foreach ($taskTest in @('Test-Catalog','Test-Authentication','Test-Sessions','Test-Admin','Test-TicketPurchases')) {
-        & (Join-Path $PSScriptRoot "$taskTest.ps1") -BaseUrl $taskScope.BaseUrl
+        if ($taskTest -in @('Test-Sessions','Test-TicketPurchases')) {
+            & (Join-Path $PSScriptRoot "$taskTest.ps1") -BaseUrl $taskScope.BaseUrl -DemoCalendar
+        } else {
+            & (Join-Path $PSScriptRoot "$taskTest.ps1") -BaseUrl $taskScope.BaseUrl
+        }
     }
     # Сохраняем реальную регистрацию и покупку через HTTP для проверки перезапуска.
     $taskClient = [Microsoft.PowerShell.Commands.WebRequestSession]::new()
@@ -42,7 +46,8 @@ try {
     $null = Test-Post 'Account/Login' @{email=$taskEmail;password=$taskPassword;rememberMe=$true}
     Refresh-Token
     $taskZone = [TimeZoneInfo]::FindSystemTimeZoneById($(if ($IsWindows) { 'Russian Standard Time' } else { 'Europe/Moscow' }))
-    $taskTomorrow = [TimeZoneInfo]::ConvertTimeFromUtc([DateTime]::UtcNow, $taskZone).Date.AddDays(1).ToString('dd.MM.yyyy')
+    $taskCalendar = Get-Content data/demo-calendar.json -Raw -Encoding utf8 | ConvertFrom-Json
+    $taskTomorrow = [DateTime]::ParseExact($taskCalendar.dates[1],'yyyy-MM-dd',[Globalization.CultureInfo]::InvariantCulture).ToString('dd.MM.yyyy')
     $taskSession = @((Invoke-WebRequest "$($taskScope.BaseUrl)/Movies/GetAllSessions?date=$taskTomorrow" -NoProxy).Content | ConvertFrom-Json)[0]
     $taskSeat = [int](Test-Sql ('SELECT "Id" FROM "Seats" WHERE "HallId"={0} ORDER BY "Id" LIMIT 1;' -f [int]$taskSession.HallId))
     $taskOrder = (Test-Post 'orders/purchase' @{requestId=[Guid]::NewGuid();sessionId=$taskSession.Id;seatIds=@($taskSeat);viewerAge=30}).Content | ConvertFrom-Json

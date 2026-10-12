@@ -5,6 +5,7 @@
 @functions {
     string GetDay(DateTime sessionDate)
     {
+        if (Model.IsDemoCalendar) return sessionDate.ToString("dddd", CultureInfo.GetCultureInfo("ru-RU"));
         var dateNow = CinemaTime.Now;
         var currentDate = new DateTime(dateNow.Year, dateNow.Month, dateNow.Day);
         var differenceDate = sessionDate - currentDate;
@@ -40,13 +41,17 @@
 </section>
 <section class="surface movie-sessions" id="movie-sessions" aria-labelledby="sessions-heading">
     <h2 id="sessions-heading">Сеансы и покупка билетов</h2>
+    @if (Model.IsDemoCalendar)
+    {
+        <p class="demo-notice">Демонстрационный календарь: @Model.DemoCalendarLabel. Эти даты доступны независимо от сегодняшнего дня; билет предназначен для проверки приложения.</p>
+    }
     <p class="text-secondary">Выберите дату и сеанс, затем нажмите «Купить билет», чтобы выбрать места. Покупка демонстрационная, деньги не списываются.</p>
     <div class="session-filters" aria-label="Дата сеанса">
         @for (var dateIndex = 0; dateIndex < Model.SessionDates.Length; dateIndex++)
         {
             var sessionDate = Model.SessionDates[dateIndex];
             <button type="button" class="btn session-date @(dateIndex == 0 ? "active" : "")" data-date="@sessionDate.ToString("dd.MM.yyyy")" aria-pressed="@(dateIndex == 0 ? "true" : "false")">
-                @sessionDate.ToString("d MMMM", CultureInfo.GetCultureInfo("ru-RU"))<div>@GetDay(sessionDate)</div>
+                @sessionDate.ToString(Model.IsDemoCalendar ? "d MMMM yyyy" : "d MMMM", CultureInfo.GetCultureInfo("ru-RU"))<div>@GetDay(sessionDate)</div>
             </button>
         }
     </div>
