@@ -3,6 +3,7 @@ namespace OnlineCinema.Mvc.Models.ViewModels.Orders;
 public sealed class CheckoutViewModel
 {
     public int SessionId { get; init; }
+    public int MovieId { get; init; }
     public string MovieName { get; init; } = string.Empty;
     public int AgeRating { get; init; }
     public string HallName { get; init; } = string.Empty;

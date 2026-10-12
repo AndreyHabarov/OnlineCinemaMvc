@@ -4,6 +4,10 @@
 <section id="checkout" data-session-id="@Model.SessionId">
     <p class="eyebrow">Сеанс → места → ваши билеты</p>
     <h1 class="page-heading">Выбор мест</h1>
+    <div class="action-row mb-3">
+        <a asp-controller="Movies" asp-action="Get" asp-route-id="@Model.MovieId" asp-fragment="movie-sessions">← Выбрать другой сеанс</a>
+        <a href="/#movie-catalog">Вернуться в афишу</a>
+    </div>
     <p class="alert alert-info">Демонстрационная покупка: деньги не списываются.</p>
     @if (!Model.Seats.Any()) { <p class="empty-state">В этом зале пока не настроены места.</p> }
     else
@@ -36,6 +40,7 @@
             <aside class="surface booking-summary" aria-labelledby="summary-heading">
                 <h2 id="summary-heading">Ваш заказ</h2>
                 <p id="selected-seats" aria-live="polite">Места не выбраны.</p>
+                <p class="text-secondary">Цена одного места: от @Model.Seats.Min(s => s.Price) ₽. Итог зависит от выбранных мест.</p>
                 <p class="booking-total">Итого: <strong id="order-total">0 ₽</strong></p>
                 <form id="purchase-form">
                     <label for="viewer-age" class="form-label">Возраст самого младшего зрителя</label>

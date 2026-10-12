@@ -21,13 +21,13 @@ public sealed class OrdersController(AppDbContext context, ICurrentUserService c
     {
         var session = await availability.Available(Context.Sessions.AsNoTracking())
             .Where(s => s.Id == id && s.Movie.IsVisible)
-            .Select(s => new { s.Id, s.HallId, s.Price, s.DateStart, MovieName = s.Movie.Name,
+            .Select(s => new { s.Id, s.MovieId, s.HallId, s.Price, s.DateStart, MovieName = s.Movie.Name,
                 s.Movie.AgeRating, HallName = s.Hall.Name, HallDescription = s.Hall.Description,
                 HallPicturePath = s.Hall.PicturePath }).FirstOrDefaultAsync();
         if (session == null) return NotFound();
         var model = new CheckoutViewModel
         {
-            SessionId = session.Id, MovieName = session.MovieName, HallName = session.HallName,
+            SessionId = session.Id, MovieId = session.MovieId, MovieName = session.MovieName, HallName = session.HallName,
             StartsAt = session.DateStart, AgeRating = session.AgeRating,
             HallDescription = session.HallDescription, HallPicturePath = session.HallPicturePath,
             Seats = await Context.Seats.AsNoTracking().Where(s => s.HallId == session.HallId)

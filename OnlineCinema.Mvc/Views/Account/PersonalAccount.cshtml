@@ -14,6 +14,10 @@
     }
     <h2 class="h4 mt-4">Мои билеты</h2>
     <p class="text-secondary">Последние 50 демонстрационных заказов. Деньги не списываются.</p>
+    @if (Model.Orders.Any())
+    {
+        <a class="btn btn-primary mb-3" href="/#movie-catalog">Выбрать ещё фильм</a>
+    }
     @if (!Model.Orders.Any())
     {
         <p>У вас пока нет билетов. Выберите фильм и сеанс в афише.</p><a href="/" class="btn btn-primary">Перейти к фильмам</a>
