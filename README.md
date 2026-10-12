@@ -1,79 +1,97 @@
-# Online Cinema
+# OnlineCinema — демонстрационный кинотеатр
 
-ASP.NET Core MVC application for an online cinema website with movie catalog, sessions, promotions, news, ticket ordering, user accounts, and an admin area for content management.
+Приложение на ASP.NET Core MVC: каталог американских фильмов 90-х,
+расписание сеансов, выбор мест, демонстрационная покупка и билеты в личном
+кабинете. Интерфейс и описания на русском. Деньги не списываются.
 
-The solution is split into several parts:
+## Быстрый запуск
 
-- `OnlineCinema.Mvc` - ASP.NET Core MVC application, Razor views, controllers, admin area, static assets
-- `OnlineCinema.Domain` - entities, `AppDbContext`, ASP.NET Core Identity, EF Core migrations
-- `OnlineCinema.Application` - placeholder application layer project
+Нужен Docker Desktop с Linux-контейнерами или Docker Engine с Docker Compose.
+.NET SDK и PostgreSQL отдельно устанавливать не требуется. Для первого
+запуска нужен интернет.
 
-## Tech Stack
-
-- .NET 8
-- ASP.NET Core MVC
-- Razor Views
-- Entity Framework Core 8
-- PostgreSQL
-- ASP.NET Core Identity
-- AutoMapper
-- JavaScript
-- Bootstrap
-
-## Database Configuration
-
-```json
-"ConnectionStrings": {
-  "Default": "User ID=postgres;Password=postgres;Host=localhost;Port=5432;Database=cinemadb;Pooling=true;"
-}
+```sh
+git clone https://github.com/AndreyHabarov/OnlineCinemaMvc.git
+cd OnlineCinemaMvc
 ```
 
-The project uses PostgreSQL via `Npgsql`. A Docker Compose configuration is also included.
-
-```yaml
-services:
-  cinema.pgsql:
-    image: postgres:12.4-alpine
-    ports:
-      - "5433:5432"
-    environment:
-      - POSTGRES_PASSWORD=123qwe
-      - POSTGRES_DB=cinemadb
-```
-
-If you use Docker, update the application connection string to match the exposed container port and password.
-
-Example:
-
-```json
-"ConnectionStrings": {
-  "Default": "User ID=postgres;Password=123qwe;Host=localhost;Port=5433;Database=cinemadb;Pooling=true;"
-}
-```
-
-## How To Run
-
-1. Clone the repository:
+В Windows PowerShell:
 
 ```powershell
-git clone <repo-url>
-cd OnlineCinema
+./scripts/Start-Demo.ps1
 ```
 
-2. Restore dependencies:
+Скрипт создаёт локальный `.env` со случайным паролем и сохраняет существующие
+настройки. В Linux/macOS: скопируйте `.env.example` в `.env`, задайте собственный
+`POSTGRES_PASSWORD` и выполните:
 
-```powershell
-dotnet restore .\OnlineCinemaMvc.sln
+```sh
+docker compose up --build -d --wait
 ```
 
-3. Apply EF Core migrations:
+Откройте [http://localhost:8080](http://localhost:8080).
+Порты сайта и БД меняются через `APP_PORT` и `POSTGRES_PORT` в `.env`.
+[Пошаговый запуск и устранение ошибок](docs/quick-start.md).
 
-```powershell
-dotnet ef database update --project .\OnlineCinema.Domain\OnlineCinema.Domain.csproj --startup-project .\OnlineCinema.Mvc\OnlineCinema.Mvc.csproj
+## Что можно попробовать
+
+- 12 фильмов с русскими описаниями и локальными постерами.
+- Три зала, 410 мест и расписание на семь будущих дней с фоновым обновлением.
+- Регистрация и вход по email или телефону.
+- Постер → сеанс → места → подтверждение демопокупки → билет для печати.
+- История билетов в личном кабинете; билет доступен только владельцу.
+- Управление жанрами и акциями с ролью администратора.
+
+Демоадминистратор по умолчанию выключен. Порядок создания отдельного тестового
+аккаунта описан в [настройках Docker](docs/docker.md#демоданные).
+Используйте тестовые данные. Восстановление пароля и настоящая оплата
+в демонстрации не подключены. Время сеансов — московское.
+
+## Сохранность данных
+
+Compose запускает PostgreSQL 17, сайт и отдельный инициализатор миграций.
+Повторный запуск сохраняет пользователей, заказы, ключи cookies и загрузки
+в volumes. Сидирование не создаёт дубли, сохраняет правки и удалённые записи;
+купленные сеансы не изменяются. Цена рассчитывается сервером, уникальные
+индексы и транзакция защищают от двойной покупки и повторной отправки.
+
+```sh
+docker compose stop
+docker compose up -d --wait
 ```
 
-4. Run the MVC application:
+[Обновление, резервные копии и production](docs/docker.md).
+`.env`, приватные подключения, дампы и локальный backlog не входят в Git
+и Docker-образ.
 
-```powershell
-dotnet run --project .\OnlineCinema.Mvc\OnlineCinema.Mvc.csproj
-```
+## Технологии и структура
+
+- .NET 8, ASP.NET Core MVC, Razor, ASP.NET Core Identity.
+- EF Core 8, Npgsql, PostgreSQL 17.
+- JavaScript, Bootstrap, Axios, DataTables, SweetAlert2.
+- Docker Compose и GitHub Actions.
+
+`OnlineCinema.Mvc` — контроллеры, страницы, API и запуск приложения.
+`OnlineCinema.Application` — сценарий покупки, демокаталог и московское время.
+`OnlineCinema.Domain` — сущности, DbContext, Identity и миграции.
+[Архитектура](docs/architecture.md).
+
+## Проверки
+
+GitHub Actions собирает приложение без предупреждений, проверяет NuGet,
+запускает интеграционные сценарии на PostgreSQL, затем проверяет чистое
+контейнерное развёртывание, конкурентные миграции, сидирование, покупку,
+перезапуск, фоновое расписание и резервные копии.
+[Команды и требования для локальных проверок](docs/testing.md).
+
+## Дополнительные инструкции
+
+- [Локальная разработка](docs/local-development.md).
+- [Каталог и источники постеров](docs/demo-catalog.md).
+- [Покупка билетов](docs/ticket-purchases.md).
+- [Админка](docs/admin-catalog.md).
+
+Compose по умолчанию открывает сайт только на локальном компьютере.
+Публичная демонстрация по ссылке требует отдельного сервера и HTTPS.
+GitHub хранит исходники и выполняет проверки; этот ASP.NET-сайт на GitHub Pages
+не разворачивается.
