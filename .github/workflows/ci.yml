@@ -56,3 +56,28 @@ jobs:
       - name: Остановка тестовых контейнеров
         if: always()
         run: docker compose down --remove-orphans
+
+  containers:
+    needs: integration
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      POSTGRES_PASSWORD: CI_ONLY_NOT_A_PRODUCTION_PASSWORD
+      COMPOSE_PROJECT_NAME: onlinecinema-containers-ci
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Сборка Linux-образа из чистого checkout
+        run: |
+          docker compose build web
+          if ($LASTEXITCODE) { throw 'Образ не собран.' }
+      - name: Конкурентные миграции и отказ инициализации
+        run: ./scripts/Test-ContainerMigrations.ps1
+      - name: Пустые volumes, покупка, повтор и фоновое расписание
+        run: ./scripts/Test-ContainerDemo.ps1 -CheckScheduleRefresh
+      - name: Резервные копии и production
+        run: ./scripts/Test-ProductionMode.ps1

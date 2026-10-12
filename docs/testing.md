@@ -32,6 +32,12 @@ Production-сервер на свободном локальном порту с
 Workflow запускается при push в master, pull request и вручную. На Ubuntu
 восстанавливает SDK/EF, собирает с warnaserror, проверяет NuGet, поднимает
 PostgreSQL и запускает Test-All. Рабочие секреты и backlog не нужны.
+После интеграционных проверок отдельный job собирает Linux-образ из чистого
+checkout и запускает `Test-ContainerMigrations`, `Test-ContainerDemo
+-CheckScheduleRefresh` и `Test-ProductionMode`. Проверяются конкурентные миграции,
+отказ инициализации, пустые volumes, локальные постеры, покупка и сохранение билета
+после перезапуска, фоновое расписание, резервные копии и отдельная production-БД.
+Каждый runner удаляет только собственный временный Compose-проект в `finally`.
 Ключи, дампы и приватные журналы не публикуются как артефакты.
 
 Внешние actions закреплены проверенными SHA официальных релизов; Dependabot

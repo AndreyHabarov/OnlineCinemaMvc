@@ -11,7 +11,7 @@
             <div class="col">
                 <div class="card news__card__custom mb-3">
                     <a asp-controller="News" asp-action="GetNewsById" asp-route-id="@card.Id">
-                        <img src="@card.ImagePath" class="card-img-top" alt="Some picture">
+                        <img src="@card.ImagePath" class="card-img-top" alt="Новость «@card.Name»">
                     </a>
                     <div class="card-body">
                         <a asp-controller="News" asp-action="GetNewsById" asp-route-id="@card.Id">

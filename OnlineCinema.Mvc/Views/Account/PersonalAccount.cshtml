@@ -5,6 +5,13 @@
         <h1>Здравствуйте, @Model.Name</h1>
         <form asp-controller="Account" asp-action="LogOut" method="post"><button type="submit" class="btn btn-outline-light">Выйти</button></form>
     </div>
+    @if (User.IsInRole("admin"))
+    {
+        <nav class="mt-3 d-flex flex-wrap gap-2" aria-label="Управление кинотеатром">
+            <a class="btn btn-outline-light" asp-area="Admin" asp-controller="Genres" asp-action="Index">Управление жанрами</a>
+            <a class="btn btn-outline-light" asp-area="Admin" asp-controller="Promotions" asp-action="Index">Управление акциями</a>
+        </nav>
+    }
     <h2 class="h4 mt-4">Мои билеты</h2>
     <p class="text-white-50">Последние 50 демонстрационных заказов. Деньги не списываются.</p>
     @if (!Model.Orders.Any())

@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     columns.push({ data: 'id', orderable: false, searchable: false, render: id => `<button class="btn btn-sm btn-outline-primary" data-edit="${Number(id)}">Изменить</button> <button class="btn btn-sm btn-outline-danger" data-delete="${Number(id)}">Удалить</button>` });
     const table = new DataTable('#CatalogTable', {
         serverSide: true, ordering: false, columns,
-        language: { search: 'Поиск:', lengthMenu: 'Показывать _MENU_', info: '_START_–_END_ из _TOTAL_', infoEmpty: 'Записей нет', emptyTable: 'Записей нет', zeroRecords: 'Ничего не найдено', paginate: { previous: 'Назад', next: 'Далее', first: 'Первая', last: 'Последняя' } },
+        language: { search: 'Поиск:', lengthMenu: 'Показывать _MENU_', info: '_START_–_END_ из _TOTAL_', infoEmpty: 'Записей нет', infoFiltered: '(из _MAX_ записей)', loadingRecords: 'Загрузка…', processing: 'Обработка…', emptyTable: 'Записей нет', zeroRecords: 'Ничего не найдено', paginate: { previous: 'Назад', next: 'Далее', first: 'Первая', last: 'Последняя' } },
         ajax: async (request, callback) => {
             try {
                 const { data } = await axios.post(`${base}/GetAll`, { skipCount: request.start, pageSize: request.length, keyword: request.search.value });
