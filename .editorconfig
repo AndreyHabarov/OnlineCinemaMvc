@@ -1,5 +1,6 @@
 root = true
 
+
 [*]
 charset = utf-8
 end_of_line = lf
@@ -23,3 +24,7 @@ insert_final_newline = unset
 trim_trailing_whitespace = unset
 indent_style = unset
 indent_size = unset
+
+# Встроенный Windows PowerShell 5.1 читает русские строки UTF-8 с BOM.
+[scripts/{Start-Demo,Backup-Docker}.ps1]
+charset = utf-8-bom

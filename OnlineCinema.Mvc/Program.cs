@@ -136,7 +136,14 @@ if (builder.Configuration.GetValue<bool>("Cinema:Initialize"))
                     builder.Configuration.GetValue<bool>("Demo:AdminEnabled"),
                     builder.Configuration["Demo:AdminEmail"], builder.Configuration["Demo:AdminPassword"]));
             }
-            else await seeder.EnsureRolesAsync();
+            else
+            {
+                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                if (await context.DemoSeedRecords.Where(s => s.Key == "account:demo-admin")
+                    .Join(context.Users, s => s.EntityId, u => u.Id, (s, u) => u.Id).AnyAsync())
+                    throw new DemoConfigurationException("В этой БД есть демоадминистратор. Для production используйте отдельную БД или предварительно удалите демоаккаунт через согласованную процедуру.");
+                await seeder.EnsureRolesAsync();
+            }
         });
         Console.WriteLine("Миграции и инициализация PostgreSQL завершены.");
     }
