@@ -1,4 +1,4 @@
-﻿@model IEnumerable<HomePromotionViewModel>
+@model IEnumerable<HomePromotionViewModel>
 
 @{
     if (!Model.Any())
@@ -10,17 +10,17 @@
     {
         var link = PublicUrls.NavigationLink(promotion.Link);
         <div class="row">
-            <div class="col @(count % 2 == 0 ? "reverse": "normal")">
+            <div class="col promotion-item @(count % 2 == 0 ? "reverse": "normal")">
                 @if (link is null)
                 {
                     <a asp-controller="Promotions" asp-action="Get" asp-route-name="@promotion.Name">
-                        <img src="@promotion.ImagePath" class="rounded-3" alt="Alternate Text" />
+                        <img src="@promotion.ImagePath" class="img-fluid rounded-3" alt="Акция «@promotion.DisplayName»" />
                     </a>
                 }
                 else
                 {
                     <a href="@link">
-                        <img src="@promotion.ImagePath" class="rounded-3" alt="Alternate Text" />
+                        <img src="@promotion.ImagePath" class="img-fluid rounded-3" alt="Акция «@promotion.DisplayName»" />
                     </a>
                 }
                 <div>

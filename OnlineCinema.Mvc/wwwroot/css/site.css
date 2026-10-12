@@ -315,6 +315,36 @@ h1, h2, h3 {
     color: white;
 }
 
+.promotion-item {
+    gap: 1.5rem;
+    margin-block: 1.5rem;
+    overflow-wrap: anywhere;
+}
+
+.promotion-item > a {
+    flex: 0 1 40%;
+    min-width: 0;
+}
+
+.promotion-item > div {
+    flex: 1;
+    min-width: 0;
+}
+
+.hall__seat__types img {
+    width: 180px;
+    max-width: 100%;
+    height: auto;
+}
+
+@media (max-width: 767.98px) {
+    .promotion-item.normal,
+    .promotion-item.reverse {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
 /* Кнопка УЗНАТЬ БОЛЬШЕ в news на главной странице */
 .learn__more__btn {
     background-color: #bd257f;

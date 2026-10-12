@@ -1,9 +1,9 @@
-﻿@model PromotionViewModel
+@model PromotionViewModel
 
 <div class="text-white">
     <h1 class="mt-5">@Model.DisplayName</h1>
     <p class="mt-5">@Model.DateTime.ToString("f")</p>
     <h5 class="mb-3">@Model.DisplayName</h5>
     <p>@Model.Description</p>
-    <img src="~/@Model.ImagePath" class="rounded-3" alt="Alternate Text" />
+    <img src="~/@Model.ImagePath.TrimStart('/')" class="img-fluid rounded-3" alt="Акция «@Model.DisplayName»" />
 </div>
