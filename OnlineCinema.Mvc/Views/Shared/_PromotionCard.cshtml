@@ -1,0 +1,22 @@
+@model PromotionCardViewModel
+@{
+    var link = PublicUrls.NavigationLink(Model.Link);
+    var buttonText = string.IsNullOrWhiteSpace(Model.ButtonText) ? "Подробнее" : Model.ButtonText;
+}
+<article class="promotion-card" aria-labelledby="promotion-heading-@Model.Id">
+    <a class="promotion-card-cover" asp-controller="Promotions" asp-action="Get" asp-route-name="@Model.Name">
+        <img src="~/@Model.ImagePath.TrimStart('/')" alt="Подборка «@Model.DisplayName»" loading="lazy">
+    </a>
+    <div class="promotion-card-body">
+        <h3 id="promotion-heading-@Model.Id"><a asp-controller="Promotions" asp-action="Get" asp-route-name="@Model.Name">@Model.DisplayName</a></h3>
+        <p class="promotion-card-description">@Model.Description</p>
+        @if (link is null)
+        {
+            <a class="btn btn-primary" asp-controller="Promotions" asp-action="Get" asp-route-name="@Model.Name">@buttonText</a>
+        }
+        else
+        {
+            <a class="btn btn-primary" href="@link">@buttonText</a>
+        }
+    </div>
+</article>

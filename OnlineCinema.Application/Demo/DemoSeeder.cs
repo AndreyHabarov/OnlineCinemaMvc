@@ -9,7 +9,7 @@ namespace OnlineCinema.Application.Demo;
 public sealed record DemoAdminOptions(bool Enabled, string? Email, string? Password);
 
 public sealed class DemoSeeder(AppDbContext context, RoleManager<Role> roles, UserManager<User> users,
-    MovieCastCatalog casts)
+    MovieCastCatalog casts, DemoPromotionCatalog promotions)
 {
     public async Task EnsureRolesAsync()
     {
@@ -81,14 +81,7 @@ public sealed class DemoSeeder(AppDbContext context, RoleManager<Role> roles, Us
         await EnsureAsync("advertising:1990s",
             () => context.Advertisings.FirstOrDefaultAsync(a => a.PathToImage == banner),
             () => new Advertising { PathToImage = banner });
-        await EnsureAsync("promotion:1990s",
-            () => context.Promotions.FirstOrDefaultAsync(p => EF.Property<string>(p, "NormalizedName") == "demo-cinema-1990s"),
-            () => new Promotion
-            {
-                Name = "demo-cinema-1990s", DisplayName = "Американское кино 90-х",
-                Description = "Тридцать шесть известных фильмов с русскими описаниями и локальными постерами. Выберите сеанс и получите демонстрационный билет без списания денег.",
-                ImagePath = banner, DateTime = CinemaTime.Now, ButtonText = "Выбрать фильм", Link = "/"
-            });
+        await SeedPromotionsAsync();
         var news = new[]
         {
             ("welcome", "Добро пожаловать в кинотеатр", "В афише — американские фильмы 1990–1999 годов. Билеты демонстрационные, деньги не списываются."),
@@ -110,6 +103,48 @@ public sealed class DemoSeeder(AppDbContext context, RoleManager<Role> roles, Us
         await context.Database.ExecuteSqlRawAsync("SELECT pg_advisory_xact_lock(726401991)");
         await PopulateScheduleAsync(catalog);
         await transaction.CommitAsync();
+    }
+
+    private async Task SeedPromotionsAsync()
+    {
+        foreach (var data in promotions.Items)
+        {
+            var genre = data.TargetGenreKey == null ? null : await FindMarkedAsync<Genre>("genre:" + data.TargetGenreKey);
+            var link = genre == null ? data.Link : $"/?genreId={genre.Id}#movie-catalog";
+            var result = await EnsureAsync("promotion:" + data.Key, () => FindPromotionAsync(data),
+                () => new Promotion
+                {
+                    Name = data.Name, DisplayName = data.DisplayName, Description = data.Description,
+                    ImagePath = data.ImagePath, ButtonText = data.ButtonText, Link = link, DateTime = data.DateTime
+                });
+            if (result.Entity == null || await HasMarkerAsync("promotion-presentation:v2:" + data.Key)) continue;
+            // Перезаписываем только целиком распознанный прежний шаблон.
+            if (data.LegacySnapshots.Any(snapshot => snapshot.Matches(result.Entity)))
+            {
+                result.Entity.Name = data.Name;
+                result.Entity.DisplayName = data.DisplayName;
+                result.Entity.Description = data.Description;
+                result.Entity.ImagePath = data.ImagePath;
+                result.Entity.ButtonText = data.ButtonText;
+                result.Entity.Link = link;
+            }
+            Mark("promotion-presentation:v2:" + data.Key, result.Entity.Id);
+            await context.SaveChangesAsync();
+        }
+    }
+
+    private async Task<Promotion?> FindPromotionAsync(DemoPromotion data)
+    {
+        var existing = await context.Promotions.FirstOrDefaultAsync(p =>
+            EF.Property<string>(p, "NormalizedName") == data.Name);
+        if (existing != null) return existing;
+        foreach (var snapshot in data.LegacySnapshots)
+        {
+            var name = snapshot.Name.Trim().ToLowerInvariant();
+            existing = await context.Promotions.FirstOrDefaultAsync(p => EF.Property<string>(p, "NormalizedName") == name);
+            if (existing != null && snapshot.Matches(existing)) return existing;
+        }
+        return null;
     }
 
     private async Task PopulateScheduleAsync(DemoCatalog catalog)

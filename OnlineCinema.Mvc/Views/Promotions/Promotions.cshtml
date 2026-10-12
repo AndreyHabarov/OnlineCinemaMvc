@@ -1,45 +1,13 @@
 @model IEnumerable<PromotionViewModel>
-<h1 class="page-heading">Акции</h1>
-
-@{
-    if (!Model.Any())
-    {
-        @await Html.PartialAsync("_EmptyState", "Акций пока нет.")
-    }
-
-    foreach (var promotion in Model)
-    {
-        var link = PublicUrls.NavigationLink(promotion.Link);
-        <div class="row">
-            <div class="promotion-item">
-                @if (link is null)
-                {
-                    <a asp-controller="Promotions" asp-action="Get" asp-route-name="@promotion.Name">
-                        <img src="@promotion.ImagePath" class="img-fluid rounded-3" alt="Акция «@promotion.DisplayName»" />
-                    </a>
-                }
-                else
-                {
-                    <a href="@link">
-                        <img src="@promotion.ImagePath" class="img-fluid rounded-3" alt="Акция «@promotion.DisplayName»" />
-                    </a>
-                }
-                <div class="promotion-copy">
-                    <h3>
-                        @promotion.DisplayName
-                    </h3>
-                    <p>@promotion.Description</p>
-                    @if (link is null)
-                    {
-                        <a class="btn btn-primary promotion-action" asp-controller="Promotions" asp-action="Get" asp-route-name="@promotion.Name">@promotion.ButtonText</a>
-                    }
-                    else
-                    {
-                        <a href="@link" class="btn btn-primary promotion-action">@promotion.ButtonText</a>
-                    }
-                </div>
-            </div>
-        </div>
-
-    }
+<h1 class="page-heading">Акции и подборки</h1>
+<p class="page-intro">Найдите настроение для следующего похода в кино. Выберите подборку или сравните залы — билеты оформляются по обычной цене сеанса.</p>
+@if (!Model.Any())
+{
+    @await Html.PartialAsync("_EmptyState", "Акций пока нет.")
 }
+<div class="promotion-grid">
+    @foreach (var promotion in Model)
+    {
+        @await Html.PartialAsync("_PromotionCard", promotion)
+    }
+</div>

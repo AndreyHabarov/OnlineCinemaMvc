@@ -1,9 +1,12 @@
 @model PromotionViewModel
 <article class="detail-page">
-    <p class="eyebrow">Предложения кинотеатра</p>
+    <p class="eyebrow">Подборка кинотеатра</p>
     <h1 class="page-heading">@Model.DisplayName</h1>
-    <p class="text-secondary">@Model.DateTime.ToString("f")</p>
     <img src="~/@Model.ImagePath.TrimStart('/')" class="detail-image" alt="Акция «@Model.DisplayName»">
     <p class="detail-description">@Model.Description</p>
-    <a asp-controller="Promotions" asp-action="Promotions">← Все акции</a>
+    <p class="demo-notice">Демонстрационное предложение. Цена указана у сеанса и рассчитывается для выбранных мест. Дополнительные скидки не применяются.</p>
+    <div class="action-row">
+        <a href="@(PublicUrls.NavigationLink(Model.Link) ?? "/#movie-catalog")" class="btn btn-primary">@(string.IsNullOrWhiteSpace(Model.ButtonText) ? "Выбрать фильм" : Model.ButtonText)</a>
+        <a class="btn btn-outline-light" asp-controller="Promotions" asp-action="Promotions">← Все акции</a>
+    </div>
 </article>

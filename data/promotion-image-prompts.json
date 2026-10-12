@@ -1,0 +1,17 @@
+[
+  {
+    "asset": "OnlineCinema.Mvc/wwwroot/images/promotion/cult-night-v2.png",
+    "tool": "image_gen (built-in)",
+    "prompt": "Create a premium cinematic editorial photograph for a Russian cinema website promotion about classic American movies of the 1990s. Wide landscape 16:9, a vintage 35mm film reel, a blank VHS cassette and a closed clapperboard on a dark graphite table, soft raspberry magenta neon reflections, subtle warm projector light, tactile realistic materials, refined composition with clear subject and breathing space. Palette charcoal #141218 and raspberry #BD257F. No text, no logos, no film titles, no people, no recognizable movie characters. This is an original promotional illustration, not a real film still."
+  },
+  {
+    "asset": "OnlineCinema.Mvc/wwwroot/images/promotion/family-cinema-v2.png",
+    "tool": "image_gen (built-in)",
+    "prompt": "Create a premium welcoming editorial still-life photograph for a Russian cinema website family movie promotion. Wide landscape 16:9, two elegant popcorn cups without writing, folded paper stars and colorful simple toy blocks beside two blank admission tickets, dark graphite cinema setting, warm golden soft light with tasteful raspberry pink accents #BD257F, inviting and sophisticated, realistic materials, crisp focal detail. No text, no logos, no people, no recognizable movie characters, no brand imagery. Original promotional illustration."
+  },
+  {
+    "asset": "OnlineCinema.Mvc/wwwroot/images/promotion/choose-hall-v2.png",
+    "tool": "image_gen (built-in)",
+    "prompt": "Create a premium photorealistic cinema interior illustration for a Russian website promotion about choosing the right cinema hall. Wide landscape 16:9, close view of generous raspberry velvet seats in an empty intimate auditorium, graphite walls, subtle warm aisle lighting, a softly glowing blank cinema screen in the distance, beautiful depth and inviting atmosphere, polished architectural photography. Palette charcoal #141218 and raspberry #BD257F. No text, no logos, no people, no movie frames. Original concept illustration, not a photograph of a real venue."
+  }
+]

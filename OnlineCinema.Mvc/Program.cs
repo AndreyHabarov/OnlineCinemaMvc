@@ -105,6 +105,8 @@ var demoDates = cinemaMode == "demo"
 builder.Services.AddOnlineCinemaApplication(cinemaMode == "demo", demoDates);
 builder.Services.AddSingleton(await MovieCastCatalog.LoadAsync(
     DemoCatalogFiles.GetDataDirectory(builder.Environment), builder.Environment.WebRootPath));
+builder.Services.AddSingleton(await DemoPromotionCatalog.LoadAsync(
+    DemoCatalogFiles.GetDataDirectory(builder.Environment), builder.Environment.WebRootPath));
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
