@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.DataProtection;
 using OnlineCinema.Application.Extensions;
 using Npgsql;
 using OnlineCinema.Mvc.Infrastructure;
+using OnlineCinema.Application.Demo;
 
 CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
 CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("ru-RU");
@@ -112,19 +113,39 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 var app = builder.Build();
+var cinemaMode = builder.Configuration["Cinema:Mode"] ?? "production";
+if (cinemaMode is not ("demo" or "production"))
+    throw new DemoConfigurationException("Cinema:Mode должен быть demo или production.");
+if (cinemaMode != "demo" && builder.Configuration.GetValue<bool>("Demo:AdminEnabled"))
+    throw new DemoConfigurationException("Демоадминистратор разрешён только в режиме demo.");
 
 if (builder.Configuration.GetValue<bool>("Cinema:Initialize"))
 {
     await using var scope = app.Services.CreateAsyncScope();
     try
     {
-        await scope.ServiceProvider.GetRequiredService<DatabaseInitializer>().InitializeAsync();
-        Console.WriteLine("Миграции PostgreSQL завершены.");
+        var seeder = scope.ServiceProvider.GetRequiredService<DemoSeeder>();
+        await scope.ServiceProvider.GetRequiredService<DatabaseInitializer>().InitializeAsync(async () =>
+        {
+            if (cinemaMode == "demo")
+            {
+                var data = Path.Combine(app.Environment.ContentRootPath, "data");
+                if (!Directory.Exists(data)) data = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, "..", "data"));
+                var catalog = await DemoCatalog.LoadAsync(data, app.Environment.WebRootPath);
+                await seeder.SeedAsync(catalog, new DemoAdminOptions(
+                    builder.Configuration.GetValue<bool>("Demo:AdminEnabled"),
+                    builder.Configuration["Demo:AdminEmail"], builder.Configuration["Demo:AdminPassword"]));
+            }
+            else await seeder.EnsureRolesAsync();
+        });
+        Console.WriteLine("Миграции и инициализация PostgreSQL завершены.");
     }
     catch (Exception exception)
     {
         // Не раскрываем строку подключения или данные из исключения.
-        Console.Error.WriteLine($"Инициализация БД не выполнена ({exception.GetType().Name}). Проверьте подключение и конфликты миграций.");
+        Console.Error.WriteLine(exception is DemoConfigurationException
+            ? exception.Message
+            : $"Инициализация БД не выполнена ({exception.GetType().Name}). Проверьте подключение, демоданные и конфликты миграций.");
         Environment.ExitCode = 1;
     }
     return;

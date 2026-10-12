@@ -18,6 +18,7 @@ public class AppDbContext : IdentityDbContext<User, Role, int>
     public DbSet<News> News { get; set; }
     public DbSet<Seat> Seats { get; set; }
     public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
+    public DbSet<DemoSeedRecord> DemoSeedRecords { get; set; }
 
     public AppDbContext(DbContextOptions options) : base(options)
     {
@@ -26,6 +27,8 @@ public class AppDbContext : IdentityDbContext<User, Role, int>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<DemoSeedRecord>().HasKey(s => s.Key);
+        modelBuilder.Entity<DemoSeedRecord>().Property(s => s.Key).HasMaxLength(160);
         modelBuilder.Entity<User>().Property<string?>("NormalizedPhoneNumber")
             .HasComputedColumnSql("""
                 CASE

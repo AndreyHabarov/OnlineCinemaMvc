@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="450" viewBox="0 0 1600 450">
+  <rect width="1600" height="450" fill="#242424"/>
+  <rect x="40" y="40" width="1520" height="370" rx="30" fill="#bd257f"/>
+  <g fill="white" font-family="sans-serif" text-anchor="middle">
+    <text x="800" y="155" font-size="85" font-weight="bold">КИНО 90-Х</text>
+    <text x="800" y="255" font-size="50">12 фильмов американского кино</text>
+    <text x="800" y="335" font-size="36">Демонстрационные билеты без оплаты</text>
+  </g>
+</svg>

@@ -1,0 +1,174 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using OnlineCinema.Domain;
+using OnlineCinema.Domain.Common;
+using OnlineCinema.Domain.Entities;
+
+namespace OnlineCinema.Application.Demo;
+
+public sealed record DemoAdminOptions(bool Enabled, string? Email, string? Password);
+
+public sealed class DemoSeeder(AppDbContext context, RoleManager<Role> roles, UserManager<User> users)
+{
+    private static readonly (string Slug, string Name, int Rows, int Seats)[] Halls =
+    [ ("imax", "IMAX Зал", 10, 25), ("vip", "VIP Lounge", 5, 8), ("classic", "Классический Зал", 10, 12) ];
+
+    public async Task EnsureRolesAsync()
+    {
+        if (!await roles.RoleExistsAsync(StaticRoleNames.ADMIN))
+            Require(await roles.CreateAsync(new Role { Name = StaticRoleNames.ADMIN }));
+    }
+
+    public async Task SeedAsync(DemoCatalog catalog, DemoAdminOptions admin)
+    {
+        await using var transaction = await context.Database.BeginTransactionAsync();
+        await context.Database.ExecuteSqlRawAsync("SELECT pg_advisory_xact_lock(726401991)");
+        await EnsureRolesAsync();
+        foreach (var data in catalog.Movies)
+        {
+            var movie = await EnsureAsync("movie:" + data.Slug,
+                () => context.Movies.FirstOrDefaultAsync(m => m.OriginalName == data.OriginalName),
+                () => new Movie
+                {
+                    Name = data.Name, OriginalName = data.OriginalName, Description = data.Description,
+                    Duration = data.Duration, AgeRating = data.AgeRating, Country = data.Country,
+                    Director = data.Director, Actor = data.Actor, PremiereDate = data.ReleaseDate,
+                    WorldPremiere = data.ReleaseDate, PosterPath = catalog.Posters[data.Slug],
+                    CardImagePath = catalog.Posters[data.Slug], IsVisible = true
+                });
+            if (movie.Created && movie.Entity != null)
+            {
+                foreach (var name in data.Genres.Distinct())
+                {
+                    var normalized = name.Trim().ToLowerInvariant();
+                    var genre = await EnsureAsync("genre:" + normalized,
+                        () => context.Genres.FirstOrDefaultAsync(g => EF.Property<string>(g, "NormalizedName") == normalized),
+                        () => new Genre { Name = name.Trim() });
+                    if (genre.Entity != null)
+                        context.MovieGenres.Add(new MovieGenre { MovieId = movie.Entity.Id, GenreId = genre.Entity.Id });
+                }
+                await context.SaveChangesAsync();
+            }
+        }
+        foreach (var hall in Halls)
+        {
+            var result = await EnsureAsync("hall:" + hall.Slug,
+                () => context.Halls.FirstOrDefaultAsync(h => h.Name == hall.Name),
+                () => new Hall { Name = hall.Name, PicturePath = $"/images/hall/{hall.Slug}.jpg", Description = $"{hall.Rows} рядов по {hall.Seats} мест." });
+            if (result.Entity == null || await HasMarkerAsync("layout:" + hall.Slug)) continue;
+            if (!await context.Seats.AnyAsync(s => s.HallId == result.Entity.Id))
+                for (var row = 1; row <= hall.Rows; row++)
+                    for (var seat = 1; seat <= hall.Seats; seat++)
+                        context.Seats.Add(new Seat { HallId = result.Entity.Id, Row = row, Number = seat, Price = 0 });
+            Mark("layout:" + hall.Slug, result.Entity.Id);
+            await context.SaveChangesAsync();
+        }
+        const string banner = "/images/demo/cinema-1990s.svg";
+        await EnsureAsync("advertising:1990s",
+            () => context.Advertisings.FirstOrDefaultAsync(a => a.PathToImage == banner),
+            () => new Advertising { PathToImage = banner });
+        await EnsureAsync("promotion:1990s",
+            () => context.Promotions.FirstOrDefaultAsync(p => EF.Property<string>(p, "NormalizedName") == "demo-cinema-1990s"),
+            () => new Promotion
+            {
+                Name = "demo-cinema-1990s", DisplayName = "Американское кино 90-х",
+                Description = "Двенадцать известных фильмов с русскими описаниями и локальными постерами. Выберите сеанс и получите демонстрационный билет без списания денег.",
+                ImagePath = banner, DateTime = CinemaTime.Now, ButtonText = "Выбрать фильм", Link = "/"
+            });
+        var news = new[]
+        {
+            ("welcome", "Добро пожаловать в кинотеатр", "В афише — американские фильмы 1990–1999 годов. Билеты демонстрационные, деньги не списываются."),
+            ("tickets", "Как получить демобилет", "Зарегистрируйтесь с тестовыми данными, откройте фильм, выберите сеанс и места. Билет появится в личном кабинете."),
+            ("time", "Сеансы по московскому времени", "Расписание показывает московское время UTC+3. Цена рассчитывается для выбранных мест на сервере.")
+        };
+        foreach (var item in news)
+            await EnsureAsync("news:" + item.Item1,
+                () => context.News.FirstOrDefaultAsync(n => n.Name == item.Item2),
+                () => new News { Name = item.Item2, Description = item.Item3, ImagePath = banner, Date = CinemaTime.Now });
+        await SeedAdminAsync(admin);
+        await PopulateScheduleAsync(catalog);
+        await transaction.CommitAsync();
+    }
+
+    public async Task RefreshScheduleAsync(DemoCatalog catalog)
+    {
+        await using var transaction = await context.Database.BeginTransactionAsync();
+        await context.Database.ExecuteSqlRawAsync("SELECT pg_advisory_xact_lock(726401991)");
+        await PopulateScheduleAsync(catalog);
+        await transaction.CommitAsync();
+    }
+
+    private async Task PopulateScheduleAsync(DemoCatalog catalog)
+    {
+        var now = CinemaTime.Now;
+        for (var day = 0; day < 7; day++)
+        {
+            var date = now.Date.AddDays(day);
+            var dayNumber = (int)(date - new DateTime(2000, 1, 1)).TotalDays;
+            for (var slot = 0; slot < 4; slot++)
+                for (var hallNumber = 0; hallNumber < Halls.Length; hallNumber++)
+                {
+                    var start = date.AddHours(10 + 4 * slot);
+                    if (start <= now) continue;
+                    var hallData = Halls[hallNumber];
+                    var key = $"session:{date:yyyyMMdd}:{hallData.Slug}:{slot}";
+                    if (await HasMarkerAsync(key)) continue;
+                    var movieData = catalog.Movies[(dayNumber + 3 * slot + hallNumber) % catalog.Movies.Count];
+                    var movie = await FindMarkedAsync<Movie>("movie:" + movieData.Slug);
+                    var hall = await FindMarkedAsync<Hall>("hall:" + hallData.Slug);
+                    if (movie is not { IsVisible: true } || movie.Duration <= 0 || hall == null
+                        || !await context.Seats.AnyAsync(s => s.HallId == hall.Id)) continue;
+                    var existing = await context.Sessions.FirstOrDefaultAsync(s => s.HallId == hall.Id && s.DateStart == start);
+                    if (existing != null) { Mark(key, existing.Id); await context.SaveChangesAsync(); continue; }
+                    var end = start.AddMinutes(movie.Duration + 30);
+                    if (await context.Sessions.AnyAsync(s => s.HallId == hall.Id
+                        && s.DateStart < end && s.DateStart.AddMinutes(s.Movie.Duration + 30) > start)) continue;
+                    var session = new Session { MovieId = movie.Id, HallId = hall.Id, DateStart = start, Price = 350 + 100 * hallNumber };
+                    context.Sessions.Add(session);
+                    await context.SaveChangesAsync();
+                    Mark(key, session.Id);
+                    await context.SaveChangesAsync();
+                }
+        }
+    }
+
+    private async Task SeedAdminAsync(DemoAdminOptions options)
+    {
+        const string key = "account:demo-admin";
+        if (!options.Enabled || await HasMarkerAsync(key)) return;
+        if (string.IsNullOrWhiteSpace(options.Email) || string.IsNullOrWhiteSpace(options.Password))
+            throw new DemoConfigurationException("Для демоадминистратора задайте email и пароль.");
+        // Существующему пользователю нельзя автоматически выдать полномочия.
+        if (await users.FindByEmailAsync(options.Email.Trim()) != null)
+            throw new DemoConfigurationException("Email демоадминистратора уже используется; выберите другой.");
+        var user = new User { Name = "Демо", LastName = "Администратор", UserName = options.Email.Trim(), Email = options.Email.Trim() };
+        Require(await users.CreateAsync(user, options.Password));
+        Require(await users.AddToRoleAsync(user, StaticRoleNames.ADMIN));
+        Mark(key, user.Id);
+        await context.SaveChangesAsync();
+    }
+
+    private async Task<(T? Entity, bool Created)> EnsureAsync<T>(string key, Func<Task<T?>> find, Func<T> create) where T : Entity
+    {
+        var marker = await context.DemoSeedRecords.FindAsync(key);
+        if (marker != null) return (await context.Set<T>().FindAsync(marker.EntityId), false);
+        var entity = await find();
+        var created = entity == null;
+        if (entity == null) { entity = create(); context.Set<T>().Add(entity); await context.SaveChangesAsync(); }
+        Mark(key, entity.Id);
+        await context.SaveChangesAsync();
+        return (entity, created);
+    }
+
+    private async Task<T?> FindMarkedAsync<T>(string key) where T : Entity
+    {
+        var marker = await context.DemoSeedRecords.FindAsync(key);
+        return marker == null ? null : await context.Set<T>().FindAsync(marker.EntityId);
+    }
+    private Task<bool> HasMarkerAsync(string key) => context.DemoSeedRecords.AnyAsync(s => s.Key == key);
+    private void Mark(string key, int id) => context.DemoSeedRecords.Add(new DemoSeedRecord { Key = key, EntityId = id });
+    private static void Require(IdentityResult result)
+    {
+        if (!result.Succeeded) throw new DemoConfigurationException("Не удалось создать демоучётную запись или роль; проверьте настройки Identity.");
+    }
+}
